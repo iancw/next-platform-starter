@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import RecipeCard from "../components/recipe-card.jsx";
 
 export default function Page() {
   const [query, setQuery] = useState("");
@@ -25,7 +26,7 @@ export default function Page() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-white">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white text-gray-800">
       <h1 className="text-3xl font-bold mb-6">OM System Color Recipe Search</h1>
       <form onSubmit={handleSubmit} className="flex w-full max-w-md mb-8">
         <input
@@ -34,7 +35,7 @@ export default function Page() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search color recipes..."
-          className="flex-1 px-4 py-2 border border-gray-300 rounded-l focus:outline-none"
+          className="flex-1 px-4 py-2 border border-gray-300 rounded-l focus:outline-none text-gray-800"
         />
         <button
           type="submit"
@@ -53,9 +54,13 @@ export default function Page() {
           <ul className="divide-y divide-gray-200">
             {results.map((r, i) => (
               <li key={r.Name + r.Author + i} className="p-4">
-                <div className="font-bold text-lg">{r.Name}</div>
-                <div className="text-sm text-gray-600">By {r.Author}</div>
-                {r.Notes && <div className="mt-2 text-xs text-gray-800">{r.Notes}</div>}
+                <RecipeCard
+                  name={r.Name}
+                  author={r.Author}
+                  notes={r.Notes}
+                  tips={r.Tips || r.Various}
+                  links={r.Links}
+                />
               </li>
             ))}
           </ul>
