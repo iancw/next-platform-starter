@@ -1,63 +1,66 @@
-import Link from 'next/link';
-import { Card } from 'components/card';
-import { ContextAlert } from 'components/context-alert';
-import { Markdown } from 'components/markdown';
-import { RandomQuote } from 'components/random-quote';
-import { getNetlifyContext } from 'utils';
-
-const contextExplainer = `
-The card below is rendered on the server based on the value of \`process.env.CONTEXT\` 
-([docs](https://docs.netlify.com/configure-builds/environment-variables/#build-metadata)):
-`;
-
-const preDynamicContentExplainer = `
-The card content below is fetched by the client-side from \`/quotes/random\` (see file \`app/quotes/random/route.js\`) with a different quote shown on each page load:
-`;
-
-const ctx = getNetlifyContext();
+"use client";
+import { useState } from "react";
 
 export default function Page() {
-    return (
-        <div className="flex flex-col gap-12 sm:gap-16">
-            <section>
-                <ContextAlert className="mb-6" />
-                <h1 className="mb-4">Netlify Platform Starter – Next.js</h1>
-                <p className="mb-6 text-lg">
-                    Deploy the latest version of Next.js — including Turbopack, React Compiler, and the new caching APIs
-                    — on Netlify in seconds. No configuration or custom adapter required.
-                </p>
-                <Link href="https://docs.netlify.com/frameworks/next-js/overview/" className="btn btn-lg sm:min-w-64">
-                    Read the Docs
-                </Link>
-            </section>
-            {!!ctx && (
-                <section className="flex flex-col gap-4">
-                    <Markdown content={contextExplainer} />
-                    <RuntimeContextCard />
-                </section>
-            )}
-            <section className="flex flex-col gap-4">
-                <Markdown content={preDynamicContentExplainer} />
-                <RandomQuote />
-            </section>
-        </div>
-    );
-}
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-function RuntimeContextCard() {
-    const title = `Netlify Context: running in ${ctx} mode.`;
-    if (ctx === 'dev') {
-        return (
-            <Card title={title}>
-                <p>Next.js will rebuild any page you navigate to, including static pages.</p>
-            </Card>
-        );
-    } else {
-        const now = new Date().toISOString();
-        return (
-            <Card title={title}>
-                <p>This page was statically-generated at build time ({now}).</p>
-            </Card>
-        );
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setResults([]);
+    try {
+      const res = await fetch(`/api/recipes/search?q=${encodeURIComponent(query)}`);
+      if (!res.ok) throw new Error("Failed to fetch recipes");
+      const data = await res.json();
+      setResults(data);
+    } catch (err) {
+      setError(err.message || "Unknown error");
+    } finally {
+      setLoading(false);
     }
+  }
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white">
+      <h1 className="text-3xl font-bold mb-6">OM System Color Recipe Search</h1>
+      <form onSubmit={handleSubmit} className="flex w-full max-w-md mb-8">
+        <input
+          type="text"
+          name="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search color recipes..."
+          className="flex-1 px-4 py-2 border border-gray-300 rounded-l focus:outline-none"
+        />
+        <button
+          type="submit"
+          className="px-6 py-2 bg-blue-600 text-white rounded-r hover:bg-blue-700"
+        >
+          Search
+        </button>
+      </form>
+      <div className="w-full max-w-2xl">
+        {loading && <div className="text-center text-gray-500">Searching...</div>}
+        {error && <div className="text-center text-red-500">{error}</div>}
+        {!loading && !error && results.length === 0 && query && (
+          <div className="text-center text-gray-500">No recipes found.</div>
+        )}
+        {!loading && !error && results.length > 0 && (
+          <ul className="divide-y divide-gray-200">
+            {results.map((r, i) => (
+              <li key={r.Name + r.Author + i} className="p-4">
+                <div className="font-bold text-lg">{r.Name}</div>
+                <div className="text-sm text-gray-600">By {r.Author}</div>
+                {r.Notes && <div className="mt-2 text-xs text-gray-800">{r.Notes}</div>}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
 }
