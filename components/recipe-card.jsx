@@ -1,6 +1,7 @@
 import React from "react";
+import WhiteBalanceBox from "./white-balance-box";
 
-export default function RecipeCard({ name, author, notes, tips, links }) {
+export default function RecipeCard({ name, author, notes, tips, links, green, amber }) {
   return (
     <div className="recipe-card" style={{
       border: "1px solid #ddd",
@@ -11,6 +12,14 @@ export default function RecipeCard({ name, author, notes, tips, links }) {
       boxShadow: "0 1px 4px rgba(0,0,0,0.05)"
     }}>
       <h2 style={{ marginTop: 0 }}>{name}</h2>
+      {(green !== undefined || amber !== undefined) && (
+        <div style={{ margin: "0.75rem 0" }}>
+          <WhiteBalanceBox
+            green={green ?? 0}
+            amber={amber ?? 0}
+          />
+        </div>
+      )}
       <p><strong>Author:</strong> {author || "Unknown"}</p>
       {notes && (
         <div>

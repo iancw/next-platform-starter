@@ -54,3 +54,13 @@
     - Instagram handle
     - Website
     - Forum link
+
+
+
+# Recipe Rules
+
+- Color saturation goes from +5 to -5
+- Shadows, Mids, Highs go from -7 to +7
+- Shading effect goes from -5 to +5
+- Sharpness goes from -2 to +2
+- Contrast goes from -2 to +2

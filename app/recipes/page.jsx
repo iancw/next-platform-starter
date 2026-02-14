@@ -60,6 +60,8 @@ export default function Page() {
                   notes={r.Notes}
                   tips={r.Tips || r.Various}
                   links={r.Links}
+                  amber={r.WhiteBalanceAmberShift}
+                  green={r.WhiteBalanceGreenShift}
                 />
               </li>
             ))}
