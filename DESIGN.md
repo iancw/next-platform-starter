@@ -60,6 +60,18 @@
 # Recipe Rules
 
 - Color saturation goes from +5 to -5
+    - Yellow #FCF750
+    - Orange #DBA12A
+    - OrangeRed #CC1210
+    - Red #CD076B
+    - RedMagenta #970AA0
+    - Magenta #7710E8
+    - Blue #3054E0
+    - BlueCyan #5392EB
+    - Cyan #83E7EB
+    - CyanGreen #87EE77
+    - Green #9DEE3A
+    - GreenYellow #CBEE3A
 - Shadows, Mids, Highs go from -7 to +7
 - Shading effect goes from -5 to +5
 - Sharpness goes from -2 to +2

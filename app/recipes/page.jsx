@@ -62,6 +62,18 @@ export default function Page() {
                   links={r.Links}
                   amber={r.WhiteBalanceAmberShift}
                   green={r.WhiteBalanceGreenShift}
+                  Yellow={r.Yellow}
+                  Orange={r.Orange}
+                  OrangeRed={r.OrangeRed}
+                  Red={r.Red}
+                  RedMagenta={r.RedMagenta}
+                  Magenta={r.Magenta}
+                  Blue={r.Blue}
+                  BlueCyan={r.BlueCyan}
+                  Cyan={r.Cyan}
+                  CyanGreen={r.CyanGreen}
+                  Green={r.Green}
+                  GreenYellow={r.GreenYellow}
                 />
               </li>
             ))}
