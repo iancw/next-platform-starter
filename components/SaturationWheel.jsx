@@ -96,7 +96,7 @@ const SaturationWheel = ({ values = [] }) => {
   return (
     <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} style={{ display: "block" }}>
       {/* Background */}
-      <rect x="0" y="0" width={SIZE} height={SIZE} fill="#2A2A2A" />
+      <rect x="0" y="0" width={SIZE} height={SIZE} fill="#353535" />
       {/* Zero saturation offset indicator ring */}
       <circle
         cx={CENTER}

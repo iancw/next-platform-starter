@@ -87,41 +87,67 @@ export default function RecipeCard({ recipe }) {
               )}
             </div>
           )}
-          <WhiteBalanceBox
-            green={recipe.WhiteBalanceGreenShift ?? 0}
-            amber={recipe.WhiteBalanceAmberShift ?? 0}
-          />
         </div>
       )}
 
-      <div style={{ maxWidth: 260 }}>
-        <SaturationWheel
-          values={[
-            Number(recipe.Yellow ?? 0),
-            Number(recipe.Orange ?? 0),
-            Number(recipe.OrangeRed ?? 0),
-            Number(recipe.Red ?? 0),
-            Number(recipe.RedMagenta ?? 0),
-            Number(recipe.Magenta ?? 0),
-            Number(recipe.Blue ?? 0),
-            Number(recipe.BlueCyan ?? 0),
-            Number(recipe.Cyan ?? 0),
-            Number(recipe.CyanGreen ?? 0),
-            Number(recipe.Green ?? 0),
-            Number(recipe.GreenYellow ?? 0)
-          ]}
-        />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "flex-start",
+          gap: "1.5rem",
+          margin: "1.5rem 0"
+        }}
+      >
+        <div style={{
+          maxWidth: 280,
+          flexShrink: 0,
+          border: "1px solid #353535",
+          borderRadius: 6,
+          background: "#353535",
+          padding: 8,
+          margin: "auto"
+        }}>
+          <SaturationWheel
+            values={[
+              Number(recipe.Yellow ?? 0),
+              Number(recipe.Orange ?? 0),
+              Number(recipe.OrangeRed ?? 0),
+              Number(recipe.Red ?? 0),
+              Number(recipe.RedMagenta ?? 0),
+              Number(recipe.Magenta ?? 0),
+              Number(recipe.Blue ?? 0),
+              Number(recipe.BlueCyan ?? 0),
+              Number(recipe.Cyan ?? 0),
+              Number(recipe.CyanGreen ?? 0),
+              Number(recipe.Green ?? 0),
+              Number(recipe.GreenYellow ?? 0)
+            ]}
+          />
+        </div>
+        <div style={{ minWidth: 180 }}>
+          <ShadowMidsHighlightAdjust
+            shadows={Number(recipe.Shadows ?? 0)}
+            mids={Number(recipe.Mids ?? 0)}
+            highlights={Number(recipe.Highlights ?? 0)}
+          />
+        </div>
+        <div style={{ minWidth: 180, display: "flex", flexDirection: "column", alignItems: "stretch" }}>
+          {(recipe.WhiteBalanceGreenShift !== undefined || recipe.WhiteBalanceAmberShift !== undefined) && (
+            <div style={{ marginBottom: "1em" }}>
+              <WhiteBalanceBox
+                green={recipe.WhiteBalanceGreenShift ?? 0}
+                amber={recipe.WhiteBalanceAmberShift ?? 0}
+              />
+            </div>
+          )}
+          <ImageAdjustSliders
+            vignette={recipe.Vignette}
+            sharpness={recipe.Sharpness}
+            contrast={recipe.Contrast}
+          />
+        </div>
       </div>
-      <ShadowMidsHighlightAdjust
-        shadows={Number(recipe.Shadows ?? 0)}
-        mids={Number(recipe.Mids ?? 0)}
-        highlights={Number(recipe.Highlights ?? 0)}
-      />
-      <ImageAdjustSliders
-        vignette={recipe.Vignette}
-        sharpness={recipe.Sharpness}
-        contrast={recipe.Contrast}
-      />
        <Image
         src={sampleImagePath}
         alt="Lighthouse"

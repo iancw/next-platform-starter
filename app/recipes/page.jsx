@@ -26,25 +26,27 @@ export default function Page() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-white text-gray-800">
-      <h1 className="text-3xl font-bold mb-6">OM System Color Recipe Search</h1>
-      <form onSubmit={handleSubmit} className="flex w-full max-w-md mb-8">
-        <input
-          type="text"
-          name="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search color recipes..."
-          className="flex-1 px-4 py-2 border border-gray-300 rounded-l focus:outline-none text-gray-800"
-        />
-        <button
-          type="submit"
-          className="px-6 py-2 bg-blue-600 text-white rounded-r hover:bg-blue-700"
-        >
-          Search
-        </button>
-      </form>
-      <div className="w-full max-w-2xl">
+    <div className="flex flex-col min-h-screen bg-white text-gray-800 px-8 py-8 w-full">
+      <div className="flex flex-row items-start justify-between w-full max-w-5xl mx-auto mb-10">
+        <h1 className="text-3xl font-bold mb-0 flex-shrink-0">OM System Color Recipes</h1>
+        <form onSubmit={handleSubmit} className="flex w-full max-w-sm justify-end ml-8">
+          <input
+            type="text"
+            name="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search color recipes..."
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-l focus:outline-none text-gray-800"
+          />
+          <button
+            type="submit"
+            className="px-6 py-2 bg-blue-600 text-white rounded-r hover:bg-blue-700"
+          >
+            Search
+          </button>
+        </form>
+      </div>
+      <div className="w-full max-w-5xl mx-auto">
         {loading && <div className="text-center text-gray-500">Searching...</div>}
         {error && <div className="text-center text-red-500">{error}</div>}
         {!loading && !error && results.length === 0 && query && (
