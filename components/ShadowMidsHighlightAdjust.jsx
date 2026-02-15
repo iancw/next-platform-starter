@@ -12,19 +12,20 @@ function curvePath(x1, y1, xm, ym, x2, y2) {
 
 export default function ShadowMidsHighlightAdjust({ shadows = 0, mids = 0, highlights = 0 }) {
   // Shadows
+  const curveMultiplier = 2.0
   const shStart = [-15, -15];
   const shEnd = [0, 0];
-  const shMid = [-8, -8 + Number(shadows)];
+  const shMid = [-8, -8 + curveMultiplier * Number(shadows)];
 
   // Highlights
   const hiStart = [0, 0];
   const hiEnd = [15, 15];
-  const hiMid = [7, 7 + Number(highlights)];
+  const hiMid = [7, 7 + curveMultiplier * Number(highlights)];
 
   // Mids
   const midStart = [-15, -15];
   const midEnd = [15, 15];
-  const midMid = [0, 0 + Number(mids)];
+  const midMid = [0, 0 + curveMultiplier * Number(mids)];
 
   return (
     <div style={{ margin: "1rem 0" }}>
@@ -54,47 +55,37 @@ export default function ShadowMidsHighlightAdjust({ shadows = 0, mids = 0, highl
         width: 260,
         height: 260,
         margin: "auto",
-        background: "#fafafc",
+        background: "#353535",
         position: "relative"
       }}>
         <svg viewBox="0 0 260 260" width={260} height={260}>
           {/* Axes */}
-          <line x1={map(-15)} y1={map(0)} x2={map(15)} y2={map(0)} stroke="#888" strokeWidth="1.2" />
-          <line x1={map(0)} y1={map(-15)} x2={map(0)} y2={map(15)} stroke="#888" strokeWidth="1.2" />
+          <line x1={map(-15)} y1={map(0)} x2={map(15)} y2={map(0)} stroke="#616161" strokeWidth="1.2" />
+          <line x1={map(0)} y1={map(-15)} x2={map(0)} y2={map(15)} stroke="#616161" strokeWidth="1.2" />
           {/* Shadow curve */}
           <path
             d={curvePath(shStart[0], shStart[1], shMid[0], shMid[1], shEnd[0], shEnd[1])}
             fill="none"
-            stroke="#3070b6"
+            stroke="#EFEFEF"
             strokeWidth="2.2"
           />
-          {/* Shadow adj point */}
-          <circle cx={map(shMid[0])} cy={map(-shMid[1])} r={6} fill="#3070b6" opacity="0.7" />
           {/* Highlights curve */}
           <path
             d={curvePath(hiStart[0], hiStart[1], hiMid[0], hiMid[1], hiEnd[0], hiEnd[1])}
             fill="none"
-            stroke="#ecc10d"
+            stroke="#EFEFEF"
             strokeWidth="2.2"
           />
-          {/* Highlights adj point */}
-          <circle cx={map(hiMid[0])} cy={map(-hiMid[1])} r={6} fill="#ecc10d" opacity="0.7" />
           {/* Midtones curve */}
           <path
             d={curvePath(midStart[0], midStart[1], midMid[0], midMid[1], midEnd[0], midEnd[1])}
             fill="none"
-            stroke="#34aa4a"
+            stroke="#EFEFEF"
             strokeWidth="2.2"
           />
-          {/* Mids adj point */}
-          <circle cx={map(midMid[0])} cy={map(-midMid[1])} r={6} fill="#34aa4a" opacity="0.7" />
           {/* Quadrant borders */}
           <rect x={map(-15)} y={map(15)} width={map(15)-map(-15)} height={map(-15)-map(15)} fill="none" stroke="#eee" strokeWidth="2"/>
         </svg>
-        {/* Legend */}
-        <div style={{ position: "absolute", left: 14, top: 10, fontSize: 12, color: "#555" }}>Shadows</div>
-        <div style={{ position: "absolute", right: 12, bottom: 12, fontSize: 12, color: "#555" }}>Highlights</div>
-        <div style={{ position: "absolute", left: "50%", top: "50%", fontSize: 12, color: "#555", transform: "translate(-50%,-50%)" }}>Mids</div>
       </div>
     </div>
   );
