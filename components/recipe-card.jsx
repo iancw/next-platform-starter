@@ -1,13 +1,8 @@
 import React from "react";
-import WhiteBalanceBox from "./white-balance-box";
-import SaturationWheel from "./SaturationWheel";
-import ImageAdjustSliders from "./ImageAdjustSliders";
-import ShadowMidsHighlightAdjust from "./ShadowMidsHighlightAdjust";
 import RecipeSettings from "./RecipeSettings";
 import Image from 'next/image';
 
 export default function RecipeCard({ recipe }) {
-  const sampleImagePath = `/images/${encodeURIComponent(recipe.Author)}/${encodeURIComponent(recipe.Name)}/lighthouse.jpg`
   return (
     <div
       className="recipe-card"
@@ -22,18 +17,39 @@ export default function RecipeCard({ recipe }) {
     >
       <h2 style={{ marginTop: 0 }}>{recipe.Name}</h2>
 
-      <p>
-        <strong>Author:</strong> {recipe.Author || "Unknown"}
-      </p>
 
-      {recipe.Notes && (
-        <div>
-          <strong>Notes:</strong>
-          <div style={{ whiteSpace: "pre-wrap", marginBottom: "0.5rem" }}>
+    {(recipe.Notes || recipe.SampleImage) && (
+      <div
+        className="notes-image"
+        style={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "flex-start",
+        gap: "1.5rem",
+        marginBottom: "1rem"
+      }}>
+        {recipe.Notes && (
+          <div style={{ whiteSpace: "pre-wrap", marginBottom: "0.5rem", flex: "1 1 0", padding: "2rem" }}>
             {recipe.Notes}
           </div>
-        </div>
-      )}
+        )}
+        {recipe.SampleImage && (
+          <div style={{ flex: "0 0 auto" }}>
+            <Image
+              src={`/images/${encodeURIComponent(recipe.Author)}/${encodeURIComponent(recipe.Name)}/${recipe.SampleImage}`}
+              alt="Lighthouse"
+              width={400}
+              height={300}
+              style={{ borderRadius: "4px", maxWidth: "100%", height: "auto" }}
+            />
+          </div>
+        )}
+      </div>
+    )}
+
+    <RecipeSettings recipe={recipe} />
+
+
       {(recipe.ExposureCompensation) && (
         <div>
           <strong>Exposure Notes:</strong>
@@ -56,14 +72,10 @@ export default function RecipeCard({ recipe }) {
           </ul>
         </div>
       )}
+       <p>
+        <strong>Author:</strong> {recipe.Author || "Unknown"}
+      </p>
 
-      <RecipeSettings recipe={recipe} />
-       <Image
-        src={sampleImagePath}
-        alt="Lighthouse"
-        width={400}
-        height={300}
-      />
     </div>
   );
 }

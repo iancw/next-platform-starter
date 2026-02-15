@@ -142,7 +142,8 @@
     "Contrast": "0",
     "ExposureCompensation": "",
     "Notes": "",
-    "Links": ""
+    "Links": "",
+    "SampleImage": "lighthouse.jpg"
   },
   {
     "Name": "Default - 2",
@@ -171,7 +172,8 @@
     "Contrast": "0",
     "ExposureCompensation": "",
     "Notes": "",
-    "Links": ""
+    "Links": "",
+    "SampleImage": "lighthouse.jpg"
   },
   {
     "Name": "Default - 3",
@@ -200,7 +202,8 @@
     "Contrast": "0",
     "ExposureCompensation": "",
     "Notes": "",
-    "Links": ""
+    "Links": "",
+    "SampleImage": "lighthouse.jpg"
   },
   {
     "Name": "Default - 4",
@@ -229,7 +232,8 @@
     "Contrast": "0",
     "ExposureCompensation": "",
     "Notes": "",
-    "Links": ""
+    "Links": "",
+    "SampleImage": "lighthouse.jpg"
   },
   {
     "Name": "Dirty Pop",
@@ -403,7 +407,8 @@
     "Contrast": "0",
     "ExposureCompensation": "EV +0.5",
     "Notes": "Based on Isaac's classic chrome",
-    "Links": "https://iancw.io/om-3-recipes\n\nhttps://jackwang.com.au/blog/recipe-quit-adobe"
+    "Links": "https://iancw.io/om-3-recipes\n\nhttps://jackwang.com.au/blog/recipe-quit-adobe",
+    "SampleImage": "lighthouse.jpg"
   },
   {
     "Name": "Fuji Classic Chrome",
@@ -1012,7 +1017,8 @@
     "Contrast": "2",
     "ExposureCompensation": "Slightly underexpose and use your histogram.\nThis one can clip highlights fast.",
     "Notes": "Vibe: Slide film feel. High punch, crisp edges, moody shadows.\nBest for: City scenes, golden hour, strong shapes\nAvoid in: Overcast or extreme contrast without careful metering",
-    "Links": "https://omtc.substack.com/p/5-jpeg-recipes-for-the-om-system"
+    "Links": "https://omtc.substack.com/p/5-jpeg-recipes-for-the-om-system",
+    "SampleImage": "lighthouse.jpg"
   },
   {
     "Name": "OMTC Cool",
@@ -1041,7 +1047,8 @@
     "Contrast": "2",
     "ExposureCompensation": "",
     "Notes": "Vibe: Clean, neutral, contrasty but calm. Think Fuji Provia or 400H.\nBest for: Sunset, travel, versatile light\nAvoid in: Flat or overcast light. It can look a little lifeless.",
-    "Links": "https://omtc.substack.com/p/5-jpeg-recipes-for-the-om-system"
+    "Links": "https://omtc.substack.com/p/5-jpeg-recipes-for-the-om-system",
+    "SampleImage": "lighthouse.jpg"
   },
   {
     "Name": "OMTC Soft",
@@ -1070,7 +1077,8 @@
     "Contrast": "2",
     "ExposureCompensation": "Slightly overexpose for a softer feel.",
     "Notes": "Vibe: Meyerowitz/Cape Light. Soft, dreamy, pastel with luminous highlights.\nBest for: Overcast, open shade, late afternoon or blue hour\nAvoid in: Harsh sunlight. It washes out fast.",
-    "Links": "https://omtc.substack.com/p/5-jpeg-recipes-for-the-om-system"
+    "Links": "https://omtc.substack.com/p/5-jpeg-recipes-for-the-om-system",
+    "SampleImage": "lighthouse.jpg"
   },
   {
     "Name": "OMTC Warm",
@@ -1099,7 +1107,8 @@
     "Contrast": "2",
     "ExposureCompensation": "",
     "Notes": "Vibe: Golden, punchy, rich skin tones. A bit of that Kodak warmth.\nBest for: Cool early morning or midday sun, beachy or dappled light, clean outdoor scenes\nAvoid in: Indoor tungsten or golden-hour light. It gets too warm.",
-    "Links": "https://omtc.substack.com/p/5-jpeg-recipes-for-the-om-system"
+    "Links": "https://omtc.substack.com/p/5-jpeg-recipes-for-the-om-system",
+    "SampleImage": "lighthouse.jpg"
   },
   {
     "Name": "Paul Clark recipe",
