@@ -60,11 +60,18 @@
 
     .recipe-card-flex {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-items: flex-start;
         gap: 1.5rem;
         margin: 1.5rem 0;
         width: 100%;
+    }
+
+    @media (min-width: 900px) {
+        .recipe-card-flex {
+            flex-direction: row;
+            align-items: flex-start;
+        }
     }
 
     .btn {
