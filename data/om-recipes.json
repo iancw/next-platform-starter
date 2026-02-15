@@ -378,7 +378,8 @@
     "Contrast": "1",
     "ExposureCompensation": "EV +0.3",
     "Notes": "",
-    "Links": "https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/"
+    "Links": "https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/",
+    "SampleImage": "wh-lighthouse-ibd-astia.jpg"
   },
   {
     "Name": "Fuji Classic Chrome",
@@ -437,7 +438,8 @@
     "Contrast": "0",
     "ExposureCompensation": "EV -0.3",
     "Notes": "",
-    "Links": "https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/"
+    "Links": "https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/",
+    "SampleImage": "ibd-wh-lighthouse-classic-chrome.jpg"
   },
   {
     "Name": "Fuji Classic Neg",
@@ -1166,7 +1168,8 @@
     "Contrast": "-1",
     "ExposureCompensation": "",
     "Notes": "",
-    "Links": "https://iancw.io/om-3-recipes"
+    "Links": "https://iancw.io/om-3-recipes",
+    "SampleImage": "iancw-portra-400.jpg"
   },
   {
     "Name": "Portra 400",
@@ -1195,7 +1198,8 @@
     "Contrast": "-1",
     "ExposureCompensation": "",
     "Notes": "",
-    "Links": "https://iancw.io/om-3-recipes"
+    "Links": "https://iancw.io/om-3-recipes",
+    "SampleImage": "isaacm-portra400.jpg"
   },
   {
     "Name": "Portra 400",
