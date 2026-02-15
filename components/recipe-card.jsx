@@ -90,15 +90,7 @@ export default function RecipeCard({ recipe }) {
         </div>
       )}
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "flex-start",
-          gap: "1.5rem",
-          margin: "1.5rem 0"
-        }}
-      >
+      <div className="recipe-card-flex">
         <div style={{
           maxWidth: 280,
           flexShrink: 0,

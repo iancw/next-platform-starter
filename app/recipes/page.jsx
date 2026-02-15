@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import RecipeCard from "../../components/recipe-card.jsx";
 
 export default function Page() {
@@ -8,13 +8,13 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  // Shared search handler for both initial load and submission
+  async function doSearch(searchQuery) {
     setLoading(true);
     setError(null);
     setResults([]);
     try {
-      const res = await fetch(`/recipes/search?q=${encodeURIComponent(query)}`);
+      const res = await fetch(`/recipes/search?q=${encodeURIComponent(searchQuery)}`);
       if (!res.ok) throw new Error("Failed to fetch recipes");
       const data = await res.json();
       setResults(data);
@@ -23,6 +23,16 @@ export default function Page() {
     } finally {
       setLoading(false);
     }
+  }
+
+  // On mount, fetch all recipes (empty search)
+  useEffect(() => {
+    doSearch("");
+  }, []);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    doSearch(query);
   }
 
   return (

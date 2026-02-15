@@ -58,6 +58,15 @@
         }
     }
 
+    .recipe-card-flex {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+        width: 100%;
+    }
+
     .btn {
         @apply inline-flex items-center justify-center gap-2 font-bold text-center no-underline transition-colors cursor-pointer bg-primary text-primary-content;
         padding: var(--btn-py, 0.875rem) var(--btn-px, 1.25rem);
