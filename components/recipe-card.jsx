@@ -3,8 +3,10 @@ import WhiteBalanceBox from "./white-balance-box";
 import SaturationWheel from "./SaturationWheel";
 import ImageAdjustSliders from "./ImageAdjustSliders";
 import ShadowMidsHighlightAdjust from "./ShadowMidsHighlightAdjust";
+import Image from 'next/image';
 
 export default function RecipeCard({ recipe }) {
+  const sampleImagePath = `/images/${encodeURIComponent(recipe.Author)}/${encodeURIComponent(recipe.Name)}/lighthouse.jpg`
   return (
     <div
       className="recipe-card"
@@ -22,6 +24,7 @@ export default function RecipeCard({ recipe }) {
       <p>
         <strong>Author:</strong> {recipe.Author || "Unknown"}
       </p>
+
       {recipe.Notes && (
         <div>
           <strong>Notes:</strong>
@@ -118,6 +121,12 @@ export default function RecipeCard({ recipe }) {
         vignette={recipe.Vignette}
         sharpness={recipe.Sharpness}
         contrast={recipe.Contrast}
+      />
+       <Image
+        src={sampleImagePath}
+        alt="Lighthouse"
+        width={400}
+        height={300}
       />
     </div>
   );

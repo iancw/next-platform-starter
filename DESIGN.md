@@ -47,7 +47,9 @@
     - Recommended settings
     - Author
     - Rating (number of likes)
+    - Original image (link to original image shared)
     - Sample images (list of links to image files)
+    - Comments (list of comments left by others)
 - Author
     - Name
     - Email
