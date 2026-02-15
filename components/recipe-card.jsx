@@ -2,6 +2,7 @@ import React from "react";
 import WhiteBalanceBox from "./white-balance-box";
 import SaturationWheel from "./SaturationWheel";
 import ImageAdjustSliders from "./ImageAdjustSliders";
+import ShadowMidsHighlightAdjust from "./ShadowMidsHighlightAdjust";
 
 export default function RecipeCard({ recipe }) {
   return (
@@ -108,6 +109,11 @@ export default function RecipeCard({ recipe }) {
           ]}
         />
       </div>
+      <ShadowMidsHighlightAdjust
+        shadows={Number(recipe.Shadows ?? 0)}
+        mids={Number(recipe.Mids ?? 0)}
+        highlights={Number(recipe.Highlights ?? 0)}
+      />
       <ImageAdjustSliders
         vignette={recipe.Vignette}
         sharpness={recipe.Sharpness}
