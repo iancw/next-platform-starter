@@ -17,7 +17,7 @@ const COLORS = [
 
 // Geometry
 const POINTS = 12;
-const RADIUS_MIN = 45;
+const RADIUS_MIN = 0;
 const RADIUS_MAX = 90;
 const SIZE = 250;
 const CENTER = SIZE / 2;
@@ -36,9 +36,10 @@ const SaturationWheel = ({ values = [] }) => {
     return Math.max(-5, Math.min(5, v));
   });
 
-  // Normalize each value into a radius: -5 => RADIUS_MIN, 0 => avg, +5 => RADIUS_MAX
+    // Normalize each value into a radius: -8 (min) => RADIUS_MIN, +5 (max) => RADIUS_MAX, 0 => somewhere in between.
+  // Clamp values between -8 .. +5 here.
   const getRadius = (val) =>
-    ((val + 5) / 10) * (RADIUS_MAX - RADIUS_MIN) + RADIUS_MIN;
+    ((Math.max(-8, Math.min(5, val)) + 8) / 13) * (RADIUS_MAX - 2*VERTEX_RADIUS - RADIUS_MIN) + RADIUS_MIN;
 
   // Calculate vertex positions according to each value
   const angleStep = (2 * Math.PI) / POINTS;
@@ -87,10 +88,37 @@ const SaturationWheel = ({ values = [] }) => {
     return `rgba(${Math.round(avg.r)},${Math.round(avg.g)},${Math.round(avg.b)},0.32)`;
   })();
 
+  // Calculate the radius for the "zero" saturation offset position using new mapping
+  const zeroSatOffsetRadius = getRadius(0);
+  // Calculate the radius for a saturation offset of -5
+  const minus5SatOffsetRadius = getRadius(-5);
+
   return (
     <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} style={{ display: "block" }}>
       {/* Background */}
       <rect x="0" y="0" width={SIZE} height={SIZE} fill="#2A2A2A" />
+      {/* Zero saturation offset indicator ring */}
+      <circle
+        cx={CENTER}
+        cy={CENTER}
+        r={zeroSatOffsetRadius}
+        fill="none"
+        stroke="#fff"
+        strokeWidth="2"
+        opacity="0.75"
+        style={{ pointerEvents: "none" }}
+      />
+      {/* -5 saturation offset indicator ring (inner circle) */}
+      <circle
+        cx={CENTER}
+        cy={CENTER}
+        r={minus5SatOffsetRadius}
+        fill="none"
+        stroke="#0096d6"
+        strokeWidth="2"
+        opacity="0.8"
+        style={{ pointerEvents: "none", strokeDasharray: "3 4" }}
+      />
       {/* Outer polygon semi-transparent averaged color fill */}
       <polygon
         points={outerPolygonPoints}
