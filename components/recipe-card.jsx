@@ -33,11 +33,11 @@ export default function RecipeCard({ recipe }) {
           </div>
         </div>
       )}
-      {(recipe.Tips || recipe.Various) && (
+      {(recipe.ExposureCompensation) && (
         <div>
-          <strong>Various/Tips:</strong>
+          <strong>Exposure Notes:</strong>
           <div style={{ whiteSpace: "pre-wrap", marginBottom: "0.5rem" }}>
-            {recipe.Tips || recipe.Various}
+            {recipe.ExposureCompensation}
           </div>
         </div>
       )}
@@ -57,7 +57,7 @@ export default function RecipeCard({ recipe }) {
       )}
       {(recipe.WhiteBalanceGreenShift !== undefined || recipe.WhiteBalanceAmberShift !== undefined) && (
         <div style={{ margin: "0.75rem 0" }}>
-          {(recipe.KeepWarm || recipe.Kelvin) && (
+          {(recipe.KeepWarm || recipe.WhiteBalance) && (
             <div
               style={{
                 marginBottom: "0.5em",
@@ -79,10 +79,10 @@ export default function RecipeCard({ recipe }) {
                   {recipe.KeepWarm}
                 </div>
               )}
-              {recipe.Kelvin && (
+              {recipe.WhiteBalance && (
                 <div>
-                  <span style={{ fontWeight: 600 }}>White Balance Kelvin:</span>{" "}
-                  {recipe.Kelvin}
+                  <span style={{ fontWeight: 600 }}>White Balance:</span>{" "}
+                  {recipe.WhiteBalance + " K" || "Auto"}
                 </div>
               )}
             </div>
