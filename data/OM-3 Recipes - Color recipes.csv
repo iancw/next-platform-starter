@@ -1,0 +1,70 @@
+,51,WHITE BALANCE,,,,COLORS,,,,,,,,,,,,TONE CURVE,,,,,,,,
+Name,Author,WhiteBalance,KeepWarm,WhiteBalanceAmberShift,WhiteBalanceGreenShift,Yellow,Orange,OrangeRed,Red,RedMagenta,Magenta,Blue,BlueCyan,Cyan,CyanGreen,Green,GreenYellow,Shadows,Mids,Highlights,Vignette,Sharpness,Contrast,ExposureCompensation,Notes,Links
+A. N. Ektachrome,Isaac Mitropoulos,,,,,-4,0,0,0,-1,-1,-1,0,0,0,0,-4,3,0,-3,0,0,0,,,
+Asteroid City,BRK5891,5300,,7,7,3,1,2,2,1,1,0,-4,5,-3,-1,-1,4,0,-2,0,-1,-2,,based on Asteroid City movie,https://www.mu-43.com/threads/wes-anderson-asteroid-city-inspired-om-3-recipe.129007/#post-1834927
+Bleached,Alberto Torrejon,7400,,-2,5,-4,0,0,0,-1,-1,-1,0,0,0,0,-4,3,0,-3,0,0,0,,,https://www.facebook.com/groups/868676745364735/permalink/973880794844329/?mibextid=wwXIfr&rdid=eIuZdgPMcZYS1FAX#
+City Look,VideoPic,,,,,3,1,-4,0,-1,-1,-1,-1,-5,-1,1,-1,0,0,0,0,0,0,,,https://myolympusomd.blogspot.com/p/olympus-pen-f-color-profiles.html
+Default - 1,OM System,,,,,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,
+Default - 2,OM System,,,,,1,1,0,0,0,0,1,1,0,0,1,1,-3,0,3,0,0,0,,,
+Default - 3,OM System,,,,,4,4,4,4,4,3,4,4,4,4,4,4,-4,0,4,0,0,0,,,
+Default - 4,OM System,,,,,-4,0,0,0,-1,-1,-1,0,0,0,0,-4,3,0,-3,0,0,0,,,
+Dirty Pop,Luis Chavez,4200,,,,2,2,2,0,1,1,1,0,1,1,0,1,-3,-1,3,0,-1,-1,,"Named after a popular NSYNC song, this is a natural but punchy color with deep shadows and a gentle highlight lift. Greens and yellows get a little glow, blues run a touch darker, which keeps skies rich and skin tones clean straight out of camera.",https://explore.omsystem.com/ca/en/creative-recipes
+Dreamy White,Isaac Mitropoulos,,,1,-1,-5,-3,-1,-1,-1,-1,-1,-2,-2,-2,-2,-3,1,2,3,0,0,-2,,,
+Eternal Sunshine,Jerred Z,5300,,7,-5,-1,4,2,5,4,2,5,3,2,1,4,4,2,6,-1,0,-1,-1,,Jerred recommends it for city and garden shots.,"https://iancw.io/om-3-recipes
+
+https://www.megapixelroad.com/p/eternal-sun-om-3-jpeg-recipe"
+Filmed,George Holden,,,,,0,0,-2,0,0,-5,-1,-1,-1,-1,-3,0,-3,1,2,0,-2,1,,,https://www.youtube.com/watch?v=QtchurMwHIo&t=372s
+Fuji Astia,IsaacBD,,,1,1,0,0,0,0,-1,0,2,2,2,-5,1,0,-1,0,-2,0,0,1,EV +0.3,,https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/
+Fuji Classic Chrome,Jack Wang,,off,2,1,-1,-1,-1,-1,-1,0,-2,-1,-1,-2,-1,-1,-4,0,4,0,0,0,EV +0.5,Based on Isaac's classic chrome,"https://iancw.io/om-3-recipes
+
+https://jackwang.com.au/blog/recipe-quit-adobe"
+Fuji Classic Chrome,IsaacBD,,,2,1,-1,-1,-1,-1,-1,0,-2,-1,-1,-2,-1,-1,0,2,0,0,0,0,EV -0.3,,https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/
+Fuji Classic Neg,IsaacBD,,,4,3,-2,0,3,1,-1,-1,-1,4,4,-5,-1,-2,-2,6,3,0,0,0,EV -0.7,,https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/
+Fuji Eterna,IsaacBD,,,1,2,-2,-1,-1,-1,-1,-1,-2,-2,-2,-3,-2,-2,2,1,-1,0,0,0,,,https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/
+Fuji Pro Neg Hi,IsaacBD,,,2,1,0,-1,-1,-1,-1,0,0,0,0,-2,0,0,0,0,-2,0,0,0,,,https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/
+Fuji Pro Neg Std,IsaacBD,,,1,1,-1,-1,-1,-1,-1,-1,-1,-2,-1,-1,0,-1,2,1,-1,0,0,1,,,https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/
+Fuji Provia,IsaacBD,,,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,,,https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/
+Fuji Superia Premium 400,James Bloomer,,,3,1,1,1,2,1,0,1,0,2,3,0,2,1,0,1,1,0,-2,-1,,,https://www.mu-43.com/threads/om-3-film-emulation.128423/post-1836435
+Fuji Velvia,IsaacBD,,,1,1,3,2,1,1,1,5,4,5,2,0,3,3,-1,-2,-3,0,0,1,EV +0.3,,https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/
+Fuji Velvia 50 ,VideoPic,,,-1,1,1,2,2,-1,-3,2,3,1,-1,-1,1,0,-1,2,2,0,0,1,,,"https://iancw.io/om-3-recipes
+
+https://www.dpreview.com/forums/threads/pen-f-owners-i-developed-a-fuji-velvia-50-profile-you-can-try.4375658/#forum-post-62439985"
+Kodachrome 25,Gareth B.,,,-2,2,-2,1,1,-1,-1,2,-3,-2,-4,-4,-4,-5,-5,2,-2,0,0,2,,,https://www.mu-43.com/threads/my-kodachrome-classic-chrome-pen-f-settings-update.92950/#post-1044455
+Kodachrome 25,Angelo Gabelli,,,1,1,-2,-1,-2,-1,0,-2,2,1,0,-1,0,-1,-2,1,1,0,-2,0,,,https://www.facebook.com/groups/868676745364735
+Kodachrome 64,James Bloomer,,,3,1,1,3,3,4,2,1,4,2,1,1,2,2,-3,-3,2,0,1,1,,,https://www.mu-43.com/threads/om-3-film-emulation.128423/post-1833387
+Kodachrome 64,Gareth B.,,,1,0,-3,0,0,1,-2,-1,-2,-1,-3,-2,-4,-4,-6,2,-2,0,0,0,,,https://www.mu-43.com/threads/my-kodachrome-classic-chrome-pen-f-settings-update.92950/#post-1044455
+Kodachrome 64,Isaac Mitropoulos,,,,,1,1,0,0,0,0,1,1,0,0,1,1,-3,0,3,0,0,0,,,
+Kodachrome_Slim Aarons,James Bloomer,,,2,-1,1,2,-1,-1,-1,-1,4,1,1,2,1,1,0,0,-1,0,1,-1,,,https://www.mu-43.com/threads/om-3-film-emulation.128423/post-1833617
+Kodak Ektachrome,Isaac Mitropoulos,,,,,4,4,4,4,4,3,4,4,4,4,4,4,-4,0,4,0,0,0,,,
+Kodak Gold 200,James Bloomer,,,4,1,4,3,1,0,-1,-2,-2,-2,-1,-1,0,2,1,1,-2,0,-2,-1,EV +0.3 to +0.7,"WIth in-camera raw editor, add a Yellow/Orange hue color creator effect with level +2",https://www.mu-43.com/threads/om-3-film-emulation.128423/post-1833617
+M4Nerds,Emily M4Nerds,7000,,4,1,3,3,3,1,3,-1,3,2,4,0,0,2,-4,0,4,0,-1,1,,,
+Nostalgic Summer,Kyler Steele,,,4,2,3,2,1,-1,-1,-1,-1,-1,-1,1,2,3,-6,-3,3,0,-1,-2,,"Nostalgic Summer is a vintage inspired recipe that focuses on vibrant greens and golden yellows while stripping away blues for a more timeless look. Ideal for capturing contrasty, sunny days by delivering a filmic look straight out of camera",https://explore.omsystem.com/ca/en/creative-recipes
+OM Chrome,Jonathan Paragas,,,,,2,2,3,2,0,0,0,0,0,0,0,0,-3,0,-2,0,-2,1,,OM-CHROME was designed to capture the vibrant colors of daily urban life geared to emulate the classic look of 35mm positive slide film.,https://explore.omsystem.com/ca/en/creative-recipes
+OMTC Chrome,Ali O'Keefe,5600,off,1,-2,0,1,2,5,-1,-1,5,4,0,5,2,-2,2,0,-3,0,-1,2,"Slightly underexpose and use your histogram.
+This one can clip highlights fast.","Vibe: Slide film feel. High punch, crisp edges, moody shadows.
+Best for: City scenes, golden hour, strong shapes
+Avoid in: Overcast or extreme contrast without careful metering",https://omtc.substack.com/p/5-jpeg-recipes-for-the-om-system
+OMTC Cool,Ali O'Keefe,,off,2,-1,2,2,3,0,0,0,4,2,5,3,0,-1,-1,2,-2,0,-1,2,,"Vibe: Clean, neutral, contrasty but calm. Think Fuji Provia or 400H.
+Best for: Sunset, travel, versatile light
+Avoid in: Flat or overcast light. It can look a little lifeless.",https://omtc.substack.com/p/5-jpeg-recipes-for-the-om-system
+OMTC Soft,Ali O'Keefe,,off,2,0,-1,0,-1,-2,0,-1,-2,-1,1,-2,1,-3,2,0,-6,0,-2,2,Slightly overexpose for a softer feel.,"Vibe: Meyerowitz/Cape Light. Soft, dreamy, pastel with luminous highlights.
+Best for: Overcast, open shade, late afternoon or blue hour
+Avoid in: Harsh sunlight. It washes out fast.",https://omtc.substack.com/p/5-jpeg-recipes-for-the-om-system
+OMTC Warm,Ali O'Keefe,,off,4,-1,2,2,3,0,0,0,4,2,5,3,0,-1,-1,2,-2,0,-1,2,,"Vibe: Golden, punchy, rich skin tones. A bit of that Kodak warmth.
+Best for: Cool early morning or midday sun, beachy or dappled light, clean outdoor scenes
+Avoid in: Indoor tungsten or golden-hour light. It gets too warm.",https://omtc.substack.com/p/5-jpeg-recipes-for-the-om-system
+Paul Clark recipe,Paul Clark,5300,,,,1,2,2,2,0,0,3,2,4,1,0,0,3,0,-3,0,-1,-2,,"This color profile boosts warm and cool tones while dialing back greens and magentas, letting complementary colors stand out. With softer contrast, lifted shadows, lowered highlights, and reduced sharpness, the result feels balanced, natural, and true to the scene.",https://explore.omsystem.com/ca/en/creative-recipes
+Portra 160,Isaac Mitropoulos,,,-2,1,-2,1,-1,-1,-2,-3,-1,-2,-2,-2,-3,-2,1,0,-1,0,1,-1,,,https://iancw.io/om-3-recipes
+Portra 400,Isaac Mitropoulos,,,-3,2,-2,0,-1,-2,-3,-5,-2,-4,-4,-3,-4,-3,2,0,-1,0,1,-1,,,https://iancw.io/om-3-recipes
+Portra 400,James Bloomer,,,2,1,1,2,1,0,-1,-1,-2,-2,-1,-1,-2,-1,2,1,-4,0,-1,-1,,,https://www.mu-43.com/threads/om-3-film-emulation.128423/post-1833467
+Portra 400,Iancw,,,3,1,1,3,2,2,0,-1,-3,-2,-1,0,0,2,-2,2,-1,0,0,0,,,https://iancw.io/om-3-recipes
+Postcard,Stella Toul,5800,,2,1,5,4,3,2,1,1,1,1,1,2,3,4,-6,-3,3,0,-2,-2,,,
+Rainforest Vibes,Mindy Michaels,,,,,5,4,5,5,0,0,0,0,0,0,5,5,0,0,0,0,0,0,,"This is where I captured the wild beauty of exotic plants and brought their colors to life through my lens, amplifying the saturated greens of the lush jungle canopy and intensifying the vivid magentas and warm tones of tropical blooms to recreate the untamed vibrancy of the rainforest.",https://explore.omsystem.com/ca/en/creative-recipes
+Real,Murder Pink,,,,,1,1,0,0,0,2,2,2,2,2,1,1,2,0,-2,0,1,1,,,https://www.youtube.com/watch?v=QY_x_aSh4F4
+Red Soda Pop,Kitty Marie,5200,,-1,1,-2,1,2,1,-3,-3,-3,-3,-2,-3,-2,-3,-1,-2,1,0,-1,-2,,"warms up the overall tones, makes the reds ""pop"" while muting yellows and greens ever so slightly. It also softens the image for a bit more dream-like feel.",https://explore.omsystem.com/ca/en/creative-recipes
+Rusty Vintage,Gal Root,,,1,1,-3,1,2,-1,-2,-1,-4,-3,-4,-3,-4,-2,1,0,-1,0,1,2,,,https://www.facebook.com/groups/868676745364735
+Subdued,Murder Pink,,,,,-2,-2,-1,-2,-5,-5,-2,-4,-4,-4,-3,-2,0,1,-1,0,1,-1,,,https://www.youtube.com/watch?v=pG-4qUe0YwA
+Terry McLaughlin recipe,Terry McLaughlin,7500,,,,-4,0,4,5,0,0,-5,-2,0,0,1,0,3,0,-3,0,-1,1,,"For this edit, I built a look that feels true to my style desaturated blues, warm mids, and those orange-red tones that really pop. It’s all balanced with a subtle filmy curve that gives it that nostalgic, cinematic finish for the golden hour.",https://explore.omsystem.com/ca/en/creative-recipes
+Vibrant Chrome,Dave Herring,5200,,-1,-1,3,4,5,4,4,4,3,3,3,2,1,1,-6,0,2,0,-1,-2,,,"https://iancw.io/om-3-recipes
+
+https://www.youtube.com/watch?v=sdNulmXBC8E"
