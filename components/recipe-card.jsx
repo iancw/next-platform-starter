@@ -1,10 +1,31 @@
 import React from "react";
 import WhiteBalanceBox from "./white-balance-box";
 import SaturationWheel from "./SaturationWheel";
+import ImageAdjustSliders from "./ImageAdjustSliders";
 
 export default function RecipeCard({
-  name, author, notes, tips, links, green, amber,
-  Yellow, Orange, OrangeRed, Red, RedMagenta, Magenta, Blue, BlueCyan, Cyan, CyanGreen, Green, GreenYellow
+  name,
+  author,
+  notes,
+  tips,
+  links,
+  green,
+  amber,
+  Yellow,
+  Orange,
+  OrangeRed,
+  Red,
+  RedMagenta,
+  Magenta,
+  Blue,
+  BlueCyan,
+  Cyan,
+  CyanGreen,
+  Green,
+  GreenYellow,
+  vignette,
+  sharpness,
+  contrast
 }) {
   return (
     <div className="recipe-card" style={{
@@ -66,6 +87,11 @@ export default function RecipeCard({
           ]}
         />
       </div>
+      <ImageAdjustSliders
+        vignette={vignette}
+        sharpness={sharpness}
+        contrast={contrast}
+      />
     </div>
   );
 }

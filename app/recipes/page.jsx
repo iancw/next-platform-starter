@@ -74,6 +74,9 @@ export default function Page() {
                   CyanGreen={r.CyanGreen}
                   Green={r.Green}
                   GreenYellow={r.GreenYellow}
+                  vignette={r.Vignette}
+                  sharpness={r.Sharpness}
+                  contrast={r.Contrast}
                 />
               </li>
             ))}
