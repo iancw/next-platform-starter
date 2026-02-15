@@ -141,7 +141,7 @@
     "Sharpness": "0",
     "Contrast": "0",
     "ExposureCompensation": "",
-    "Notes": "",
+    "Notes": "Described in the manual as “the standard natural preset.” All settings are at 0. This provides the baseline that customizations can be built on.",
     "Links": "",
     "SampleImage": "lighthouse.jpg"
   },
@@ -171,8 +171,8 @@
     "Sharpness": "0",
     "Contrast": "0",
     "ExposureCompensation": "",
-    "Notes": "",
-    "Links": "",
+    "Notes": "Described in the manual as “a color tone with depth and richness. Similar to Kodachrome 64 according to Isaac Mitropoulos in his excellent OM-3 review post. Yellows and blues are slightly enhanced (+1) while reds and greens slightly more subdued (0). Highlights are boosted +3 and shadows dropped -3.",
+    "Links": ["https://www.dpreview.com/forums/post/68206235"],
     "SampleImage": "lighthouse.jpg"
   },
   {
@@ -201,7 +201,7 @@
     "Sharpness": "0",
     "Contrast": "0",
     "ExposureCompensation": "",
-    "Notes": "",
+    "Notes": "Manual describes it as “a film-like effect with high saturation and rich colors. Similar to Kodak Ektrachrome according to Isaac Mitropoulos in his excellent OM-3 review post. This basically takes the vibrance up to +4 for everything except purple, which only gets +3. Similarly highlights are boosted +4 and shadows dropped -4. Basically this is cranking colors and contrast up to maximum.",
     "Links": "",
     "SampleImage": "lighthouse.jpg"
   },
@@ -231,7 +231,7 @@
     "Sharpness": "0",
     "Contrast": "0",
     "ExposureCompensation": "",
-    "Notes": "",
+    "Notes": "Manual describes it as “a light and soft color tone.” It mimics soft chrome film. This drops yellows way down to -4, and drops purple/blue back -1. Highlights +3, shadows -3.",
     "Links": "",
     "SampleImage": "lighthouse.jpg"
   },
@@ -319,7 +319,7 @@
     "Sharpness": "-1",
     "Contrast": "-1",
     "ExposureCompensation": "",
-    "Notes": "Jerred recommends it for city and garden shots.",
+    "Notes": "It shifts the colors and softens things up. It’s an interesting, unusual combination of high saturation and low contrast. Jerred recommends it for city and garden shots.",
     "Links": "https://iancw.io/om-3-recipes\n\nhttps://www.megapixelroad.com/p/eternal-sun-om-3-jpeg-recipe",
     "SampleImage": "watch-hill-eternal-sunshine.jpg"
   },
@@ -1489,8 +1489,8 @@
     "Sharpness": "-1",
     "Contrast": "-2",
     "ExposureCompensation": "",
-    "Notes": "",
-    "Links": "https://iancw.io/om-3-recipes\n\nhttps://www.youtube.com/watch?v=sdNulmXBC8E",
+    "Notes": "Dave Herring shared these settings to dial in a vibrant chrome profile emphasizing reds. It’s based on the COLOR 3 default, but drops saturation of greens and uses a custom white balance of 5200K for daylight with B+1, M+1 adjustments.",
+    "Links": ["https://iancw.io/om-3-recipes", "https://www.youtube.com/watch?v=sdNulmXBC8E"],
     "SampleImage": "lighthouse.jpg"
   }
 ]

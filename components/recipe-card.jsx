@@ -15,8 +15,7 @@ export default function RecipeCard({ recipe }) {
         boxShadow: "0 1px 4px rgba(0,0,0,0.05)"
       }}
     >
-      <h2 style={{ marginTop: 0 }}>{recipe.Name}</h2>
-
+      <h2 style={{ marginTop: 0 }}>{recipe.Name} ({recipe.Author})</h2>
 
     {(recipe.Notes || recipe.SampleImage) && (
       <div
@@ -61,7 +60,7 @@ export default function RecipeCard({ recipe }) {
       {recipe.Links && Array.isArray(recipe.Links) && recipe.Links.length > 0 && (
         <div>
           <strong>Links:</strong>
-          <ul style={{ marginTop: 0 }}>
+          <ul style={{ marginTop: 0, listStyleType: "disc", paddingLeft: "1.25em" }}>
             {recipe.Links.map((url, i) => (
               <li key={i}>
                 <a href={url} target="_blank" rel="noopener noreferrer">
@@ -72,9 +71,6 @@ export default function RecipeCard({ recipe }) {
           </ul>
         </div>
       )}
-       <p>
-        <strong>Author:</strong> {recipe.Author || "Unknown"}
-      </p>
 
     </div>
   );
