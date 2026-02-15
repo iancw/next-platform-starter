@@ -54,30 +54,7 @@ export default function Page() {
           <ul className="divide-y divide-gray-200">
             {results.map((r, i) => (
               <li key={r.Name + r.Author + i} className="p-4">
-                <RecipeCard
-                  name={r.Name}
-                  author={r.Author}
-                  notes={r.Notes}
-                  tips={r.Tips || r.Various}
-                  links={r.Links}
-                  amber={r.WhiteBalanceAmberShift}
-                  green={r.WhiteBalanceGreenShift}
-                  Yellow={r.Yellow}
-                  Orange={r.Orange}
-                  OrangeRed={r.OrangeRed}
-                  Red={r.Red}
-                  RedMagenta={r.RedMagenta}
-                  Magenta={r.Magenta}
-                  Blue={r.Blue}
-                  BlueCyan={r.BlueCyan}
-                  Cyan={r.Cyan}
-                  CyanGreen={r.CyanGreen}
-                  Green={r.Green}
-                  GreenYellow={r.GreenYellow}
-                  vignette={r.Vignette}
-                  sharpness={r.Sharpness}
-                  contrast={r.Contrast}
-                />
+                <RecipeCard recipe={r} />
               </li>
             ))}
           </ul>

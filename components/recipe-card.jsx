@@ -3,94 +3,115 @@ import WhiteBalanceBox from "./white-balance-box";
 import SaturationWheel from "./SaturationWheel";
 import ImageAdjustSliders from "./ImageAdjustSliders";
 
-export default function RecipeCard({
-  name,
-  author,
-  notes,
-  tips,
-  links,
-  green,
-  amber,
-  Yellow,
-  Orange,
-  OrangeRed,
-  Red,
-  RedMagenta,
-  Magenta,
-  Blue,
-  BlueCyan,
-  Cyan,
-  CyanGreen,
-  Green,
-  GreenYellow,
-  vignette,
-  sharpness,
-  contrast
-}) {
+export default function RecipeCard({ recipe }) {
   return (
-    <div className="recipe-card" style={{
-      border: "1px solid #ddd",
-      borderRadius: "8px",
-      padding: "1rem",
-      margin: "1rem 0",
-      background: "#fff",
-      boxShadow: "0 1px 4px rgba(0,0,0,0.05)"
-    }}>
-      <h2 style={{ marginTop: 0 }}>{name}</h2>
+    <div
+      className="recipe-card"
+      style={{
+        border: "1px solid #ddd",
+        borderRadius: "8px",
+        padding: "1rem",
+        margin: "1rem 0",
+        background: "#fff",
+        boxShadow: "0 1px 4px rgba(0,0,0,0.05)"
+      }}
+    >
+      <h2 style={{ marginTop: 0 }}>{recipe.Name}</h2>
 
-      <p><strong>Author:</strong> {author || "Unknown"}</p>
-      {notes && (
+      <p>
+        <strong>Author:</strong> {recipe.Author || "Unknown"}
+      </p>
+      {recipe.Notes && (
         <div>
           <strong>Notes:</strong>
-          <div style={{ whiteSpace: "pre-wrap", marginBottom: "0.5rem" }}>{notes}</div>
+          <div style={{ whiteSpace: "pre-wrap", marginBottom: "0.5rem" }}>
+            {recipe.Notes}
+          </div>
         </div>
       )}
-      {tips && (
+      {(recipe.Tips || recipe.Various) && (
         <div>
           <strong>Various/Tips:</strong>
-          <div style={{ whiteSpace: "pre-wrap", marginBottom: "0.5rem" }}>{tips}</div>
+          <div style={{ whiteSpace: "pre-wrap", marginBottom: "0.5rem" }}>
+            {recipe.Tips || recipe.Various}
+          </div>
         </div>
       )}
-      {links && Array.isArray(links) && links.length > 0 && (
+      {recipe.Links && Array.isArray(recipe.Links) && recipe.Links.length > 0 && (
         <div>
           <strong>Links:</strong>
           <ul style={{ marginTop: 0 }}>
-            {links.map((url, i) => (
-              <li key={i}><a href={url} target="_blank" rel="noopener noreferrer">{url}</a></li>
+            {recipe.Links.map((url, i) => (
+              <li key={i}>
+                <a href={url} target="_blank" rel="noopener noreferrer">
+                  {url}
+                </a>
+              </li>
             ))}
           </ul>
         </div>
       )}
-       {(green !== undefined || amber !== undefined) && (
+      {(recipe.WhiteBalanceGreenShift !== undefined || recipe.WhiteBalanceAmberShift !== undefined) && (
         <div style={{ margin: "0.75rem 0" }}>
+          {(recipe.KeepWarm || recipe.Kelvin) && (
+            <div
+              style={{
+                marginBottom: "0.5em",
+                background: "#f9f7ed",
+                borderRadius: 6,
+                padding: "0.5em 1em",
+                border: "1px solid #efa",
+                fontSize: 15,
+                color: "#604800",
+                fontWeight: 500,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center"
+              }}
+            >
+              {recipe.KeepWarm && (
+                <div>
+                  <span style={{ fontWeight: 600 }}>Keep Warm Color:</span>{" "}
+                  {recipe.KeepWarm}
+                </div>
+              )}
+              {recipe.Kelvin && (
+                <div>
+                  <span style={{ fontWeight: 600 }}>White Balance Kelvin:</span>{" "}
+                  {recipe.Kelvin}
+                </div>
+              )}
+            </div>
+          )}
           <WhiteBalanceBox
-            green={green ?? 0}
-            amber={amber ?? 0}
+            green={recipe.WhiteBalanceGreenShift ?? 0}
+            amber={recipe.WhiteBalanceAmberShift ?? 0}
           />
         </div>
       )}
-      <div style={{maxWidth: 260}}>
+
+      <div style={{ maxWidth: 260 }}>
         <SaturationWheel
           values={[
-            Number(Yellow ?? 0),
-            Number(Orange ?? 0),
-            Number(OrangeRed ?? 0),
-            Number(Red ?? 0),
-            Number(RedMagenta ?? 0),
-            Number(Magenta ?? 0),
-            Number(Blue ?? 0),
-            Number(BlueCyan ?? 0),
-            Number(Cyan ?? 0),
-            Number(CyanGreen ?? 0),
-            Number(Green ?? 0),
-            Number(GreenYellow ?? 0)
+            Number(recipe.Yellow ?? 0),
+            Number(recipe.Orange ?? 0),
+            Number(recipe.OrangeRed ?? 0),
+            Number(recipe.Red ?? 0),
+            Number(recipe.RedMagenta ?? 0),
+            Number(recipe.Magenta ?? 0),
+            Number(recipe.Blue ?? 0),
+            Number(recipe.BlueCyan ?? 0),
+            Number(recipe.Cyan ?? 0),
+            Number(recipe.CyanGreen ?? 0),
+            Number(recipe.Green ?? 0),
+            Number(recipe.GreenYellow ?? 0)
           ]}
         />
       </div>
       <ImageAdjustSliders
-        vignette={vignette}
-        sharpness={sharpness}
-        contrast={contrast}
+        vignette={recipe.Vignette}
+        sharpness={recipe.Sharpness}
+        contrast={recipe.Contrast}
       />
     </div>
   );
