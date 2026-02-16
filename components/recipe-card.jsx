@@ -72,14 +72,6 @@ export default function RecipeCard({ recipe }) {
         </a>
       </div>
 
-      {(recipe.ExposureCompensation) && (
-        <div>
-          <strong>Exposure Notes:</strong>
-          <div style={{ whiteSpace: "pre-wrap", marginBottom: "0.5rem" }}>
-            {recipe.ExposureCompensation}
-          </div>
-        </div>
-      )}
       {recipe.Links && Array.isArray(recipe.Links) && recipe.Links.length > 0 && (
         <div>
           <strong>Links:</strong>

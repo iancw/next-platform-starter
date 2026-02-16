@@ -12,20 +12,19 @@ function curvePath(x1, y1, xm, ym, x2, y2) {
 
 export default function ShadowMidsHighlightAdjust({ shadows = 0, mids = 0, highlights = 0 }) {
   // Shadows
-  const curveMultiplier = 2.0
   const shStart = [-15, -15];
   const shEnd = [0, 0];
-  const shMid = [-8, -8 + curveMultiplier * Number(shadows)];
+  const shMid = [-10, -10 + 2.0 * Number(shadows)];
 
   // Highlights
   const hiStart = [0, 0];
   const hiEnd = [15, 15];
-  const hiMid = [7, 7 + curveMultiplier * Number(highlights)];
+  const hiMid = [10, 10 + 2.0 * Number(highlights)];
 
   // Mids
   const midStart = [-15, -15];
   const midEnd = [15, 15];
-  const midMid = [0, 0 + curveMultiplier * Number(mids)];
+  const midMid = [0, 0 + 5 * Number(mids)];
 
   return (
     <div style={{ margin: "1rem 0" }}>

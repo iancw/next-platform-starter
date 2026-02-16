@@ -89,6 +89,7 @@ export default function RecipeSettings({ recipe }) {
           vignette={recipe.Vignette}
           sharpness={recipe.Sharpness}
           contrast={recipe.Contrast}
+          exposureCompensation={recipe.ExposureCompensation || 0}
         />
       </div>
     </div>
