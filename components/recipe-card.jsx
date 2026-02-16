@@ -21,7 +21,7 @@ export default function RecipeCard({ recipe }) {
         boxShadow: "0 1px 4px rgba(0,0,0,0.05)"
       }}
     >
-      <h2 style={{ marginTop: 0 }}>{recipe.Name} ({recipe.Author})</h2>
+      <h2 style={{ marginTop: 0, padding: "2rem", flex: "1 1 0" }}>{recipe.Name} ({recipe.Author})</h2>
 
     {(recipe.Notes || recipe.SampleImage) && (
       <div
@@ -39,7 +39,7 @@ export default function RecipeCard({ recipe }) {
           </div>
         )}
         {recipe.SampleImage && (
-          <div style={{ flex: "0 0 auto" }}>
+          <div style={{ flex: "0 0 auto", display: "flex", flexDirection: "column", alignItems: "center" }}>
             <Image
               src={`/images/${encodeURIComponent(recipe.Author)}/${encodeURIComponent(recipe.Name)}/${recipe.SampleImage}`}
               alt="Lighthouse"
@@ -53,7 +53,6 @@ export default function RecipeCard({ recipe }) {
     )}
 
     <RecipeSettings recipe={recipe} />
-
       <div>
         <a
           href={`/oes/${sanitize(recipe.Author)}/${sanitize(recipe.Name)}/${sanitize(recipe.Author)}_${sanitize(recipe.Name)}.oes`}
@@ -70,7 +69,23 @@ export default function RecipeCard({ recipe }) {
         >
           Download OES file
         </a>
+        {recipe.SampleImage && (<a
+              href={`/images/${encodeURIComponent(recipe.Author)}/${encodeURIComponent(recipe.Name)}/${recipe.SampleImage}`}
+              download
+              style={{
+                display: "inline-block",
+                margin: "1rem 0 0.5rem 0",
+                padding: "0.5rem 1rem",
+                background: "#0070f3",
+                color: "#fff",
+                borderRadius: "4px",
+                textDecoration: "none"
+              }}
+            >
+              Download Image
+            </a>)}
       </div>
+
 
       {recipe.Links && Array.isArray(recipe.Links) && recipe.Links.length > 0 && (
         <div>

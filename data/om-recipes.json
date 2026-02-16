@@ -26,7 +26,8 @@
     "Contrast": "0",
     "ExposureCompensation": "",
     "Notes": "",
-    "Links": []
+    "Links": [],
+    "SampleImage": "lighthouse.jpg"
   },
   {
     "Name": "Asteroid City",
@@ -54,7 +55,8 @@
     "Sharpness": "-1",
     "Contrast": "-2",
     "ExposureCompensation": "",
-    "Notes": "based on Asteroid City movie",
+    "Notes": "Based on Asteroid City movie",
+    "SampleImage": "lighthouse.jpg",
     "Links": ["https://www.mu-43.com/threads/wes-anderson-asteroid-city-inspired-om-3-recipe.129007/#post-1834927"]
   },
   {
@@ -84,6 +86,7 @@
     "Contrast": "0",
     "ExposureCompensation": "",
     "Notes": "",
+    "SampleImage": "lighthouse.jpg",
     "Links": ["https://www.facebook.com/groups/868676745364735/permalink/973880794844329/?mibextid=wwXIfr&rdid=eIuZdgPMcZYS1FAX#"]
   },
   {
@@ -113,6 +116,7 @@
     "Contrast": "0",
     "ExposureCompensation": "",
     "Notes": "",
+    "SampleImage": "lighthouse.jpg",
     "Links": ["https://myolympusomd.blogspot.com/p/olympus-pen-f-color-profiles.html"]
   },
   {
@@ -261,6 +265,7 @@
     "Sharpness": "-1",
     "Contrast": "-1",
     "ExposureCompensation": "",
+    "SampleImage": "lighthouse.jpg",
     "Notes": "Named after a popular NSYNC song, this is a natural but punchy color with deep shadows and a gentle highlight lift. Greens and yellows get a little glow, blues run a touch darker, which keeps skies rich and skin tones clean straight out of camera.",
     "Links": ["https://explore.omsystem.com/ca/en/creative-recipes"]
   },
@@ -839,7 +844,7 @@
     "Links": []
   },
   {
-    "Name": "Kodachrome_Slim Aarons",
+    "Name": "Kodachrome - Slim Aarons Style",
     "Author": "James Bloomer",
     "WhiteBalance": "",
     "KeepWarm": "",
