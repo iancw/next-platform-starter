@@ -38,7 +38,7 @@ export default function WhiteBalanceBox({
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
       <div style={{ marginTop: 8, textAlign: "center", fontWeight: 500 }}>
-        {wb ? wb + " K" : "Auto"} {amber < 0 ? 'B' : 'A'}.{Math.abs(amber)}  {green < 0 ? 'M' : 'G'}.{Math.abs(green)}
+        {wb ? wb + " K" : "AutoWB"} {amber < 0 ? 'B' : 'A'}.{Math.abs(amber)}  {green < 0 ? 'M' : 'G'}.{Math.abs(green)}
       </div>
       <div
         style={{
@@ -120,6 +120,9 @@ export default function WhiteBalanceBox({
           />
         </svg>
       </div>
+        {keepWarm && (<div style={{ marginTop: 4, textAlign: "center", fontWeight: 200 }}>
+        Keep warm colors: {keepWarm}
+      </div>)}
     </div>
   );
 }
