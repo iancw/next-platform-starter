@@ -29,6 +29,8 @@ function makeOESXml(recipe) {
   const RedAdjust = Math.max(-7, Math.min(6, Number(getVal(recipe, "WhiteBalanceAmberShift", "0"))));
   const GreenAdjust = Math.max(-7, Math.min(6, Number(getVal(recipe, "WhiteBalanceGreenShift", "0"))));
 
+  const EV = Number(getVal(recipe, "ExposureCompensation", "0")) * 10
+
   const Bright = getVal(recipe, "Highlights", "0");
   const Mid = getVal(recipe, "Mids", "0");
   const Dark = getVal(recipe, "Shadows", "0");
@@ -44,7 +46,7 @@ function makeOESXml(recipe) {
   <ParametersType FormatID="65539" Platform="M" Version="2401" />
   <Parameters>
     <RawEditMode Apply="true" Mode="2" />
-    <ExposureBias Apply="true" Numerator="0" Denominator="10" />
+    <ExposureBias Apply="true" Numerator="${EV}" Denominator="10" />
     <WhiteBalance Apply="true" Mode="Preset" Kelvin="${Kelvin}" RedAdjust="${RedAdjust}" GreenAdjust="${GreenAdjust}" Type="${WBType}" />
     <Contrast Apply="true" Mode="Manual" Value="${Contrast}" Adjust="0" />
     <Sharpness Apply="true" Mode="Manual" Value="${Sharpness}" Adjust="0" />
