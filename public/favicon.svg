@@ -1,30 +1,26 @@
-<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <style>
-    .favicon-center-dot {
-      fill: #014847;
-    }
-
-    .favicon-lines {
-      fill: #05BDBA;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      .favicon-center-dot {
-        fill: #fff;
-      }
-
-      .favicon-lines {
-        fill: #05BDBA;
-      }
-    }
-  </style>
-  <path class="favicon-center-dot" stroke="none" d="M17.9922 18.3225H14.005L13.6746 17.9921V14.005L14.005 13.6746H17.9922L18.3226 14.005V17.9921L17.9922 18.3225Z" />
-  <g class="favicon-lines" stroke="none">
-    <path d="M9.6958 24.3311H9.35705L7.6661 22.6401V22.3041L10.2511 19.7164L12.042 19.7191L12.2808 19.9552V21.7461L9.6958 24.3311Z" />
-    <path d="M7.6661 9.69576V9.35701L9.35705 7.66606H9.6958L12.2808 10.2511V12.0392L12.042 12.2808H10.2511L7.6661 9.69576Z" />
-    <path d="M10.0457 17.4369H0.205466L0 17.2314V14.7658L0.205466 14.5603H10.0457L10.2511 14.7658V17.2314L10.0457 17.4369Z" />
-    <path d="M31.7945 17.4369H21.9544L21.7489 17.2314V14.7658L21.9544 14.5603H31.7945L32 14.7658V17.2314L31.7945 17.4369Z" />
-    <path d="M14.5631 10.0456V2.66547L14.7686 2.46001H17.2343L17.4396 2.66547V10.0456L17.2343 10.2511H14.7686L14.5631 10.0456Z" />
-    <path d="M14.5631 29.3316V21.9515L14.7686 21.746H17.2343L17.4396 21.9515V29.3316L17.2343 29.5371H14.7686L14.5631 29.3316Z" />
-  </g>
+<svg width="250" height="250" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg">
+    <line x1="125" y1="35" x2="170" y2="47.05771365940052" stroke="#FCF750" stroke-width="15" stroke-linecap="round"></line>
+    <line x1="170" y1="47.05771365940052" x2="202.94228634059948" y2="80" stroke="#DBA12A" stroke-width="15" stroke-linecap="round"></line>
+    <line x1="202.94228634059948" y1="80" x2="215" y2="125" stroke="#CC1210" stroke-width="15" stroke-linecap="round"></line>
+    <line x1="215" y1="125" x2="202.94228634059948" y2="170" stroke="#CD076B" stroke-width="15" stroke-linecap="round"></line>
+    <line x1="202.94228634059948" y1="170" x2="170.00000000000003" y2="202.94228634059948" stroke="#970AA0" stroke-width="15" stroke-linecap="round"></line>
+    <line x1="170.00000000000003" y1="202.94228634059948" x2="125" y2="215" stroke="#7710E8" stroke-width="15" stroke-linecap="round"></line>
+    <line x1="125" y1="215" x2="80.00000000000003" y2="202.94228634059948" stroke="#3054E0" stroke-width="15" stroke-linecap="round"></line>
+    <line x1="80.00000000000003" y1="202.94228634059948" x2="47.057713659400534" y2="170.00000000000003" stroke="#5392EB" stroke-width="15" stroke-linecap="round"></line>
+    <line x1="47.057713659400534" y1="170.00000000000003" x2="35" y2="125.00000000000001" stroke="#83E7EB" stroke-width="15" stroke-linecap="round"></line>
+    <line x1="35" y1="125.00000000000001" x2="47.05771365940049" y2="80.00000000000006" stroke="#87EE77" stroke-width="15" stroke-linecap="round"></line>
+    <line x1="47.05771365940049" y1="80.00000000000006" x2="79.99999999999996" y2="47.05771365940055" stroke="#9DEE3A" stroke-width="15" stroke-linecap="round"></line>
+    <line x1="79.99999999999996" y1="47.05771365940055" x2="125" y2="35" stroke="#CBEE3A" stroke-width="15" stroke-linecap="round"></line>
+    <line x1="125" y1="51.153846153846146" x2="161.9230769230769" y2="61.047354797456826" stroke="#fff" stroke-width="2"></line>
+    <line x1="161.9230769230769" y1="61.047354797456826" x2="188.95264520254318" y2="88.07692307692307" stroke="#fff" stroke-width="2"></line>
+    <line x1="188.95264520254318" y1="88.07692307692307" x2="198.84615384615387" y2="125" stroke="#fff" stroke-width="2"></line>
+    <line x1="198.84615384615387" y1="125" x2="188.95264520254318" y2="161.9230769230769" stroke="#fff" stroke-width="2"></line>
+    <line x1="188.95264520254318" y1="161.9230769230769" x2="158.84615384615387" y2="183.62325810233122" stroke="#fff" stroke-width="2"></line>
+    <line x1="158.84615384615387" y1="183.62325810233122" x2="125" y2="198.84615384615387" stroke="#fff" stroke-width="2"></line>
+    <line x1="125" y1="198.84615384615387" x2="88.0769230769231" y2="188.95264520254318" stroke="#fff" stroke-width="2"></line>
+    <line x1="88.0769230769231" y1="188.95264520254318" x2="61.04735479745684" y2="161.92307692307696" stroke="#fff" stroke-width="2"></line>
+    <line x1="61.04735479745684" y1="161.92307692307696" x2="51.153846153846146" y2="125.00000000000001" stroke="#fff" stroke-width="2"></line>
+    <line x1="51.153846153846146" y1="125.00000000000001" x2="61.047354797456805" y2="88.07692307692312" stroke="#fff" stroke-width="2"></line>
+    <line x1="61.047354797456805" y1="88.07692307692312" x2="88.07692307692304" y2="61.047354797456855" stroke="#fff" stroke-width="2"></line>
+    <line x1="88.07692307692304" y1="61.047354797456855" x2="125" y2="51.153846153846146" stroke="#fff" stroke-width="2"></line>
 </svg>
