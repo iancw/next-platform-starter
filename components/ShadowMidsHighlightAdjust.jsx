@@ -83,7 +83,15 @@ export default function ShadowMidsHighlightAdjust({ shadows = 0, mids = 0, highl
             strokeWidth="2.2"
           />
           {/* Quadrant borders */}
-          <rect x={map(-15)} y={map(15)} width={map(15)-map(-15)} height={map(-15)-map(15)} fill="none" stroke="#eee" strokeWidth="2"/>
+          <rect
+            x={map(-15)}
+            y={Math.min(map(-15), map(15))}
+            width={Math.abs(map(15) - map(-15))}
+            height={Math.abs(map(15) - map(-15))}
+            fill="none"
+            stroke="#eee"
+            strokeWidth="2"
+          />
         </svg>
       </div>
     </div>
