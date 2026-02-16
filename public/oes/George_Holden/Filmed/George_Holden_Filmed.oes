@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ImageProcessing>
+  <ParametersType FormatID="65539" Platform="M" Version="2401" />
+  <Parameters>
+    <RawEditMode Apply="true" Mode="2" />
+    <ExposureBias Apply="true" Numerator="5" Denominator="10" />
+    <WhiteBalance Apply="true" Mode="Preset" Kelvin="0" RedAdjust="0" GreenAdjust="0" Type="4098" />
+    <Contrast Apply="true" Mode="Manual" Value="1" Adjust="0" />
+    <Sharpness Apply="true" Mode="Manual" Value="-2" Adjust="0" />
+    <ToneControl Apply="true" Mode="Manual" Bright="2" Dark="-3" Mid="1" />
+    <ColorCreater2 Apply="true" Mode="Manual" SatValue="0,0,-2,0,0,-5,-1,-1,-1,-1,-3,0" LumValue="0,0,0,0,0,0,0,0,0,0,0,0" HueValue="0,0,0,0,0,0,0,0,0,0,0,0" />
+  </Parameters>
+</ImageProcessing>

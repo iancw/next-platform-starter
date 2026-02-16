@@ -2,6 +2,12 @@ import React from "react";
 import RecipeSettings from "./RecipeSettings";
 import Image from 'next/image';
 
+function sanitize(str) {
+  return str
+    .replace(/[^a-zA-Z0-9 _-]/g, "")
+    .replace(/\s+/g, "_");
+}
+
 export default function RecipeCard({ recipe }) {
   return (
     <div
@@ -48,6 +54,23 @@ export default function RecipeCard({ recipe }) {
 
     <RecipeSettings recipe={recipe} />
 
+      <div>
+        <a
+          href={`/oes/${sanitize(recipe.Author)}/${sanitize(recipe.Name)}/${sanitize(recipe.Author)}_${sanitize(recipe.Name)}.oes`}
+          download
+          style={{
+            display: "inline-block",
+            margin: "1rem 0",
+            padding: "0.5rem 1rem",
+            background: "#0070f3",
+            color: "#fff",
+            borderRadius: "4px",
+            textDecoration: "none"
+          }}
+        >
+          Download OES file
+        </a>
+      </div>
 
       {(recipe.ExposureCompensation) && (
         <div>
