@@ -82,6 +82,7 @@
             align-items: flex-start;
         }
         .recipe-notes-image-row {
+            display: flex;
             flex-direction: row;
             align-items: flex-start;
         }
