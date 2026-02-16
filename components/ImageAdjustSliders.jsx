@@ -4,7 +4,7 @@ export default function ImageAdjustSliders({ vignette = 0, sharpness = 0, contra
   return (
     <div style={{ margin: "1rem 0" }}>
       <div style={{ marginBottom: "0.75rem", display: "flex", alignItems: "center" }}>
-        <p style={{ width: 100, display: "inline-block" }}>Vignette: {vignette}</p>
+        <p style={{ width: 100, display: "inline-block" }}>Shading Effect: {vignette}</p>
         <input
           type="range"
           min={-5}
@@ -40,7 +40,7 @@ export default function ImageAdjustSliders({ vignette = 0, sharpness = 0, contra
         />
       </div>
       <div style={{ marginBottom: "0.75rem", display: "flex", alignItems: "center" }}>
-        <p style={{ width: 100 }}>EV: {exposureCompensation}</p>
+        <p style={{ width: 100 }}>Exposure Comp: {exposureCompensation}</p>
         <p><input
           type="range"
           min={-1}
