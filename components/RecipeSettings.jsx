@@ -21,7 +21,7 @@ export default function RecipeSettings({ recipe }) {
           borderRadius: 6,
           background: "#353535",
           padding: 8,
-          margin: "auto"
+          marginTop: 45
         }}>
         <SaturationWheel
           values={[
@@ -45,7 +45,12 @@ export default function RecipeSettings({ recipe }) {
         mids={Number(recipe.Mids ?? 0)}
         highlights={Number(recipe.Highlights ?? 0)}
       />
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "stretch" }}>
+      <div style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "stretch" ,
+        margin: 10
+        }}>
         {(recipe.WhiteBalanceGreenShift !== undefined || recipe.WhiteBalanceAmberShift !== undefined) && (
           <div style={{ marginBottom: "1em" }}>
             <WhiteBalanceBox
