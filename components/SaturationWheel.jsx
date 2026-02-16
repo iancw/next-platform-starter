@@ -19,7 +19,7 @@ const COLORS = [
 const POINTS = 12;
 const RADIUS_MIN = 0;
 const RADIUS_MAX = 90;
-const SIZE = 250;
+const SIZE = 260;
 const CENTER = SIZE / 2;
 const VERTEX_RADIUS = 5; // colored marker size
 

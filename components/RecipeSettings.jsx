@@ -10,16 +10,19 @@ import ImageAdjustSliders from "./ImageAdjustSliders";
  */
 export default function RecipeSettings({ recipe }) {
   return (
-    <div className="recipe-card-flex">
-      <div style={{
-        maxWidth: 280,
-        flexShrink: 0,
-        border: "1px solid #353535",
-        borderRadius: 6,
-        background: "#353535",
-        padding: 8,
-        margin: "auto"
-      }}>
+    <div className="recipe-card-settings-flex">
+      <div
+        className="saturation-wheel-container"
+        style={{
+          maxWidth: 280,
+          minWidth: 280,
+          flexShrink: 1,
+          border: "1px solid #353535",
+          borderRadius: 6,
+          background: "#353535",
+          padding: 8,
+          margin: "auto"
+        }}>
         <SaturationWheel
           values={[
             Number(recipe.Yellow ?? 0),
@@ -37,14 +40,15 @@ export default function RecipeSettings({ recipe }) {
           ]}
         />
       </div>
-      <div style={{ minWidth: 180 }}>
+      <div
+      >
         <ShadowMidsHighlightAdjust
           shadows={Number(recipe.Shadows ?? 0)}
           mids={Number(recipe.Mids ?? 0)}
           highlights={Number(recipe.Highlights ?? 0)}
         />
       </div>
-      <div style={{ minWidth: 180, display: "flex", flexDirection: "column", alignItems: "stretch" }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "stretch" }}>
         {(recipe.WhiteBalanceGreenShift !== undefined || recipe.WhiteBalanceAmberShift !== undefined) && (
           <div style={{ marginBottom: "1em" }}>
             <WhiteBalanceBox

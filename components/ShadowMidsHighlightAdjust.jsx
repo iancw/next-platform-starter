@@ -2,7 +2,7 @@ import React from "react";
 
 // Maps a domain coordinate (-15 to 15) to SVG (padding: 20, box: 260x260)
 function map(val) {
-  return 130 + (val * 110) / 15;
+  return 140 + (val * 130) / 15;
 }
 
 // Returns the path for a quadratic Bézier curve between start/mid/end
@@ -49,15 +49,15 @@ export default function ShadowMidsHighlightAdjust({ shadows = 0, mids = 0, highl
         <div style={{ textAlign: "right" }}>{`Hi: ${(highlights > 0 ? "+" : "") + highlights}`}</div>
       </div>
       <div style={{
-        border: "1px solid #bbb",
+        border: "1px solid #353535",
         borderRadius: 6,
-        width: 260,
-        height: 260,
+        width: 280,
+        height: 280,
         margin: "auto",
         background: "#353535",
         position: "relative"
       }}>
-        <svg viewBox="0 0 260 260" width={260} height={260}>
+        <svg viewBox="0 0 280 280" width={280} height={280}>
           {/* Axes */}
           <line x1={map(-15)} y1={map(0)} x2={map(15)} y2={map(0)} stroke="#616161" strokeWidth="1.2" />
           <line x1={map(0)} y1={map(-15)} x2={map(0)} y2={map(15)} stroke="#616161" strokeWidth="1.2" />
