@@ -15,9 +15,11 @@ import React from "react";
  *   Or, pass in x and y as coordinates as calculated externally.
  */
 export default function WhiteBalanceBox({
+  wb = 'Auto',
+  keepWarm = 'off',
   green = 0,
   amber = 0,
-  boxSize = 80,
+  boxSize = 150,
   markerSize = 14,
   maxOffset = 5, // Maximum offset value, used for normalization
 }) {
@@ -35,6 +37,9 @@ export default function WhiteBalanceBox({
 
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <div style={{ marginTop: 8, textAlign: "center", fontWeight: 500 }}>
+        {wb ? wb + " K" : "Auto"} {amber < 0 ? 'B' : 'A'}.{Math.abs(amber)}  {green < 0 ? 'M' : 'G'}.{Math.abs(green)}
+      </div>
       <svg
         width={boxSize}
         height={boxSize}
@@ -100,11 +105,6 @@ export default function WhiteBalanceBox({
           strokeWidth="1"
         />
       </svg>
-      <div style={{ marginTop: 8, textAlign: "center", color: "#ffc540", fontWeight: 500 }}>
-        Amber: {amber}
-        <span style={{ margin: "0 1em", color: "#888" }}>|</span>
-        <span style={{ color: "#4ebe62" }}>Green: {green}</span>
-      </div>
     </div>
   );
 }

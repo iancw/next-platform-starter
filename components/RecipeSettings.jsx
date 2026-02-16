@@ -40,55 +40,22 @@ export default function RecipeSettings({ recipe }) {
           ]}
         />
       </div>
-      <div
-      >
-        <ShadowMidsHighlightAdjust
-          shadows={Number(recipe.Shadows ?? 0)}
-          mids={Number(recipe.Mids ?? 0)}
-          highlights={Number(recipe.Highlights ?? 0)}
-        />
-      </div>
+      <ShadowMidsHighlightAdjust
+        shadows={Number(recipe.Shadows ?? 0)}
+        mids={Number(recipe.Mids ?? 0)}
+        highlights={Number(recipe.Highlights ?? 0)}
+      />
       <div style={{ display: "flex", flexDirection: "column", alignItems: "stretch" }}>
         {(recipe.WhiteBalanceGreenShift !== undefined || recipe.WhiteBalanceAmberShift !== undefined) && (
           <div style={{ marginBottom: "1em" }}>
             <WhiteBalanceBox
+              wb={recipe.WhiteBalance}
+              keepWarm={recipe.KeepWarm}
               green={recipe.WhiteBalanceGreenShift ?? 0}
               amber={recipe.WhiteBalanceAmberShift ?? 0}
             />
           </div>
         )}
-        <div style={{ margin: "0.75rem 0" }}>
-          {(recipe.KeepWarm || recipe.WhiteBalance) && (
-            <div
-              style={{
-                marginBottom: "0.5em",
-                background: "#f9f7ed",
-                borderRadius: 6,
-                padding: "0.5em 1em",
-                border: "1px solid #efa",
-                fontSize: 15,
-                color: "#604800",
-                fontWeight: 500,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center"
-              }}
-            >
-              {recipe.KeepWarm && (
-                <div>
-                  <span style={{ fontWeight: 600 }}>Keep Warm Color:</span>{" "}
-                  {recipe.KeepWarm}
-                </div>
-              )}
-              {recipe.WhiteBalance && (
-                <div>
-                  <span style={{ fontWeight: 600 }}>White Balance:</span>{" "}
-                  {recipe.WhiteBalance + " K" || "Auto"}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
         <ImageAdjustSliders
           vignette={recipe.Vignette}
           sharpness={recipe.Sharpness}
