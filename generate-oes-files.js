@@ -23,8 +23,11 @@ function getVal(obj, key, fallback = "0") {
 
 function makeOESXml(recipe) {
   const Kelvin = getVal(recipe, "WhiteBalance", "0");
-  const RedAdjust = getVal(recipe, "WhiteBalanceAmberShift", "0");
-  const GreenAdjust = getVal(recipe, "WhiteBalanceGreenShift", "0");
+  const KeepWarm = getVal(recipe, "KeepWarm", "on");
+  const WBType = (Kelvin == "0" && KeepWarm == "on") ? "4096" : (Kelvin == "0" && KeepWarm == "off") ? "4098" : "0"
+
+  const RedAdjust = Math.max(-7, Math.min(6, Number(getVal(recipe, "WhiteBalanceAmberShift", "0"))));
+  const GreenAdjust = Math.max(-7, Math.min(6, Number(getVal(recipe, "WhiteBalanceGreenShift", "0"))));
 
   const Bright = getVal(recipe, "Highlights", "0");
   const Mid = getVal(recipe, "Mids", "0");
@@ -41,8 +44,8 @@ function makeOESXml(recipe) {
   <ParametersType FormatID="65539" Platform="M" Version="2401" />
   <Parameters>
     <RawEditMode Apply="true" Mode="2" />
-    <ExposureBias Apply="true" Numerator="5" Denominator="10" />
-    <WhiteBalance Apply="true" Mode="Preset" Kelvin="${Kelvin}" RedAdjust="${RedAdjust}" GreenAdjust="${GreenAdjust}" Type="4098" />
+    <ExposureBias Apply="true" Numerator="0" Denominator="10" />
+    <WhiteBalance Apply="true" Mode="Preset" Kelvin="${Kelvin}" RedAdjust="${RedAdjust}" GreenAdjust="${GreenAdjust}" Type="${WBType}" />
     <Contrast Apply="true" Mode="Manual" Value="${Contrast}" Adjust="0" />
     <Sharpness Apply="true" Mode="Manual" Value="${Sharpness}" Adjust="0" />
     <ToneControl Apply="true" Mode="Manual" Bright="${Bright}" Dark="${Dark}" Mid="${Mid}" />
