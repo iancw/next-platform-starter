@@ -67,12 +67,26 @@
         width: 100%;
     }
 
+    .recipe-notes-image-row {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+        width: 100%;
+    }
+
     @media (min-width: 900px) {
         .recipe-card-settings-flex {
             flex-direction: row;
             align-items: flex-start;
         }
+        .recipe-notes-image-row {
+            flex-direction: row;
+            align-items: flex-start;
+        }
     }
+
 
     /* Responsive left-alignment for SaturationWheel container on narrow views */
     @media (max-width: 900px) {

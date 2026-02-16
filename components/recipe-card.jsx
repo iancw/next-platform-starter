@@ -25,14 +25,8 @@ export default function RecipeCard({ recipe }) {
 
     {(recipe.Notes || recipe.SampleImage) && (
       <div
-        className="notes-image"
-        style={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "flex-start",
-        gap: "1.5rem",
-        marginBottom: "1rem"
-      }}>
+        className="recipe-notes-image-row"
+      >
         {recipe.Notes && (
           <div style={{ whiteSpace: "pre-wrap", marginBottom: "0.5rem", flex: "1 1 0", padding: "2rem" }}>
             {recipe.Notes}
