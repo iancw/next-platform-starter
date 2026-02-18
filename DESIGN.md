@@ -57,10 +57,7 @@
     - Website
     - Forum link
 
-
-
 # Recipe Rules
-
 - Color saturation goes from +5 to -5
     - Yellow #FCF750
     - Orange #DBA12A
@@ -78,3 +75,7 @@
 - Shading effect goes from -5 to +5
 - Sharpness goes from -2 to +2
 - Contrast goes from -2 to +2
+
+
+# Image processing flow
+- Upload -> pending-recipe blob -> Function (exiftool, OES, recipe JSON) -> processed-recipe-blob -> User confirmation -> Database

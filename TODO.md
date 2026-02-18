@@ -1,0 +1,10 @@
+- [ ] Set up auth in frontend app for upload page
+- [ ] Try out function
+- [ ] Set up database
+- [ ] Create user profile page (name, social links, id, picture)
+- [ ] Create upload page (requires login)
+- [ ] Filters to show various sample images or original images
+- [ ] Feature: Voting on recipes
+- [ ] Feature: User saves favorite recipes
+- [ ] Feature: Commenting on recipes
+- [ ] Feature: Notifications for activity on your recipes
