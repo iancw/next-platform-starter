@@ -1,12 +1,12 @@
 import Link from 'next/link';
 
 const navItems = [
-    { linkText: 'Recipes', href: '/recipes' }
+
 ];
 
 export function Header() {
     return (
-        <nav className="flex flex-wrap items-center gap-4 pt-6 pb-12 sm:pt-12 md:pb-24">
+        <nav className="flex flex-wrap items-center justify-end w-full gap-4 pt-6 pb-3">
             {!!navItems?.length && (
                 <ul className="flex flex-wrap gap-x-4 gap-y-1">
                     {navItems.map((item, index) => (

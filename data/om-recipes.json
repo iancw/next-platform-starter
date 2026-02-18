@@ -27,7 +27,8 @@
     "ExposureCompensation": "",
     "Notes": "",
     "Links": [],
-    "SampleImage": "lighthouse.jpg"
+    "SampleImage": "lighthouse.jpg",
+    "id": "isaac_mitropoulos_a_n_ektachrome"
   },
   {
     "Name": "Asteroid City",
@@ -57,7 +58,10 @@
     "ExposureCompensation": "",
     "Notes": "Based on Asteroid City movie",
     "SampleImage": "lighthouse.jpg",
-    "Links": ["https://www.mu-43.com/threads/wes-anderson-asteroid-city-inspired-om-3-recipe.129007/#post-1834927"]
+    "Links": [
+      "https://www.mu-43.com/threads/wes-anderson-asteroid-city-inspired-om-3-recipe.129007/#post-1834927"
+    ],
+    "id": "brk5891_asteroid_city"
   },
   {
     "Name": "Bleached",
@@ -87,7 +91,10 @@
     "ExposureCompensation": "",
     "Notes": "",
     "SampleImage": "lighthouse.jpg",
-    "Links": ["https://www.facebook.com/groups/868676745364735/permalink/973880794844329/?mibextid=wwXIfr&rdid=eIuZdgPMcZYS1FAX#"]
+    "Links": [
+      "https://www.facebook.com/groups/868676745364735/permalink/973880794844329/?mibextid=wwXIfr&rdid=eIuZdgPMcZYS1FAX#"
+    ],
+    "id": "alberto_torrejon_bleached"
   },
   {
     "Name": "City Look",
@@ -117,7 +124,10 @@
     "ExposureCompensation": "",
     "Notes": "",
     "SampleImage": "lighthouse.jpg",
-    "Links": ["https://myolympusomd.blogspot.com/p/olympus-pen-f-color-profiles.html"]
+    "Links": [
+      "https://myolympusomd.blogspot.com/p/olympus-pen-f-color-profiles.html"
+    ],
+    "id": "videopic_city_look"
   },
   {
     "Name": "Default - 1",
@@ -147,7 +157,8 @@
     "ExposureCompensation": "",
     "Notes": "Described in the manual as “the standard natural preset.” All settings are at 0. This provides the baseline that customizations can be built on.",
     "Links": [],
-    "SampleImage": "lighthouse.jpg"
+    "SampleImage": "lighthouse.jpg",
+    "id": "om_system_default_1"
   },
   {
     "Name": "Default - 2",
@@ -176,8 +187,11 @@
     "Contrast": "0",
     "ExposureCompensation": "",
     "Notes": "Described in the manual as “a color tone with depth and richness. Similar to Kodachrome 64 according to Isaac Mitropoulos in his excellent OM-3 review post. Yellows and blues are slightly enhanced (+1) while reds and greens slightly more subdued (0). Highlights are boosted +3 and shadows dropped -3.",
-    "Links": ["https://www.dpreview.com/forums/post/68206235"],
-    "SampleImage": "lighthouse.jpg"
+    "Links": [
+      "https://www.dpreview.com/forums/post/68206235"
+    ],
+    "SampleImage": "lighthouse.jpg",
+    "id": "om_system_default_2"
   },
   {
     "Name": "Default - 3",
@@ -207,7 +221,8 @@
     "ExposureCompensation": "",
     "Notes": "Manual describes it as “a film-like effect with high saturation and rich colors. Similar to Kodak Ektrachrome according to Isaac Mitropoulos in his excellent OM-3 review post. This basically takes the vibrance up to +4 for everything except purple, which only gets +3. Similarly highlights are boosted +4 and shadows dropped -4. Basically this is cranking colors and contrast up to maximum.",
     "Links": [],
-    "SampleImage": "lighthouse.jpg"
+    "SampleImage": "lighthouse.jpg",
+    "id": "om_system_default_3"
   },
   {
     "Name": "Default - 4",
@@ -237,7 +252,8 @@
     "ExposureCompensation": "",
     "Notes": "Manual describes it as “a light and soft color tone.” It mimics soft chrome film. This drops yellows way down to -4, and drops purple/blue back -1. Highlights +3, shadows -3.",
     "Links": [],
-    "SampleImage": "lighthouse.jpg"
+    "SampleImage": "lighthouse.jpg",
+    "id": "om_system_default_4"
   },
   {
     "Name": "Dirty Pop",
@@ -267,7 +283,10 @@
     "ExposureCompensation": "",
     "SampleImage": "lighthouse.jpg",
     "Notes": "Named after a popular NSYNC song, this is a natural but punchy color with deep shadows and a gentle highlight lift. Greens and yellows get a little glow, blues run a touch darker, which keeps skies rich and skin tones clean straight out of camera.",
-    "Links": ["https://explore.omsystem.com/ca/en/creative-recipes"]
+    "Links": [
+      "https://explore.omsystem.com/ca/en/creative-recipes"
+    ],
+    "id": "luis_chavez_dirty_pop"
   },
   {
     "Name": "Dreamy White",
@@ -296,7 +315,9 @@
     "Contrast": "-2",
     "ExposureCompensation": "",
     "Notes": "",
-    "Links": []
+    "SampleImage": "lighthouse.jpg",
+    "Links": [],
+    "id": "isaac_mitropoulos_dreamy_white"
   },
   {
     "Name": "Eternal Sunshine",
@@ -325,8 +346,11 @@
     "Contrast": "-1",
     "ExposureCompensation": "",
     "Notes": "It shifts the colors and softens things up. It’s an interesting, unusual combination of high saturation and low contrast. Jerred recommends it for city and garden shots.",
-    "Links": ["https://iancw.io/om-3-recipes\n\nhttps://www.megapixelroad.com/p/eternal-sun-om-3-jpeg-recipe"],
-    "SampleImage": "watch-hill-eternal-sunshine.jpg"
+    "Links": [
+      "https://iancw.io/om-3-recipes\n\nhttps://www.megapixelroad.com/p/eternal-sun-om-3-jpeg-recipe"
+    ],
+    "SampleImage": "watch-hill-eternal-sunshine.jpg",
+    "id": "jerred_z_eternal_sunshine"
   },
   {
     "Name": "Filmed",
@@ -355,7 +379,11 @@
     "Contrast": "1",
     "ExposureCompensation": "",
     "Notes": "",
-    "Links": ["https://www.youtube.com/watch?v=QtchurMwHIo&t=372s"]
+    "SampleImage": "lighthouse.jpg",
+    "Links": [
+      "https://www.youtube.com/watch?v=QtchurMwHIo&t=372s"
+    ],
+    "id": "george_holden_filmed"
   },
   {
     "Name": "Fuji Astia",
@@ -388,7 +416,8 @@
       "https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/",
       "https://www.fujifilm-x.com/en-us/stories/the-world-of-film-simulation-episode-5/"
     ],
-    "SampleImage": "wh-lighthouse-ibd-astia.jpg"
+    "SampleImage": "wh-lighthouse-ibd-astia.jpg",
+    "id": "isaacbd_fuji_astia"
   },
   {
     "Name": "Fuji Classic Chrome",
@@ -422,7 +451,8 @@
       "https://jackwang.com.au/blog/recipe-quit-adobe",
       "https://www.youtube.com/watch?v=DYhNmVbm0v0"
     ],
-    "SampleImage": "lighthouse.jpg"
+    "SampleImage": "lighthouse.jpg",
+    "id": "jack_wang_fuji_classic_chrome"
   },
   {
     "Name": "Fuji Classic Chrome",
@@ -455,7 +485,8 @@
       "https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/",
       "https://www.fujifilm-x.com/en-us/stories/the-world-of-film-simulation-episode-2/"
     ],
-    "SampleImage": "ibd-wh-lighthouse-classic-chrome.jpg"
+    "SampleImage": "ibd-wh-lighthouse-classic-chrome.jpg",
+    "id": "isaacbd_fuji_classic_chrome"
   },
   {
     "Name": "Fuji Classic Neg",
@@ -484,7 +515,11 @@
     "Contrast": "0",
     "ExposureCompensation": "-0.7",
     "Notes": "",
-    "Links": ["https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/"]
+    "SampleImage": "lighthouse.jpg",
+    "Links": [
+      "https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/"
+    ],
+    "id": "isaacbd_fuji_classic_neg"
   },
   {
     "Name": "Fuji Eterna",
@@ -513,7 +548,11 @@
     "Contrast": "0",
     "ExposureCompensation": "",
     "Notes": "",
-    "Links": ["https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/"]
+    "SampleImage": "lighthouse.jpg",
+    "Links": [
+      "https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/"
+    ],
+    "id": "isaacbd_fuji_eterna"
   },
   {
     "Name": "Fuji Pro Neg Hi",
@@ -542,7 +581,11 @@
     "Contrast": "0",
     "ExposureCompensation": "",
     "Notes": "",
-    "Links": ["https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/"]
+    "SampleImage": "lighthouse.jpg",
+    "Links": [
+      "https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/"
+    ],
+    "id": "isaacbd_fuji_pro_neg_hi"
   },
   {
     "Name": "Fuji Pro Neg Std",
@@ -571,7 +614,11 @@
     "Contrast": "1",
     "ExposureCompensation": "",
     "Notes": "",
-    "Links": ["https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/"]
+    "SampleImage": "lighthouse.jpg",
+    "Links": [
+      "https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/"
+    ],
+    "id": "isaacbd_fuji_pro_neg_std"
   },
   {
     "Name": "Fuji Provia",
@@ -599,8 +646,13 @@
     "Sharpness": "0",
     "Contrast": "0",
     "ExposureCompensation": "",
+    "SampleImage": "lighthouse.jpg",
     "Notes": "The profile for provia ended up very close to the default COLOR1 setting. The only differences are a small shift toward Amber and Green, and a small bump of green saturation. This seems to match the description on the fujifilm site describing a provia simulation as an even balance in both saturation and tonality dimensions, making it versatile and robust for a variety of situations. This is very similar to what Olympus/OM System choose as their default.",
-    "Links": ["https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/", "https://www.fujifilm-x.com/en-us/stories/the-world-of-film-simulation-episode-6/"]
+    "Links": [
+      "https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/",
+      "https://www.fujifilm-x.com/en-us/stories/the-world-of-film-simulation-episode-6/"
+    ],
+    "id": "isaacbd_fuji_provia"
   },
   {
     "Name": "Fuji Superia Premium 400",
@@ -629,7 +681,11 @@
     "Contrast": "-1",
     "ExposureCompensation": "",
     "Notes": "",
-    "Links": ["https://www.mu-43.com/threads/om-3-film-emulation.128423/post-1836435"]
+    "SampleImage": "lighthouse.jpg",
+    "Links": [
+      "https://www.mu-43.com/threads/om-3-film-emulation.128423/post-1836435"
+    ],
+    "id": "james_bloomer_fuji_superia_premium_400"
   },
   {
     "Name": "Fuji Velvia",
@@ -657,11 +713,16 @@
     "Sharpness": "0",
     "Contrast": "1",
     "ExposureCompensation": "+0.3",
+    "SampleImage": "lighthouse.jpg",
     "Notes": "This profile was generated by ibd’s script to match images created with a fuji camera’s Velvia film simulation. It’s interesting to compare it to other velvia approximations. It’s also interested to consider it alongside qualitative descriptions of the film. This old article from fujifilm-x.com provides some interesting notes — like enhancing magentas to make the blues more memorable.",
-    "Links": ["https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/", "https://www.fujifilm-x.com/en-us/stories/the-world-of-film-simulation-episode-3/"]
+    "Links": [
+      "https://cameraderie.org/threads/i-made-a-software-to-find-settings-that-match-the-jpeg-output-between-cameras.56900/",
+      "https://www.fujifilm-x.com/en-us/stories/the-world-of-film-simulation-episode-3/"
+    ],
+    "id": "isaacbd_fuji_velvia"
   },
   {
-    "Name": "Fuji Velvia 50 ",
+    "Name": "Fuji Velvia 50",
     "Author": "VideoPic",
     "WhiteBalance": "",
     "KeepWarm": "",
@@ -686,13 +747,15 @@
     "Sharpness": "0",
     "Contrast": "1",
     "ExposureCompensation": "",
+    "SampleImage": "lighthouse.jpg",
     "Notes": "This profile was designed by VideoPic at DPR in this post. I believe he used DxO FilmPack output as a reference when building this. Highlights and midtones are boosted. Yellows, oranges, reds, blues, purples are enhanced (though more modestly than COLOR3) to +2/+3. Pinks are reduced, perhaps to help with skin tones.",
     "Links": [
       "https://iancw.io/om-3-recipes",
       "https://www.dpreview.com/forums/threads/pen-f-owners-i-developed-a-fuji-velvia-50-profile-you-can-try.4375658/#forum-post-62439985",
       "https://myolympusomd.blogspot.com/",
       "https://www.dpreview.com/forums/thread/4375658#forum-post-62439985"
-    ]
+    ],
+    "id": "videopic_fuji_velvia_50"
   },
   {
     "Name": "Kodachrome 25",
@@ -720,12 +783,14 @@
     "Sharpness": "0",
     "Contrast": "2",
     "ExposureCompensation": "",
+    "SampleImage": "lighthouse.jpg",
     "Notes": "This profile was shared by Gareth B. in a mu-43.com post. Shadows are crushed, highlights and midtones merged. Yellows, blues, and greens are knocked back. Orange and red are enhanced. Gareth notes that heavily desaturated greens were a characteristic of Kodachrome 25. \nSource: mu-43 post via Rob Trek’s YouTube video. Note: In Rob’s video and Gareth’s post WB should be -2 Amber and +2 Green. Also see Henry Richardson’s post in dpreview forums.",
     "Links": [
       "https://www.mu-43.com/threads/my-kodachrome-classic-chrome-pen-f-settings-update.92950/#post-1044455",
       "https://www.youtube.com/watch?v=fUNdhSg5xLE",
       "https://www.dpreview.com/forums/post/64071862"
-    ]
+    ],
+    "id": "gareth_b_kodachrome_25"
   },
   {
     "Name": "Kodachrome 25",
@@ -754,7 +819,11 @@
     "Contrast": "0",
     "ExposureCompensation": "",
     "Notes": "",
-    "Links": ["https://www.facebook.com/groups/868676745364735"]
+    "SampleImage": "lighthouse.jpg",
+    "Links": [
+      "https://www.facebook.com/groups/868676745364735"
+    ],
+    "id": "angelo_gabelli_kodachrome_25"
   },
   {
     "Name": "Kodachrome 64",
@@ -783,7 +852,11 @@
     "Contrast": "1",
     "ExposureCompensation": "",
     "Notes": "",
-    "Links": ["https://www.mu-43.com/threads/om-3-film-emulation.128423/post-1833387"]
+    "SampleImage": "lighthouse.jpg",
+    "Links": [
+      "https://www.mu-43.com/threads/om-3-film-emulation.128423/post-1833387"
+    ],
+    "id": "james_bloomer_kodachrome_64"
   },
   {
     "Name": "Kodachrome 64",
@@ -811,8 +884,12 @@
     "Sharpness": "0",
     "Contrast": "0",
     "ExposureCompensation": "",
+    "SampleImage": "lighthouse.jpg",
     "Notes": "This profile was designed by Gareth B. in a mu-43.com post. It’s like KODACHROME 25, but crushes shadows more and knocks back yellows and purple even more.",
-    "Links": ["https://www.mu-43.com/threads/my-kodachrome-classic-chrome-pen-f-settings-update.92950/#post-1044455"]
+    "Links": [
+      "https://www.mu-43.com/threads/my-kodachrome-classic-chrome-pen-f-settings-update.92950/#post-1044455"
+    ],
+    "id": "gareth_b_kodachrome_64"
   },
   {
     "Name": "Kodachrome 64",
@@ -841,10 +918,12 @@
     "Contrast": "0",
     "ExposureCompensation": "",
     "Notes": "",
-    "Links": []
+    "SampleImage": "lighthouse.jpg",
+    "Links": [],
+    "id": "isaac_mitropoulos_kodachrome_64"
   },
   {
-    "Name": "Kodachrome - Slim Aarons Style",
+    "Name": "Kodachrome Slim Aarons",
     "Author": "James Bloomer",
     "WhiteBalance": "",
     "KeepWarm": "",
@@ -870,7 +949,11 @@
     "Contrast": "-1",
     "ExposureCompensation": "",
     "Notes": "This is the Slim Aarons inspired Kodachrome 64 simulation that James Bloomer shared in this post. This version lowers the contrast and scales back some of the saturation. The instructions say to under expose, so I’ve included that in the EV compensation.",
-    "Links": ["https://www.mu-43.com/threads/om-3-film-emulation.128423/post-1833617"]
+    "Links": [
+      "https://www.mu-43.com/threads/om-3-film-emulation.128423/post-1833617"
+    ],
+    "SampleImage": "lighthouse.jpg",
+    "id": "james_bloomer_kodachrome_slim_aarons"
   },
   {
     "Name": "Kodak Ektachrome",
@@ -899,7 +982,9 @@
     "Contrast": "0",
     "ExposureCompensation": "",
     "Notes": "",
-    "Links": []
+    "Links": [],
+    "SampleImage": "lighthouse.jpg",
+    "id": "isaac_mitropoulos_kodak_ektachrome"
   },
   {
     "Name": "Kodak Gold 200",
@@ -928,7 +1013,9 @@
     "Contrast": "-1",
     "ExposureCompensation": "+0.5",
     "Notes": "With in-camera raw editor, add a Yellow/Orange hue color creator effect with level +2",
-    "Links": []
+    "Links": [],
+    "SampleImage": "lighthouse.jpg",
+    "id": "james_bloomer_kodak_gold_200"
   },
   {
     "Name": "M4Nerds",
@@ -957,7 +1044,9 @@
     "Contrast": "1",
     "ExposureCompensation": "",
     "Notes": "",
-    "Links": []
+    "Links": [],
+    "SampleImage": "lighthouse.jpg",
+    "id": "emily_m4nerds_m4nerds"
   },
   {
     "Name": "Nostalgic Summer",
@@ -986,7 +1075,11 @@
     "Contrast": "-2",
     "ExposureCompensation": "",
     "Notes": "Nostalgic Summer is a vintage inspired recipe that focuses on vibrant greens and golden yellows while stripping away blues for a more timeless look. Ideal for capturing contrasty, sunny days by delivering a filmic look straight out of camera",
-    "Links": ["https://explore.omsystem.com/ca/en/creative-recipes"]
+    "Links": [
+      "https://explore.omsystem.com/ca/en/creative-recipes"
+    ],
+    "SampleImage": "lighthouse.jpg",
+    "id": "kyler_steele_nostalgic_summer"
   },
   {
     "Name": "OM Chrome",
@@ -1015,7 +1108,11 @@
     "Contrast": "1",
     "ExposureCompensation": "",
     "Notes": "OM-CHROME was designed to capture the vibrant colors of daily urban life geared to emulate the classic look of 35mm positive slide film.",
-    "Links": ["https://explore.omsystem.com/ca/en/creative-recipes"]
+    "Links": [
+      "https://explore.omsystem.com/ca/en/creative-recipes"
+    ],
+    "SampleImage": "lighthouse.jpg",
+    "id": "jonathan_paragas_om_chrome"
   },
   {
     "Name": "OMTC Chrome",
@@ -1044,8 +1141,11 @@
     "Contrast": "2",
     "ExposureCompensation": "-0.5",
     "Notes": "Another recipe from Ali of One Month Two Cameras goes for a soft, dreamy look. She recommends for shade, overcast, or blue hour light. It pulls back saturation and softens contrast through the curve (dropping highlights, raising shadows).\nVibe: Slide film feel. High punch, crisp edges, moody shadows.\nBest for: City scenes, golden hour, strong shapes\nAvoid in: Overcast or extreme contrast without careful metering",
-    "Links": ["https://omtc.substack.com/p/5-jpeg-recipes-for-the-om-system"],
-    "SampleImage": "lighthouse.jpg"
+    "Links": [
+      "https://omtc.substack.com/p/5-jpeg-recipes-for-the-om-system"
+    ],
+    "SampleImage": "lighthouse.jpg",
+    "id": "ali_o_keefe_omtc_chrome"
   },
   {
     "Name": "OMTC Cool",
@@ -1074,8 +1174,11 @@
     "Contrast": "2",
     "ExposureCompensation": "",
     "Notes": "Vibe: Clean, neutral, contrasty but calm. Think Fuji Provia or 400H.\nBest for: Sunset, travel, versatile light\nAvoid in: Flat or overcast light. It can look a little lifeless.",
-    "Links": ["https://omtc.substack.com/p/5-jpeg-recipes-for-the-om-system"],
-    "SampleImage": "lighthouse.jpg"
+    "Links": [
+      "https://omtc.substack.com/p/5-jpeg-recipes-for-the-om-system"
+    ],
+    "SampleImage": "lighthouse.jpg",
+    "id": "ali_o_keefe_omtc_cool"
   },
   {
     "Name": "OMTC Soft",
@@ -1104,8 +1207,11 @@
     "Contrast": "2",
     "ExposureCompensation": "+0.5",
     "Notes": "Another recipe from Ali of One Month Two Cameras goes for a soft, dreamy look. She recommends for shade, overcast, or blue hour light. It pulls back saturation and softens contrast through the curve (dropping highlights, raising shadows).\nVibe: Meyerowitz/Cape Light. Soft, dreamy, pastel with luminous highlights.\nBest for: Overcast, open shade, late afternoon or blue hour\nAvoid in: Harsh sunlight. It washes out fast.",
-    "Links": ["https://omtc.substack.com/p/5-jpeg-recipes-for-the-om-system"],
-    "SampleImage": "lighthouse.jpg"
+    "Links": [
+      "https://omtc.substack.com/p/5-jpeg-recipes-for-the-om-system"
+    ],
+    "SampleImage": "lighthouse.jpg",
+    "id": "ali_o_keefe_omtc_soft"
   },
   {
     "Name": "OMTC Warm",
@@ -1135,9 +1241,10 @@
     "ExposureCompensation": "",
     "Notes": "This recipe comes from Ali for One Month Two Cameras. She describes it as golden, punchy, a bit of kodak warmth. She recommends using it for cooler, mid-day, dappled light. Suggests avoiding indoors or golden hour. Vibe: Golden, punchy, rich skin tones. A bit of that Kodak warmth.\nBest for: Cool early morning or midday sun, beachy or dappled light, clean outdoor scenes\nAvoid in: Indoor tungsten or golden-hour light. It gets too warm.",
     "Links": [
-    "https://omtc.substack.com/p/5-jpeg-recipes-for-the-om-system?open=false#%C2%A7recipe-omtc-warm"
+      "https://omtc.substack.com/p/5-jpeg-recipes-for-the-om-system?open=false#%C2%A7recipe-omtc-warm"
     ],
-    "SampleImage": "lighthouse.jpg"
+    "SampleImage": "lighthouse.jpg",
+    "id": "ali_o_keefe_omtc_warm"
   },
   {
     "Name": "Paul Clark recipe",
@@ -1165,8 +1272,12 @@
     "Sharpness": "-1",
     "Contrast": "-2",
     "ExposureCompensation": "",
+    "SampleImage": "lighthouse.jpg",
     "Notes": "This color profile boosts warm and cool tones while dialing back greens and magentas, letting complementary colors stand out. With softer contrast, lifted shadows, lowered highlights, and reduced sharpness, the result feels balanced, natural, and true to the scene.",
-    "Links": ["https://explore.omsystem.com/ca/en/creative-recipes"]
+    "Links": [
+      "https://explore.omsystem.com/ca/en/creative-recipes"
+    ],
+    "id": "paul_clark_paul_clark_recipe"
   },
   {
     "Name": "Portra 160",
@@ -1195,8 +1306,11 @@
     "Contrast": "-1",
     "ExposureCompensation": "",
     "Notes": "This profile was designed by Isaac Mitropoulos in his excellent OM-3 review post.",
-    "Links": ["https://www.dpreview.com/forums/post/68206235"],
-    "SampleImage": "isaac-m-portra-160.jpg"
+    "Links": [
+      "https://www.dpreview.com/forums/post/68206235"
+    ],
+    "SampleImage": "isaac-m-portra-160.jpg",
+    "id": "isaac_mitropoulos_portra_160"
   },
   {
     "Name": "Portra 400",
@@ -1225,8 +1339,11 @@
     "Contrast": "-1",
     "ExposureCompensation": "",
     "Notes": "This profile was designed by Isaac Mitropoulos in his excellent OM-3 review post. This one knocks back saturation a lot, cranks up green in white balance.",
-    "Links": ["https://www.dpreview.com/forums/post/68206235"],
-    "SampleImage": "isaacm-portra400.jpg"
+    "Links": [
+      "https://www.dpreview.com/forums/post/68206235"
+    ],
+    "SampleImage": "isaacm-portra400.jpg",
+    "id": "isaac_mitropoulos_portra_400"
   },
   {
     "Name": "Portra 400",
@@ -1255,7 +1372,11 @@
     "Contrast": "-1",
     "ExposureCompensation": "",
     "Notes": "",
-    "Links": ["https://www.mu-43.com/threads/om-3-film-emulation.128423/post-1833467"]
+    "SampleImage": "lighthouse.jpg",
+    "Links": [
+      "https://www.mu-43.com/threads/om-3-film-emulation.128423/post-1833467"
+    ],
+    "id": "james_bloomer_portra_400"
   },
   {
     "Name": "Portra 400",
@@ -1284,7 +1405,12 @@
     "Contrast": "0",
     "ExposureCompensation": "",
     "Notes": "I followed Tone Fuentes’ video on creating a Portra style lightroom preset awhile ago and have been pleased with the results. It’s warm, and it seems to work well with a lot of shots (versatile, like the film). This is my attempt to approximate that preset in terms of OM-3 settings.",
-    "Links": ["https://iancw.io/om-3-recipes", "https://www.youtube.com/watch?v=TIZFooNHu94&t=1172s"]
+    "SampleImage": "lighthouse.jpg",
+    "Links": [
+      "https://iancw.io/om-3-recipes",
+      "https://www.youtube.com/watch?v=TIZFooNHu94&t=1172s"
+    ],
+    "id": "ian_will_portra_400"
   },
   {
     "Name": "Postcard",
@@ -1312,7 +1438,9 @@
     "Sharpness": "-2",
     "Contrast": "-2",
     "ExposureCompensation": "",
-    "Notes": ""
+    "Notes": "",
+    "SampleImage": "lighthouse.jpg",
+    "id": "stella_toul_postcard"
   },
   {
     "Name": "Rainforest Vibes",
@@ -1341,7 +1469,11 @@
     "Contrast": "0",
     "ExposureCompensation": "",
     "Notes": "This is where I captured the wild beauty of exotic plants and brought their colors to life through my lens, amplifying the saturated greens of the lush jungle canopy and intensifying the vivid magentas and warm tones of tropical blooms to recreate the untamed vibrancy of the rainforest.",
-    "Links": ["https://explore.omsystem.com/ca/en/creative-recipes"]
+    "SampleImage": "lighthouse.jpg",
+    "Links": [
+      "https://explore.omsystem.com/ca/en/creative-recipes"
+    ],
+    "id": "mindy_michaels_rainforest_vibes"
   },
   {
     "Name": "Real",
@@ -1370,7 +1502,11 @@
     "Contrast": "1",
     "ExposureCompensation": "",
     "Notes": "",
-    "Links": ["https://www.youtube.com/watch?v=QY_x_aSh4F4"]
+    "SampleImage": "lighthouse.jpg",
+    "Links": [
+      "https://www.youtube.com/watch?v=QY_x_aSh4F4"
+    ],
+    "id": "murder_pink_real"
   },
   {
     "Name": "Red Soda Pop",
@@ -1398,8 +1534,12 @@
     "Sharpness": "-1",
     "Contrast": "-2",
     "ExposureCompensation": "",
-    "Notes": "warms up the overall tones, makes the reds \"pop\" while muting yellows and greens ever so slightly. It also softens the image for a bit more dream-like feel.",
-    "Links": ["https://explore.omsystem.com/ca/en/creative-recipes"]
+    "SampleImage": "lighthouse.jpg",
+    "Notes": "Warms up the overall tones, makes the reds \"pop\" while muting yellows and greens ever so slightly. It also softens the image for a bit more dream-like feel.",
+    "Links": [
+      "https://explore.omsystem.com/ca/en/creative-recipes"
+    ],
+    "id": "kitty_marie_red_soda_pop"
   },
   {
     "Name": "Rusty Vintage",
@@ -1428,7 +1568,11 @@
     "Contrast": "2",
     "ExposureCompensation": "",
     "Notes": "",
-    "Links": ["https://www.facebook.com/groups/868676745364735"]
+    "SampleImage": "lighthouse.jpg",
+    "Links": [
+      "https://www.facebook.com/groups/868676745364735"
+    ],
+    "id": "gal_root_rusty_vintage"
   },
   {
     "Name": "Subdued",
@@ -1457,7 +1601,11 @@
     "Contrast": "-1",
     "ExposureCompensation": "",
     "Notes": "",
-    "Links": ["https://www.youtube.com/watch?v=pG-4qUe0YwA"]
+    "SampleImage": "lighthouse.jpg",
+    "Links": [
+      "https://www.youtube.com/watch?v=pG-4qUe0YwA"
+    ],
+    "id": "murder_pink_subdued"
   },
   {
     "Name": "Terry McLaughlin recipe",
@@ -1486,7 +1634,11 @@
     "Contrast": "1",
     "ExposureCompensation": "",
     "Notes": "For this edit, I built a look that feels true to my style desaturated blues, warm mids, and those orange-red tones that really pop. It’s all balanced with a subtle filmy curve that gives it that nostalgic, cinematic finish for the golden hour.",
-    "Links": ["https://explore.omsystem.com/ca/en/creative-recipes"]
+    "SampleImage": "lighthouse.jpg",
+    "Links": [
+      "https://explore.omsystem.com/ca/en/creative-recipes"
+    ],
+    "id": "terry_mclaughlin_terry_mclaughlin_recipe"
   },
   {
     "Name": "Vibrant Chrome",
@@ -1515,7 +1667,11 @@
     "Contrast": "-2",
     "ExposureCompensation": "",
     "Notes": "Dave Herring shared these settings to dial in a vibrant chrome profile emphasizing reds. It’s based on the COLOR 3 default, but drops saturation of greens and uses a custom white balance of 5200K for daylight with B+1, M+1 adjustments.",
-    "Links": ["https://iancw.io/om-3-recipes", "https://www.youtube.com/watch?v=sdNulmXBC8E"],
-    "SampleImage": "lighthouse.jpg"
+    "Links": [
+      "https://iancw.io/om-3-recipes",
+      "https://www.youtube.com/watch?v=sdNulmXBC8E"
+    ],
+    "SampleImage": "lighthouse.jpg",
+    "id": "dave_herring_vibrant_chrome"
   }
 ]
