@@ -14,17 +14,18 @@ export default function ShadowMidsHighlightAdjust({ shadows = 0, mids = 0, highl
   // Shadows
   const shStart = [-15, -15];
   const shEnd = [0, 0];
-  const shMid = [-10, -10 + 2.0 * Number(shadows)];
+
+  let shMid = [-8, -8 + (Math.abs(shadows) < 4 ? 2.0 : 1.5) * Number(shadows)];
 
   // Highlights
   const hiStart = [0, 0];
   const hiEnd = [15, 15];
-  const hiMid = [10, 10 + 2.0 * Number(highlights)];
+  const hiMid = [10, 10 + (Math.abs(highlights) < 4 ? 2.0 : 1.5) * Number(highlights)];
 
   // Mids
   const midStart = [-15, -15];
   const midEnd = [15, 15];
-  const midMid = [0, 0 + 5 * Number(mids)];
+  const midMid = [0, 0 + (mids < 4 ? 5 : 2.5) * Number(mids)];
 
   return (
     <div style={{ margin: "1rem 0" }}>
