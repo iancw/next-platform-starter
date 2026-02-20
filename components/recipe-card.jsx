@@ -42,9 +42,9 @@ export default function RecipeCard({ recipe }) {
           >
             Download OES file
           </a>
-          {recipe.SampleImage && (
+          {recipe.SourceImage && (
             <a
-              href={`/images/${encodeURIComponent(recipe.Author)}/${encodeURIComponent(recipe.Name)}/${recipe.SampleImage}`}
+              href={recipe.SourceImage}
               download
               style={{
                 display: "inline-block",
