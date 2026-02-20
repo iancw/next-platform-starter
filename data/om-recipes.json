@@ -851,7 +851,7 @@
     "Sharpness": "1",
     "Contrast": "1",
     "ExposureCompensation": "",
-    "Notes": "",
+    "Notes": "Kodachrome 64 is an iconic color film celebrated for its vibrant, rich color saturation and exceptional sharpness, underpinned by an extremely fine grain structure. It masterfully combines rich depth with a subtle color reproduction that results in striking images. The film is particularly known for delivering punchy reds and distinct blue skies, creating a saturation level that enhances scenes with a poetic quality. This unique palette taps deeply into 'memory color' and nostalgia, solidifying its legendary status in photography.",
     "SampleImage": "lighthouse.jpg",
     "Links": [
       "https://www.mu-43.com/threads/om-3-film-emulation.128423/post-1833387"
@@ -1371,7 +1371,7 @@
     "Sharpness": "-1",
     "Contrast": "-1",
     "ExposureCompensation": "",
-    "Notes": "",
+    "Notes": "This formula targets the signature look of Kodak Portra 400, a professional color-negative film celebrated for its natural color, gentle tonality, and exceptional rendering of people. The heart of this emulation is Portra's ability to hold both highlights and shadows with grace, producing images that feel open, smooth, and forgiving rather than contrasty or harsh. This is achieved in-camera by slightly lifting the shadows, gently compressing highlights, and shaping the midtones to create Portra's characteristic soft, luminous tonal flow. The result is subtle, film-like 'creamy' look that preserves detail across the scene without appearing flat. Color is tuned to prioritize skin tones, maintaining Portra's hallmark neutral-warm balance with a delicate, flattering warmth that keeps faces neutral and lifelike, making this profile especially well suited for portraits, travel, and editorial style photography.",
     "SampleImage": "lighthouse.jpg",
     "Links": [
       "https://www.mu-43.com/threads/om-3-film-emulation.128423/post-1833467"
