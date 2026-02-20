@@ -40,7 +40,7 @@ export default function RecipeCard({ recipe }) {
               textDecoration: "none"
             }}
           >
-            Download OES file
+            OM Workspace Batch Processing File
           </a>
           {recipe.SourceImage && (
             <a
