@@ -1,7 +1,8 @@
 import Link from 'next/link';
 
 const navItems = [
-
+    { href: '/', linkText: 'Recipes' },
+    { href: '/how-to', linkText: 'How-to' }
 ];
 
 export function Header() {
