@@ -14,6 +14,15 @@ export default function RootLayout({ children }) {
         <html lang="en">
             <head>
                 <link rel="icon" href="/favicon.svg" sizes="any" />
+                <script async src="https://www.googletagmanager.com/gtag/js?id=G-MWHJBEW5J1"></script>
+                <script dangerouslySetInnerHTML={{
+                    __html: `window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+
+                gtag('config', 'G-MWHJBEW5J1');
+                }}`}} >
+                </script>
             </head>
             <body className="antialiased">
                 <div className="flex flex-col min-h-screen px-6 sm:px-12">
