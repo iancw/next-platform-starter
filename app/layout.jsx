@@ -3,6 +3,7 @@ import { Footer } from '../components/footer';
 import { Header } from '../components/header';
 import { GA4PageView } from '../components/ga4';
 import Script from 'next/script';
+import { Suspense } from 'react';
 
 export const metadata = {
     title: {
@@ -43,7 +44,10 @@ export default function RootLayout({ children }) {
                 ) : null}
             </head>
             <body className="antialiased" suppressHydrationWarning>
-                <GA4PageView measurementId={measurementId} />
+                {/* useSearchParams() requires a Suspense boundary in App Router */}
+                <Suspense fallback={null}>
+                    <GA4PageView measurementId={measurementId} />
+                </Suspense>
                 <div className="flex flex-col min-h-screen px-6 sm:px-12">
                     <div className="flex flex-col w-full grow">
                         <Header />
