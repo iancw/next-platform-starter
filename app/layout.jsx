@@ -1,6 +1,8 @@
 import '../styles/globals.css';
 import { Footer } from '../components/footer';
 import { Header } from '../components/header';
+import { GA4PageView } from '../components/ga4';
+import Script from 'next/script';
 
 export const metadata = {
     title: {
@@ -10,21 +12,38 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+    const measurementId = process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID;
+
     return (
-        <html lang="en">
+        // Some browser extensions (notably Google Tag Assistant) inject
+        // `data-tag-assistant-*` attributes onto the <html> element before React
+        // hydrates, which triggers a dev hydration warning.
+        <html lang="en" suppressHydrationWarning>
             <head>
                 <link rel="icon" href="/favicon.svg" sizes="any" />
-                <script async src="https://www.googletagmanager.com/gtag/js?id=G-MWHJBEW5J1"></script>
-                <script dangerouslySetInnerHTML={{
-                    __html: `window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
 
-                gtag('config', 'G-MWHJBEW5J1');
-                }}`}} >
-                </script>
+                {measurementId ? (
+                    <>
+                        <Script
+                            src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}
+                            strategy="afterInteractive"
+                        />
+                        <Script id="ga4-init" strategy="afterInteractive">
+                            {`
+                              window.dataLayer = window.dataLayer || [];
+                              function gtag(){dataLayer.push(arguments);}
+                              window.gtag = window.gtag || gtag;
+                              gtag('js', new Date());
+
+                              // Disable automatic page_view so we can handle SPA navigation.
+                              gtag('config', '${measurementId}', { send_page_view: false });
+                            `}
+                        </Script>
+                    </>
+                ) : null}
             </head>
-            <body className="antialiased">
+            <body className="antialiased" suppressHydrationWarning>
+                <GA4PageView measurementId={measurementId} />
                 <div className="flex flex-col min-h-screen px-6 sm:px-12">
                     <div className="flex flex-col w-full grow">
                         <Header />

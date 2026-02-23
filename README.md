@@ -38,6 +38,16 @@ netlify dev
 
 If your browser doesn't navigate to the site automatically, visit [localhost:8888](http://localhost:8888).
 
+## Google Analytics 4 (GA4)
+
+This site sends GA4 page view events using the GA4 `gtag.js` snippet.
+
+Set the measurement id via:
+
+```bash
+NEXT_PUBLIC_GA4_MEASUREMENT_ID=G-XXXXXXXXXX
+```
+
 ## Resources
 
 - Check out the [Next.js on Netlify docs](https://docs.netlify.com/frameworks/next-js/overview/)

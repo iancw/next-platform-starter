@@ -92,6 +92,7 @@ export default function Page() {
     };
   }, [results]);
 
+
   async function handleSubmit(e) {
     e.preventDefault();
     doSearch(query);
