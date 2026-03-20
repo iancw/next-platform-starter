@@ -43,8 +43,8 @@ export default function ImageAdjustSliders({ vignette = 0, sharpness = 0, contra
         <p style={{ width: 100 }}>Exposure Comp: {exposureCompensation}</p>
         <p><input
           type="range"
-          min={-1}
-          max={1}
+          min={-2}
+          max={2}
           step={0.3}
           value={exposureCompensation}
           disabled

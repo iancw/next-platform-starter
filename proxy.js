@@ -1,35 +1,17 @@
 import { NextResponse } from 'next/server';
+import { refreshSessionCookieIfPresent } from './lib/auth-session-cookie.js';
 
-export function proxy(request) {
+export async function proxy(request) {
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
+    return NextResponse.next();
+  }
+
+  if (request.nextUrl.pathname.startsWith('/auth/')) {
+    return NextResponse.next();
+  }
+
   const response = NextResponse.next();
-
-  // Add security headers
-  response.headers.set('X-Frame-Options', 'DENY');
-  response.headers.set('X-Content-Type-Options', 'nosniff');
-  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-
-  // Add custom header to track middleware execution
-  response.headers.set('X-Middleware-Executed', 'true');
-
-  const pathname = request.nextUrl.pathname;
-
-  // Logging for demonstration (in production, use proper logging service)
-  console.log(`[Middleware] ${request.method} ${pathname} - ${new Date().toISOString()}`);
-
-  // Example: Block access to /admin paths (demonstration only)
-  if (pathname.startsWith('/admin')) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/';
-    response.headers.set('X-Blocked-Path', pathname);
-    return NextResponse.redirect(url);
-  }
-
-  // Example: Add custom header for API routes
-  if (pathname.startsWith('/api/') || pathname.startsWith('/quotes/')) {
-    response.headers.set('X-API-Version', '1.0');
-  }
-
-  return response;
+  return refreshSessionCookieIfPresent(request, response);
 }
 
 export const config = {
@@ -41,6 +23,7 @@ export const config = {
      * - favicon.svg (favicon file)
      * - public files (images, etc.)
      */
-    '/((?!_next/static|_next/image|favicon.svg|images|.*\\.svg|.*\\.png|.*\\.jpg).*)',
+    // Note: exclude .oes so our /oes/<slug>.oes route handler can serve downloads.
+    '/((?!_next/static|_next/image|favicon.svg|images|.*\\.svg|.*\\.png|.*\\.jpg|.*\\.oes).*)',
   ],
 };

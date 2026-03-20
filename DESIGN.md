@@ -32,30 +32,61 @@
 
 # Database
 - Recipe
-    - Settings
-        - color
-        - contrast
-        - sharpness
-        - curves
-            - shadow
-            - mid
-            - high
-        - grain
-        - shading effect
-    - Name
+    - id
+    - user_id
+    - slug
+    - Recipe Name
+    - Author Name
     - Description
-    - Recommended settings
-    - Author
-    - Rating (number of likes)
-    - Original image (link to original image shared)
-    - Sample images (list of links to image files)
-    - Comments (list of comments left by others)
+    - Yellow
+    - Orange
+    - OrangeRed
+    - Red
+    - Magenta
+    - Violet
+    - Blue
+    - BlueCyan
+    - Cyan
+    - GreenCyan
+    - Green
+    - YellowGreen
+    - Contrast
+    - Sharpness
+    - Shading Effect
+    - Highlights
+    - Shadows
+    - Midtones
+    - White Balance 2
+    - White Balance Temperature
+    - White Balance Amber Offset
+    - White Balance Green Offset
+    - Exposure Compensation
+- Recipe_community_samples
+    - recipe_id
+    - image_id
+    - author_id
+- Recipe_author_samples
+    - recipe_id
+    - image_id
+    - author_id
+- Image
+    - id
+    - author_id
+    - Dimensions
+    - Camera
+    - Lens
+    - Original file size
+    - Exif String
+    - Link to full size version
+    - Link to small version
 - Author
-    - Name
-    - Email
-    - Instagram handle
-    - Website
-    - Forum link
+  - id
+  - oidc_sub
+  - name
+  - instagram_link
+  - flickr_link
+  - website
+  - kofi_link
 
 # Recipe Rules
 - Color saturation goes from +5 to -5
@@ -63,8 +94,8 @@
     - Orange #DBA12A
     - OrangeRed #CC1210
     - Red #CD076B
-    - RedMagenta #970AA0
-    - Magenta #7710E8
+    - Magenta #970AA0
+    - Violet #7710E8
     - Blue #3054E0
     - BlueCyan #5392EB
     - Cyan #83E7EB
@@ -79,3 +110,16 @@
 
 # Image processing flow
 - Upload -> pending-recipe blob -> Function (exiftool, OES, recipe JSON) -> processed-recipe-blob -> User confirmation -> Database
+
+
+# Recipe Upload flow
+
+- Drag image
+- Send to action
+  - Read exif
+  - Return recipe JSON
+- Populate recipe card -- show wheel & settings & stuff
+- Enable the Save button
+- Store original image as blob or object storage
+- Generate OES, store as blob or object storage
+- Process image into smaller version

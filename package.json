@@ -7,25 +7,41 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint .",
+    "test": "vitest run",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "netlify dev:exec drizzle-kit migrate",
+    "db:studio": "netlify dev:exec drizzle-kit studio",
+    "db:import:om-recipes": "node scripts/import-om-recipes-to-db.mjs"
   },
   "dependencies": {
     "@netlify/blobs": "^10.6.0",
+    "@netlify/functions": "^5.1.2",
+    "@netlify/neon": "^0.1.2",
+    "@uswriting/exiftool": "^1.0.9",
     "blobshape": "^1.0.0",
     "bright": "^1.0.0",
+    "drizzle-orm": "^0.45.1",
     "markdown-to-jsx": "^7.7.16",
     "next": "^16.0.8",
+    "oci-common": "^2.125.3",
+    "oci-functions": "^2.126.0",
+    "oci-objectstorage": "^2.125.3",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-dropzone": "^15.0.0",
     "unique-names-generator": "^4.7.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.15",
     "babel-plugin-react-compiler": "^1.0.0",
     "baseline-browser-mapping": "^2.9.19",
+    "dotenv": "^16.6.1",
+    "drizzle-kit": "^0.31.9",
     "eslint": "9.39.2",
     "eslint-config-next": "^16.0.8",
     "postcss": "^8.4.36",
-    "tailwindcss": "^4.1.15"
+    "tailwindcss": "^4.1.15",
+    "vitest": "^3.2.4"
   }
 }

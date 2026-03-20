@@ -48,6 +48,37 @@ Set the measurement id via:
 NEXT_PUBLIC_GA4_MEASUREMENT_ID=G-XXXXXXXXXX
 ```
 
+## Passwordless auth
+
+This app now uses first-party passwordless magic links backed by the app database.
+
+Required auth-related env vars:
+
+- `OCI_EMAIL_DELIVERY_ENDPOINT`
+- `OCI_EMAIL_DELIVERY_COMPARTMENT_OCID`
+- `OCI_EMAIL_SENDER`
+- `OCI_TENANCY_OCID`
+- `OCI_USER_OCID`
+- `OCI_FINGERPRINT`
+- `OCI_PRIVATE_KEY_B64`
+- `OCI_REGION`
+
+Magic links are one-time use and expire after 20 minutes. Sessions are stored server-side and use a 14 day rolling cookie.
+
+`OCI_EMAIL_DELIVERY_ENDPOINT` must be a full HTTPS endpoint. If you paste only the host, the app now normalizes it to `https://...`, but the safest value is the exact HTTPS endpoint from OCI Email Delivery configuration.
+
+## Uploaded image + OES asset URLs
+
+Uploaded assets are stored in Netlify Blob Store and served via a Netlify **Edge Function**.
+
+- OES files: `GET /oes/${slug}.oes`
+- Original images: `GET /images/${authorId}/${slug}.${ext}`
+
+Notes:
+
+- `authorId` is currently part of the public URL for organization, but the underlying blob key is `${slug}.${ext}`.
+- These URLs are written to the DB by `app/upload/actions.js` during upload.
+
 ## Resources
 
 - Check out the [Next.js on Netlify docs](https://docs.netlify.com/frameworks/next-js/overview/)

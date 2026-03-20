@@ -1,6 +1,7 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import RecipeSimpleCard from "../components/recipe-simple-card.jsx";
+import Link from 'next/link';
 import RecipeCard from "../components/recipe-card.jsx";
 
 export default function Page() {
@@ -8,7 +9,6 @@ export default function Page() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [selectedRecipeIndex, setSelectedRecipeIndex] = useState(null);
 
   // Shared search handler for both initial load and submission
@@ -28,70 +28,128 @@ export default function Page() {
     }
   }
 
-  // Helper function to get recipe id from Author and Name
+  // Helper function to get recipe id from a recipe row
   function getRecipeId(recipe) {
     if (!recipe) return null;
-    return recipe.id;
+    // Prefer uuid for URL identity; fall back to slug for older data.
+    const id = recipe.uuid ?? recipe.slug;
+    return id == null || String(id).trim() === '' ? null : id;
   }
 
-  // Effect: On mount, check for id in URL and fetch by id if present, else fetch all recipes
+  const selectedRecipe = useMemo(() => {
+    if (selectedRecipeIndex == null) return null;
+    if (!Array.isArray(results) || results.length === 0) return null;
+    if (selectedRecipeIndex < 0 || selectedRecipeIndex >= results.length) return null;
+    return results[selectedRecipeIndex] ?? null;
+  }, [results, selectedRecipeIndex]);
+
+  const isModalOpen = selectedRecipe != null;
+
+  const openRecipeAtIndex = useCallback(
+    (index) => {
+      if (!Array.isArray(results) || results.length === 0) return;
+      if (!Number.isInteger(index)) return;
+      if (index < 0 || index >= results.length) return;
+      const r = results[index];
+      const id = getRecipeId(r);
+      if (!id) return;
+
+      setSelectedRecipeIndex(index);
+
+      const url = new URL(window.location.href);
+      url.searchParams.set('id', id);
+      window.history.pushState({}, '', url);
+    },
+    [results]
+  );
+
+  const closeModal = useCallback(() => {
+    setSelectedRecipeIndex(null);
+    const url = new URL(window.location.href);
+    url.searchParams.delete('id');
+    window.history.replaceState({}, '', url.pathname + url.search);
+  }, []);
+
   useEffect(() => {
       doSearch("");
   }, []);
 
-  // Effect: When results are updated or on mount, auto-select recipe if 'id' query param is present.
+  // Auto-select recipe if URL contains ?id=... once results are loaded.
   useEffect(() => {
     if (!results || results.length === 0) return;
+
     const params = new URLSearchParams(window.location.search);
-    const recipeId = params.get("id");
-    if (recipeId) {
-      console.log('Found recipe id' + recipeId + ' ... searching for it')
-      // Find recipe with matching id
-      const index = results.findIndex(
-        (r) => getRecipeId(r) === recipeId
-      );
-      console.log('found it at index ' + index)
-      if (index !== -1) {
-        setSelectedRecipe(results[index]);
-        setSelectedRecipeIndex(index);
-      } else {
-        setSelectedRecipe(null);
-        setSelectedRecipeIndex(null);
-      }
-    } else {
-      setSelectedRecipe(null);
+    const recipeKey = params.get("id") || params.get("uuid") || params.get("slug");
+    if (!recipeKey) {
       setSelectedRecipeIndex(null);
+      return;
     }
+
+    const index = results.findIndex((r) => getRecipeId(r) === recipeKey);
+    setSelectedRecipeIndex(index >= 0 ? index : null);
   }, [results]);
 
-  // Effect: Listen for browser 'popstate' navigation to update modal.
+  // Keep modal state in sync with back/forward browser navigation.
   useEffect(() => {
     function handlePopState() {
       const params = new URLSearchParams(window.location.search);
-      const urlId = params.get("id");
-      if (urlId && results && results.length > 0) {
-        const index = results.findIndex(
-          (r) => getRecipeId(r) === urlId
-        );
-        if (index !== -1) {
-          setSelectedRecipe(results[index]);
-          setSelectedRecipeIndex(index);
-        } else {
-          setSelectedRecipe(null);
-          setSelectedRecipeIndex(null);
-        }
-      } else {
-        setSelectedRecipe(null);
+      const recipeKey = params.get("id") || params.get("uuid") || params.get("slug");
+      if (!recipeKey) {
         setSelectedRecipeIndex(null);
+        return;
       }
-    }
-    window.addEventListener("popstate", handlePopState);
+      if (!results || results.length === 0) return;
 
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
+      const index = results.findIndex((r) => getRecipeId(r) === recipeKey);
+      setSelectedRecipeIndex(index >= 0 ? index : null);
+    }
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
   }, [results]);
 
+  // Keyboard controls when modal is open.
+  useEffect(() => {
+    if (!isModalOpen) return;
+
+    function onKeyDown(e) {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeModal();
+        return;
+      }
+      if (e.key === 'ArrowLeft') {
+        if (selectedRecipeIndex == null) return;
+        const prev = selectedRecipeIndex - 1;
+        if (prev >= 0) {
+          e.preventDefault();
+          openRecipeAtIndex(prev);
+        }
+        return;
+      }
+      if (e.key === 'ArrowRight') {
+        if (selectedRecipeIndex == null) return;
+        const next = selectedRecipeIndex + 1;
+        if (Array.isArray(results) && next < results.length) {
+          e.preventDefault();
+          openRecipeAtIndex(next);
+        }
+      }
+    }
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [closeModal, isModalOpen, openRecipeAtIndex, results, selectedRecipeIndex]);
+
+  // Prevent background scroll while modal is open.
+  useEffect(() => {
+    if (!isModalOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [isModalOpen]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -120,22 +178,25 @@ export default function Page() {
         </form>
       </div>
       <div className="w-full">
-        {selectedRecipe ? (
-          <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-            <div className="bg-white rounded shadow-lg relative max-w-5xl w-full p-6 flex flex-col items-center">
+        {isModalOpen ? (
+          <div
+            className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
+            onClick={(e) => {
+              // Backdrop click closes; clicks inside the dialog should not.
+              if (e.target === e.currentTarget) closeModal();
+            }}
+          >
+            <div
+              className="bg-white rounded shadow-lg relative max-w-5xl w-full p-6 flex flex-col items-center"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Recipe details"
+            >
               {/* Arrow Navigation */}
               <div className="absolute left-0 top-1/2 transform -translate-y-1/2 pl-4">
                 {selectedRecipeIndex > 0 && (
                   <button
-                    onClick={() => {
-                      const newIndex = selectedRecipeIndex - 1;
-                      const prevRecipe = results[newIndex];
-                      setSelectedRecipe(prevRecipe);
-                      setSelectedRecipeIndex(newIndex);
-                      const url = new URL(window.location.href);
-                      url.searchParams.set('id', prevRecipe.id);
-                      window.history.pushState({}, '', url);
-                    }}
+                    onClick={() => openRecipeAtIndex(selectedRecipeIndex - 1)}
                     aria-label="Previous Recipe"
                     className="bg-white rounded-full shadow p-2 text-2xl hover:bg-gray-200"
                   >
@@ -144,17 +205,9 @@ export default function Page() {
                 )}
               </div>
               <div className="absolute right-0 top-1/2 transform -translate-y-1/2 pr-4">
-                {selectedRecipeIndex < results.length - 1 && (
+                {Array.isArray(results) && selectedRecipeIndex < results.length - 1 && (
                   <button
-                    onClick={() => {
-                      const newIndex = selectedRecipeIndex + 1;
-                      const nextRecipe = results[newIndex];
-                      setSelectedRecipe(nextRecipe);
-                      setSelectedRecipeIndex(newIndex);
-                      const url = new URL(window.location.href);
-                      url.searchParams.set('id', nextRecipe.id);
-                      window.history.pushState({}, '', url);
-                    }}
+                    onClick={() => openRecipeAtIndex(selectedRecipeIndex + 1)}
                     aria-label="Next Recipe"
                     className="bg-white rounded-full shadow p-2 text-2xl hover:bg-gray-200"
                   >
@@ -162,14 +215,9 @@ export default function Page() {
                   </button>
                 )}
               </div>
+
               <button
-                onClick={() => {
-                  setSelectedRecipe(null);
-                  setSelectedRecipeIndex(null);
-                  const url = new URL(window.location.href);
-                  url.searchParams.delete('id');
-                  window.history.replaceState({}, '', url.pathname + url.search);
-                }}
+                onClick={closeModal}
                 className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl font-bold"
                 aria-label="Close"
                 style={{
@@ -182,6 +230,22 @@ export default function Page() {
               >
                 ×
               </button>
+
+              <div className="w-full flex items-center justify-end pr-10">
+                {(() => {
+                  const id = getRecipeId(selectedRecipe);
+                  if (!id) return null;
+                  return (
+                    <Link
+                      href={`/recipes/${encodeURIComponent(id)}`}
+                      className="text-sm text-blue-700 hover:underline"
+                    >
+                      Open full recipe page
+                    </Link>
+                  );
+                })()}
+              </div>
+
               <div
                 className="w-full"
                 style={{
@@ -204,17 +268,33 @@ export default function Page() {
             {!loading && !error && results.length > 0 && (
               <ul className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 w-full">
                 {results.map((r, i) => (
-                  <li key={r.Name + r.Author + i} className="p-0">
-                    <RecipeSimpleCard
-                      recipe={r}
-                      onClick={() => {
-                        setSelectedRecipe(r);
-                        setSelectedRecipeIndex(i);
-                        const url = new URL(window.location.href);
-                        url.searchParams.set('id', r.id);
-                        window.history.pushState({}, '', url);
-                      }}
-                    />
+                  <li key={r.slug} className="p-0">
+                    {(() => {
+                      const id = getRecipeId(r);
+                      if (!id) {
+                        return (
+                          <div className="block opacity-60 cursor-not-allowed" title="Recipe is missing uuid/slug">
+                            <RecipeSimpleCard recipe={r} />
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <button
+                          type="button"
+                          className="block text-left w-full"
+                          onClick={() => openRecipeAtIndex(i)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              openRecipeAtIndex(i);
+                            }
+                          }}
+                        >
+                          <RecipeSimpleCard recipe={r} />
+                        </button>
+                      );
+                    })()}
                   </li>
                 ))}
               </ul>

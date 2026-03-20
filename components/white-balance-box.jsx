@@ -16,7 +16,7 @@ import React from "react";
  */
 export default function WhiteBalanceBox({
   wb = 'Auto',
-  keepWarm = 'off',
+  wbTemperature = '',
   green = 0,
   amber = 0,
   boxSize = 150,
@@ -35,10 +35,15 @@ export default function WhiteBalanceBox({
   const px = half + norm(x) * half;
   const py = half - norm(y) * half; // SVG y+ is down, so flip sign for up/y+
 
+  const wbLabel =
+    typeof wb === "string" && wb.includes("Custom") && wbTemperature
+      ? `${wbTemperature}K`
+      : wb;
+
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
       <div style={{ marginTop: 8, textAlign: "center", fontWeight: 500 }}>
-        {wb ? wb + " K" : "AutoWB"} {amber < 0 ? 'B' : 'A'}.{Math.abs(amber)}  {green < 0 ? 'M' : 'G'}.{Math.abs(green)}
+        {wbLabel} {amber < 0 ? 'B' : 'A'}.{Math.abs(amber)}  {green < 0 ? 'M' : 'G'}.{Math.abs(green)}
       </div>
       <div
         style={{
@@ -120,9 +125,6 @@ export default function WhiteBalanceBox({
           />
         </svg>
       </div>
-        {keepWarm && (<div style={{ marginTop: 4, textAlign: "center", fontWeight: 200 }}>
-        Keep warm colors: {keepWarm}
-      </div>)}
     </div>
   );
 }

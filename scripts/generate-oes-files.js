@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 // Define saturation order
 const satOrder = [
   "Yellow", "Orange", "OrangeRed", "Red",
-  "RedMagenta", "Magenta", "Blue", "BlueCyan",
+  "Magenta", "Violet", "Blue", "BlueCyan",
   "Cyan", "CyanGreen", "Green", "GreenYellow"
 ];
 
@@ -84,3 +84,5 @@ function main() {
 }
 
 main();
+
+export { makeOESXml };

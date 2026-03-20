@@ -5,8 +5,8 @@ const COLORS = [
   { name: "Orange", hex: "#DBA12A" },
   { name: "OrangeRed", hex: "#CC1210" },
   { name: "Red", hex: "#CD076B" },
-  { name: "RedMagenta", hex: "#970AA0" },
-  { name: "Magenta", hex: "#7710E8" },
+  { name: "Magenta", hex: "#970AA0" },
+  { name: "Violet", hex: "#7710E8" },
   { name: "Blue", hex: "#3054E0" },
   { name: "BlueCyan", hex: "#5392EB" },
   { name: "Cyan", hex: "#83E7EB" },
@@ -22,6 +22,12 @@ const RADIUS_MAX = 90;
 const SIZE = 260;
 const CENTER = SIZE / 2;
 const VERTEX_RADIUS = 5; // colored marker size
+
+// Round coords so SSR/CSR floating point differences do not trigger hydration errors.
+const roundCoord = (value, precision = 3) => {
+  const factor = 10 ** precision;
+  return Math.round(value * factor) / factor;
+};
 
 /**
  * SaturationWheel component
@@ -53,7 +59,7 @@ const SaturationWheel = ({ values = [] }) => {
   });
 
   // Build points string for polygon fill
-  const polygonPoints = vertices.map(v => `${v.x},${v.y}`).join(" ");
+  const polygonPoints = vertices.map(v => `${roundCoord(v.x)},${roundCoord(v.y)}`).join(" ");
 
   // Outer polygon (maximum saturation, thick colored lines, colored transparent fill)
   const outerVertices = Array.from({ length: POINTS }, (_, i) => {
@@ -63,7 +69,7 @@ const SaturationWheel = ({ values = [] }) => {
       y: CENTER + RADIUS_MAX * Math.sin(angle)
     };
   });
-  const outerPolygonPoints = outerVertices.map(v => `${v.x},${v.y}`).join(" ");
+  const outerPolygonPoints = outerVertices.map(v => `${roundCoord(v.x)},${roundCoord(v.y)}`).join(" ");
 
   // Helper to blend colors (simple average in RGB space for 2 hex strings)
   const blendHex = (hex1, hex2, t = 0.5) => {
@@ -135,10 +141,10 @@ const SaturationWheel = ({ values = [] }) => {
         return (
           <line
             key={`outer-line-${i}`}
-            x1={v.x}
-            y1={v.y}
-            x2={next.x}
-            y2={next.y}
+            x1={roundCoord(v.x)}
+            y1={roundCoord(v.y)}
+            x2={roundCoord(next.x)}
+            y2={roundCoord(next.y)}
             stroke={cA}
             strokeWidth={7}
             strokeLinecap="round"
@@ -169,10 +175,10 @@ const SaturationWheel = ({ values = [] }) => {
         return (
           <line
             key={`line-${i}`}
-            x1={v.x}
-            y1={v.y}
-            x2={next.x}
-            y2={next.y}
+            x1={roundCoord(v.x)}
+            y1={roundCoord(v.y)}
+            x2={roundCoord(next.x)}
+            y2={roundCoord(next.y)}
             stroke="#fff"
             strokeWidth="2"
           />
@@ -182,8 +188,8 @@ const SaturationWheel = ({ values = [] }) => {
       {vertices.map((v, i) => (
         <circle
           key={`circle-${i}`}
-          cx={v.x}
-          cy={v.y}
+          cx={roundCoord(v.x)}
+          cy={roundCoord(v.y)}
           r={VERTEX_RADIUS}
           fill={COLORS[i].hex}
           stroke={COLORS[i].hex}
@@ -203,8 +209,8 @@ const SaturationWheel = ({ values = [] }) => {
         return (
           <text
             key={`sat-value-${i}`}
-            x={x}
-            y={y}
+            x={roundCoord(x)}
+            y={roundCoord(y)}
             fill="#fff"
             fontSize="16"
             textAnchor="middle"

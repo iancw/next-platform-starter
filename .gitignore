@@ -2,14 +2,20 @@
 
 # dependencies
 /node_modules
+__pycache__
 /.pnp
 .pnp.js
+
+ignored
 
 # testing
 /coverage
 
 # next.js
 /.next/
+**/.venv/
+**/.venv*/
+**/.pytest_cache/
 /out/
 
 # production

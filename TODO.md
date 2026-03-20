@@ -1,10 +1,43 @@
-- [ ] Set up auth in frontend app for upload page
-- [ ] Try out function
-- [ ] Set up database
-- [ ] Create user profile page (name, social links, id, picture)
-- [ ] Create upload page (requires login)
-- [ ] Filters to show various sample images or original images
-- [ ] Feature: Voting on recipes
+# Features
+- [ ] Feature: Liking recipes, sort by order of likes
+- [ ] Refactor frontend to use shadcn components and styling
+- [ ] Limit number of samples and recipes per author
 - [ ] Feature: User saves favorite recipes
 - [ ] Feature: Commenting on recipes
 - [ ] Feature: Notifications for activity on your recipes
+
+# Completed Features
+- [x] Set up auth in frontend app for upload page
+- [x] Try out function
+- [x] Set up database
+- [x] Create Author profile page (name, social links, id, picture)
+- [x] Create upload page (requires login)
+- [x] Clean up data in DB (change "Sample" to "Lighthouse golden hour", drop fullSizeUrl from all current images)
+- [x] Add OES link to the image, make it match the slug
+- [x] Filters to show various sample images or original images
+- [x] Feature: Manage your sample images after uploading
+- [x] Upload multiple images, automatically determine which recipe they match
+- [x] Community samples
+- [x] Recipe similarity
+
+# Pre-Deploy Features
+- [ ] Add instructions on uploading image to camera
+- [ ] Test uploading resized images to camera
+
+# Tasks
+- [x] Set up unique authors and author emails for current recipes. Add a note when you log in to claim a particular recipe by emailing help@om-recipes.com
+- [x] Set up budgets in OCI compartment to limit spend
+
+# Bugs
+
+- [x] There are two recipes pages and one throws errors ... reconsile /recipes/app and app
+- [x] Log In button doesn't change after logout right away, needs extra refresh
+- [x] Log in button isn't aligned properly
+- [x] Hide kofi link on profile page
+- [x] Update profile button always enabled, should be clear when you've saved changes
+- [x] Set up email for help@om-recipes.com
+- [x] Author links don't work for ... authors who aren't me
+
+# Deployment
+- [x] Configure database and other environnment variables
+- [x] Push main (squash merge)
