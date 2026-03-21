@@ -1,6 +1,6 @@
-import { getNetlifyContext, uploadDisabled } from 'utils';
+import { uploadDisabled } from 'utils';
+import { Alert } from 'components/alert';
 import { Markdown } from 'components/markdown';
-import { ContextAlert } from 'components/context-alert';
 import RecipeUpload from './RecipeUpload';
 import { getSession } from '../../lib/auth.js';
 import LoginButton from 'components/LoginButton';
@@ -23,16 +23,15 @@ export default async function Page() {
 
     return (
         <>
-            <ContextAlert
-                addedChecksFunction={(ctx) => {
-                    return uploadDisabled ? uploadDisabledText : null;
-                }}
-                className="mb-6"
-            />
+            {uploadDisabled ? (
+                <Alert className="mb-6">
+                    <Markdown content={uploadDisabledText} />
+                </Alert>
+            ) : null}
             <h1 className="mb-8">Recipes</h1>
-            {!!getNetlifyContext() && (
+            <Markdown content={explainer} className="mb-12" />
+            {!uploadDisabled &&
                 <>
-                    <Markdown content={explainer} className="mb-12" />
                     {user ? (
                         <RecipeUpload initialAuthor={session?.author?.name ?? user?.name ?? ''} />
                     ) : (
@@ -44,7 +43,7 @@ export default async function Page() {
                         </>
                     )}
                 </>
-            )}
+            }
         </>
     );
 }

@@ -10,6 +10,7 @@ let findOrCreateAuthorForUserMock;
 let selectResults = [];
 let insertHandlers = [];
 let capturedImageValues = null;
+const originalDisableUploadsEnv = process.env.NEXT_PUBLIC_DISABLE_UPLOADS;
 
 const makeSelectChain = (result) => {
     const chain = {
@@ -51,6 +52,11 @@ async function loadActionsModule() {
 
 beforeEach(() => {
     vi.resetModules();
+    if (originalDisableUploadsEnv == null) {
+        delete process.env.NEXT_PUBLIC_DISABLE_UPLOADS;
+    } else {
+        process.env.NEXT_PUBLIC_DISABLE_UPLOADS = originalDisableUploadsEnv;
+    }
     selectResults = [];
     insertHandlers = [];
     capturedImageValues = null;
@@ -87,6 +93,39 @@ beforeEach(() => {
 });
 
 describe('prepareRecipeUploadAction duplicate handling', () => {
+    it('rejects uploads when uploads are disabled', async () => {
+        process.env.NEXT_PUBLIC_DISABLE_UPLOADS = 'true';
+
+        const { prepareRecipeUploadAction } = await loadActionsModule();
+
+        const result = await prepareRecipeUploadAction({
+            parameters: {
+                author: 'Author',
+                name: 'Recipe Name',
+                notes: '',
+                links: [],
+                imageMeta: {
+                    name: 'photo.jpg',
+                    type: 'image/jpeg',
+                    size: 2048,
+                    sha256: 'a'.repeat(64)
+                },
+                recipeSettings: {
+                    hasColorProfileSettings: true,
+                    hasToneLevel: true
+                }
+            }
+        });
+
+        expect(result).toEqual({
+            ok: false,
+            error: 'Uploads are disabled right now.'
+        });
+        expect(requireUserMock).not.toHaveBeenCalled();
+        expect(insertMock).not.toHaveBeenCalled();
+        expect(createParMock).not.toHaveBeenCalled();
+    });
+
     it('rejects images without color profile', async () => {
         const { prepareRecipeUploadAction } = await loadActionsModule();
 

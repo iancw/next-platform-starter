@@ -11,6 +11,7 @@ let finalizeRecipeUploadAction;
 let ResizeTimeoutError;
 let updateSetCalls = [];
 let consoleWarnMock;
+const originalDisableUploadsEnv = process.env.NEXT_PUBLIC_DISABLE_UPLOADS;
 
 vi.mock('../lib/auth.js', () => ({
     requireUser: () =>
@@ -43,6 +44,11 @@ vi.mock('../db/index.ts', () => ({
 describe('finalizeRecipeUploadAction resize orchestration', () => {
     beforeEach(async () => {
         vi.resetModules();
+        if (originalDisableUploadsEnv == null) {
+            delete process.env.NEXT_PUBLIC_DISABLE_UPLOADS;
+        } else {
+            process.env.NEXT_PUBLIC_DISABLE_UPLOADS = originalDisableUploadsEnv;
+        }
         updateSetCalls = [];
         headObjectMock = vi.fn();
         invokeMock = vi.fn();
@@ -102,6 +108,31 @@ describe('finalizeRecipeUploadAction resize orchestration', () => {
         expect(result.resizeAttempted).toBe(true);
         expect(result.resizeSucceeded).toBe(true);
         expect(result.resizeSkipped).toBe(false);
+    });
+
+    it('rejects finalize when uploads are disabled', async () => {
+        process.env.NEXT_PUBLIC_DISABLE_UPLOADS = 'true';
+
+        const result = await finalizeRecipeUploadAction({
+            parameters: {
+                recipeId: 1,
+                imageId: 2,
+                authorId: 3,
+                shouldCreateRecipe: true,
+                objectKey: 'authors/foo/recipes/img.jpg',
+                originalFileSize: 100
+            }
+        });
+
+        expect(result).toEqual({
+            ok: false,
+            error: 'Uploads are disabled right now.'
+        });
+        expect(selectMock).not.toHaveBeenCalled();
+        expect(insertMock).not.toHaveBeenCalled();
+        expect(updateMock).not.toHaveBeenCalled();
+        expect(headObjectMock).not.toHaveBeenCalled();
+        expect(invokeMock).not.toHaveBeenCalled();
     });
 
     it('continues when invoke fails', async () => {

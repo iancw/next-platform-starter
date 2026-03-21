@@ -19,6 +19,7 @@ const RESIZED_BUCKET = process.env.OCI_IMAGES_PROCESSED_BUCKET;
 const RESIZE_TIMEOUT_MS = Math.max(0, Number(process.env.IMAGE_RESIZE_TIMEOUT_MS ?? 90000));
 const RESIZE_INVOKE_MAX_ATTEMPTS = Math.max(1, Number(process.env.IMAGE_RESIZE_INVOKE_ATTEMPTS ?? 3));
 const RESIZE_RETRY_DELAY_MS = Math.max(0, Number(process.env.IMAGE_RESIZE_RETRY_DELAY_MS ?? 1500));
+const UPLOAD_DISABLED_ERROR = 'Uploads are disabled right now.';
 
 function withResizeTimeout(promise, timeoutMs) {
     if (!timeoutMs || timeoutMs <= 0) return promise;
@@ -61,6 +62,10 @@ function sleep(ms) {
     return new Promise((resolve) => {
         setTimeout(resolve, ms);
     });
+}
+
+function uploadsAreDisabled() {
+    return String(process.env.NEXT_PUBLIC_DISABLE_UPLOADS ?? '').toLowerCase() === 'true';
 }
 
 async function invokeResizeWithRetry({ sourceBucket, objectName, destinationBucket, timeoutMs }) {
@@ -205,6 +210,10 @@ async function findExistingImageAssociationBySha(sha256) {
 // Always be sanitizing data in real sites!
 export async function prepareRecipeUploadAction({ parameters }) {
     try {
+        if (uploadsAreDisabled()) {
+            return { ok: false, error: UPLOAD_DISABLED_ERROR };
+        }
+
         const session = await requireUser();
 
         const { author, name, notes, links, imageMeta, recipeSettings } = parameters ?? {};
@@ -456,6 +465,10 @@ export async function checkImageDuplicateAction({ parameters }) {
 
 export async function finalizeRecipeUploadAction({ parameters }) {
     try {
+        if (uploadsAreDisabled()) {
+            return { ok: false, error: UPLOAD_DISABLED_ERROR };
+        }
+
         await requireUser();
 
         const {
