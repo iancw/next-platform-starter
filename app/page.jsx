@@ -247,102 +247,112 @@ export default function Page() {
             </form>
           </div>
         </div>
-        <div className="flex w-full flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div
-            role="radiogroup"
-            aria-label="Displayed recipe image"
-            className="flex flex-row flex-wrap items-center gap-4 text-sm text-gray-700 justify-start"
-          >
-            {imageOptions.map((option) => {
-              const checked = selectedImageOption === option.value;
-              return (
-                <button
-                  key={option.value}
-                  type="button"
-                  role="radio"
-                  aria-checked={checked}
-                  onClick={() => setSelectedImageOption(option.value)}
-                  className="inline-flex items-center gap-2 hover:opacity-80"
-                >
-                  <span
-                    aria-hidden="true"
-                    className={`inline-flex h-5 w-5 items-center justify-center rounded-full border transition-colors ${
-                      checked ? 'border-blue-600 bg-blue-600' : 'border-gray-400 bg-white'
-                    }`}
+        <div className="flex w-full flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <fieldset className="m-0 flex min-w-0 flex-col gap-2 rounded-lg border border-gray-300 px-4 py-3">
+            <legend id="recipe-image-group-label" className="text-sm font-medium text-gray-700">
+              Image
+            </legend>
+            <div
+              role="radiogroup"
+              aria-labelledby="recipe-image-group-label"
+              className="flex flex-row flex-wrap items-center gap-4 text-sm text-gray-700 justify-start"
+            >
+              {imageOptions.map((option) => {
+                const checked = selectedImageOption === option.value;
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    role="radio"
+                    aria-checked={checked}
+                    onClick={() => setSelectedImageOption(option.value)}
+                    className="inline-flex items-center gap-2 hover:opacity-80"
                   >
-                    <span className="h-2 w-2 rounded-full bg-white" />
-                  </span>
-                  <span>{option.label}</span>
-                </button>
-              );
-            })}
-          </div>
-          <div
-            role="radiogroup"
-            aria-label="Recipe filters"
-            className="flex flex-row flex-wrap items-center gap-4 text-sm text-gray-700 md:justify-end"
-          >
-            <button
-              type="button"
-              role="radio"
-              aria-checked={!onlyMine && !onlySaved}
-              onClick={() => {
-                setOnlyMine(false);
-                setOnlySaved(false);
-              }}
-              className="inline-flex items-center gap-2 hover:opacity-80"
+                    <span
+                      aria-hidden="true"
+                      className={`inline-flex h-5 w-5 items-center justify-center rounded-full border transition-colors ${
+                        checked ? 'border-blue-600 bg-blue-600' : 'border-gray-400 bg-white'
+                      }`}
+                    >
+                      <span className="h-2 w-2 rounded-full bg-white" />
+                    </span>
+                    <span>{option.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </fieldset>
+          <fieldset className="m-0 flex min-w-0 flex-col gap-2 rounded-lg border border-gray-300 px-4 py-3 md:items-end">
+            <legend id="recipe-filter-group-label" className="text-sm font-medium text-gray-700">
+              Filter
+            </legend>
+            <div
+              role="radiogroup"
+              aria-labelledby="recipe-filter-group-label"
+              className="flex flex-row flex-wrap items-center gap-4 text-sm text-gray-700 md:justify-end"
             >
-              <span
-                aria-hidden="true"
-                className={`inline-flex h-5 w-5 items-center justify-center rounded-full border transition-colors ${
-                  !onlyMine && !onlySaved ? 'border-blue-600 bg-blue-600' : 'border-gray-400 bg-white'
-                }`}
+              <button
+                type="button"
+                role="radio"
+                aria-checked={!onlyMine && !onlySaved}
+                onClick={() => {
+                  setOnlyMine(false);
+                  setOnlySaved(false);
+                }}
+                className="inline-flex items-center gap-2 hover:opacity-80"
               >
-                <span className="h-2 w-2 rounded-full bg-white" />
-              </span>
-              <span>All</span>
-            </button>
-            <button
-              type="button"
-              role="radio"
-              aria-checked={onlyMine}
-              onClick={() => {
-                setOnlyMine(true);
-                setOnlySaved(false);
-              }}
-              className="inline-flex items-center gap-2 hover:opacity-80"
-            >
-              <span
-                aria-hidden="true"
-                className={`inline-flex h-5 w-5 items-center justify-center rounded-full border transition-colors ${
-                  onlyMine ? 'border-blue-600 bg-blue-600' : 'border-gray-400 bg-white'
-                }`}
+                <span
+                  aria-hidden="true"
+                  className={`inline-flex h-5 w-5 items-center justify-center rounded-full border transition-colors ${
+                    !onlyMine && !onlySaved ? 'border-blue-600 bg-blue-600' : 'border-gray-400 bg-white'
+                  }`}
+                >
+                  <span className="h-2 w-2 rounded-full bg-white" />
+                </span>
+                <span>All</span>
+              </button>
+              <button
+                type="button"
+                role="radio"
+                aria-checked={onlyMine}
+                onClick={() => {
+                  setOnlyMine(true);
+                  setOnlySaved(false);
+                }}
+                className="inline-flex items-center gap-2 hover:opacity-80"
               >
-                <span className="h-2 w-2 rounded-full bg-white" />
-              </span>
-              <span>Mine</span>
-            </button>
-            <button
-              type="button"
-              role="radio"
-              aria-checked={onlySaved}
-              onClick={() => {
-                setOnlySaved(true);
-                setOnlyMine(false);
-              }}
-              className="inline-flex items-center gap-2 hover:opacity-80"
-            >
-              <span
-                aria-hidden="true"
-                className={`inline-flex h-5 w-5 items-center justify-center rounded-full border transition-colors ${
-                  onlySaved ? 'border-blue-600 bg-blue-600' : 'border-gray-400 bg-white'
-                }`}
+                <span
+                  aria-hidden="true"
+                  className={`inline-flex h-5 w-5 items-center justify-center rounded-full border transition-colors ${
+                    onlyMine ? 'border-blue-600 bg-blue-600' : 'border-gray-400 bg-white'
+                  }`}
+                >
+                  <span className="h-2 w-2 rounded-full bg-white" />
+                </span>
+                <span>Mine</span>
+              </button>
+              <button
+                type="button"
+                role="radio"
+                aria-checked={onlySaved}
+                onClick={() => {
+                  setOnlySaved(true);
+                  setOnlyMine(false);
+                }}
+                className="inline-flex items-center gap-2 hover:opacity-80"
               >
-                <span className="h-2 w-2 rounded-full bg-white" />
-              </span>
-              <span>Saved</span>
-            </button>
-          </div>
+                <span
+                  aria-hidden="true"
+                  className={`inline-flex h-5 w-5 items-center justify-center rounded-full border transition-colors ${
+                    onlySaved ? 'border-blue-600 bg-blue-600' : 'border-gray-400 bg-white'
+                  }`}
+                >
+                  <span className="h-2 w-2 rounded-full bg-white" />
+                </span>
+                <span>Saved</span>
+              </button>
+            </div>
+          </fieldset>
         </div>
       </div>
       <div className="w-full">
