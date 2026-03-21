@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { consumeMagicLink } from '../../../lib/auth.js';
+import { publicAppUrl } from '../../../lib/auth-url.js';
 
 const PUBLIC_ERROR_CODES = {
     missing_token: 'missing_token',
@@ -12,7 +13,7 @@ export async function GET(request) {
     const token = request.nextUrl.searchParams.get('token');
 
     if (!token) {
-        const loginUrl = new URL('/login', request.url);
+        const loginUrl = publicAppUrl('/login', request.nextUrl.origin);
         loginUrl.searchParams.set('error', PUBLIC_ERROR_CODES.missing_token);
         return NextResponse.redirect(loginUrl);
     }
@@ -24,7 +25,7 @@ export async function GET(request) {
             userAgent: request.headers.get('user-agent')
         });
 
-        return NextResponse.redirect(new URL(result.redirectTo, request.url));
+        return NextResponse.redirect(publicAppUrl(result.redirectTo, request.nextUrl.origin));
     } catch (error) {
         const message = String(error?.message ?? '');
         let errorCode = PUBLIC_ERROR_CODES.unable_to_sign_in;
@@ -39,7 +40,7 @@ export async function GET(request) {
             error: message || String(error)
         });
 
-        const loginUrl = new URL('/login', request.url);
+        const loginUrl = publicAppUrl('/login', request.nextUrl.origin);
         loginUrl.searchParams.set('error', errorCode);
         return NextResponse.redirect(loginUrl);
     }

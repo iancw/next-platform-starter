@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { normalizeRedirectPath, sendMagicLinkEmail } from '../../../lib/auth.js';
+import { publicAppUrl } from '../../../lib/auth-url.js';
 
 const PUBLIC_ERROR_CODES = {
     invalid_email: 'invalid_email',
@@ -7,7 +8,7 @@ const PUBLIC_ERROR_CODES = {
 };
 
 function redirectWithParams(request, values) {
-    const url = new URL('/login', request.url);
+    const url = publicAppUrl('/login', request.nextUrl.origin);
     for (const [key, value] of Object.entries(values)) {
         if (value == null || value === '') continue;
         url.searchParams.set(key, String(value));

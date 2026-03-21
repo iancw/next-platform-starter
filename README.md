@@ -54,6 +54,7 @@ This app now uses first-party passwordless magic links backed by the app databas
 
 Required auth-related env vars:
 
+- `APP_BASE_URL`
 - `OCI_EMAIL_DELIVERY_ENDPOINT`
 - `OCI_EMAIL_DELIVERY_COMPARTMENT_OCID`
 - `OCI_EMAIL_SENDER`
@@ -64,6 +65,10 @@ Required auth-related env vars:
 - `OCI_REGION`
 
 Magic links are one-time use and expire after 20 minutes. Sessions are stored server-side and use a 14 day rolling cookie.
+
+Set `APP_BASE_URL` to the canonical public origin for the deployed site, for example `https://www.omrecipes.dev`. This prevents magic links from being generated against preview or secondary hostnames.
+
+If production serves more than one hostname that should share auth, set `AUTH_COOKIE_DOMAIN` to the shared parent domain, for example `omrecipes.dev`. If you only want one canonical hostname, it is usually better to configure Netlify to redirect all other domains to that primary host.
 
 `OCI_EMAIL_DELIVERY_ENDPOINT` must be a full HTTPS endpoint. If you paste only the host, the app now normalizes it to `https://...`, but the safest value is the exact HTTPS endpoint from OCI Email Delivery configuration.
 
