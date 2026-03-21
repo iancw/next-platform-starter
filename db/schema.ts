@@ -242,10 +242,29 @@ export const recipeComparisonImages = pgTable(
     ]
 );
 
+export const savedRecipes = pgTable(
+    'saved_recipes',
+    {
+        userId: integer('user_id')
+            .notNull()
+            .references(() => users.id, { onDelete: 'cascade' }),
+        recipeId: integer('recipe_id')
+            .notNull()
+            .references(() => recipes.id, { onDelete: 'cascade' }),
+        createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull()
+    },
+    (t) => [
+        primaryKey({ columns: [t.userId, t.recipeId], name: 'saved_recipes_pk' }),
+        index('saved_recipes_user_id_idx').on(t.userId),
+        index('saved_recipes_recipe_id_idx').on(t.recipeId)
+    ]
+);
+
 export const usersRelations = relations(users, ({ many }) => ({
     authors: many(authors),
     magicLinks: many(authMagicLinks),
-    sessions: many(authSessions)
+    sessions: many(authSessions),
+    savedRecipes: many(savedRecipes)
 }));
 
 export const authorsRelations = relations(authors, ({ one, many }) => ({
@@ -273,7 +292,8 @@ export const recipesRelations = relations(recipes, ({ one, many }) => ({
         references: [authors.id]
     }),
     sampleImages: many(recipeSampleImages),
-    comparisonImages: many(recipeComparisonImages)
+    comparisonImages: many(recipeComparisonImages),
+    savedByUsers: many(savedRecipes)
 }));
 
 export const recipeSampleImagesRelations = relations(recipeSampleImages, ({ one }) => ({
@@ -299,6 +319,17 @@ export const recipeComparisonImagesRelations = relations(recipeComparisonImages,
     image: one(images, {
         fields: [recipeComparisonImages.imageId],
         references: [images.id]
+    })
+}));
+
+export const savedRecipesRelations = relations(savedRecipes, ({ one }) => ({
+    user: one(users, {
+        fields: [savedRecipes.userId],
+        references: [users.id]
+    }),
+    recipe: one(recipes, {
+        fields: [savedRecipes.recipeId],
+        references: [recipes.id]
     })
 }));
 

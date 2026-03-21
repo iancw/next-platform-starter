@@ -98,7 +98,7 @@ describe('deleteMyRecipeAction image cleanup', () => {
         const deleteWhereMock = vi.fn(() => ({ returning: deleteReturningMock }));
         deleteMock = vi.fn(() => ({ where: deleteWhereMock }));
 
-        const mod = await import('../app/my-recipes/actions.js');
+        const mod = await import('../app/recipes/[id]/actions.js');
         deleteMyRecipeAction = mod.deleteMyRecipeAction;
     });
 

@@ -6,13 +6,21 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import AuthorSocialLinks from './AuthorSocialLinks';
 import DeleteConfirmationModal from './DeleteConfirmationModal.jsx';
+import { getRecipePreviewImage, SAMPLE_IMAGE_SELECTION } from '../lib/recipe-image-selection.js';
 
 function isRedirectError(error) {
   if (!error || typeof error !== 'object') return false;
   return 'digest' in error && typeof error.digest === 'string' && error.digest.startsWith('NEXT_REDIRECT');
 }
 
-export default function RecipeCard({ recipe, isOwner = false, updateRecipeAction, deleteRecipeAction }) {
+export default function RecipeCard({
+  recipe,
+  isOwner = false,
+  updateRecipeAction,
+  deleteRecipeAction,
+  onSavedChange,
+  selectedImageOption = SAMPLE_IMAGE_SELECTION
+}) {
   const router = useRouter();
 
   const [editing, setEditing] = useState(false);
@@ -24,9 +32,14 @@ export default function RecipeCard({ recipe, isOwner = false, updateRecipeAction
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteError, setDeleteError] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isRecipeSaved, setIsRecipeSaved] = useState(Boolean(recipe?.isSaved));
+  const [saveToggleError, setSaveToggleError] = useState('');
+  const [isSaveTogglePending, setIsSaveTogglePending] = useState(false);
 
   const recipeName = recipe?.recipeName ?? '';
   const recipeDescription = recipe?.description ?? '';
+  const canSaveRecipe = Number.isFinite(Number(recipe?.id));
+  const viewerIsLoggedIn = Boolean(recipe?.viewerIsLoggedIn);
 
   const canEdit = Boolean(isOwner && typeof updateRecipeAction === 'function');
   const canDelete = Boolean(isOwner && typeof deleteRecipeAction === 'function');
@@ -44,8 +57,11 @@ export default function RecipeCard({ recipe, isOwner = false, updateRecipeAction
     }
   }, [canEdit, editing]);
 
-  // Prefer sample images, then comparison images (fallback).
-  const previewImage = recipe?.sampleImages?.[0] ?? recipe?.comparisonImages?.[0] ?? null;
+  useEffect(() => {
+    setIsRecipeSaved(Boolean(recipe?.isSaved));
+  }, [recipe?.isSaved, recipe?.id]);
+
+  const previewImage = getRecipePreviewImage(recipe, selectedImageOption);
 
   const downloadImageHref =
     previewImage?.fullSizeUrl ?? previewImage?.smallUrl ?? null;
@@ -154,6 +170,48 @@ export default function RecipeCard({ recipe, isOwner = false, updateRecipeAction
     }
   };
 
+  const handleToggleSavedRecipe = async () => {
+    if (!canSaveRecipe || isSaveTogglePending) return;
+
+    setSaveToggleError('');
+    setIsSaveTogglePending(true);
+
+    try {
+      const redirectTo = `${window.location.pathname}${window.location.search}`;
+      const response = await fetch('/recipes/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          recipeId: Number(recipe?.id),
+          redirectTo
+        })
+      });
+
+      const body = await response.json().catch(() => ({}));
+
+      if (response.status === 401 && body?.loginUrl) {
+        router.push(body.loginUrl);
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error(body?.error || 'Failed to update saved recipe');
+      }
+
+      const nextSaved = Boolean(body?.isSaved);
+      setIsRecipeSaved(nextSaved);
+      if (typeof onSavedChange === 'function') {
+        onSavedChange(recipe?.id, nextSaved);
+      }
+    } catch (err) {
+      setSaveToggleError(err?.message || 'Failed to update saved recipe');
+    } finally {
+      setIsSaveTogglePending(false);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-3 items-start w-full">
       {(canEdit || canDelete) && (
@@ -218,20 +276,62 @@ export default function RecipeCard({ recipe, isOwner = false, updateRecipeAction
         >
           <div className="flex-1 flex flex-col gap-3">
             {editing ? (
-              <label className="flex flex-col gap-1">
-                <span className="text-sm text-gray-700">Recipe name</span>
-                <input
-                  className="input"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  disabled={isSaving}
-                  required
-                />
-              </label>
+              <div className="flex items-start gap-3 flex-wrap">
+                <label className="flex flex-col gap-1 flex-1 min-w-[240px]">
+                  <span className="text-sm text-gray-700">Recipe name</span>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <input
+                      className="input flex-1 min-w-[240px]"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      disabled={isSaving}
+                      required
+                    />
+                    <button
+                      type="button"
+                      aria-label={isRecipeSaved ? 'Unsave recipe' : 'Save recipe'}
+                      aria-pressed={isRecipeSaved}
+                      className="inline-flex items-center justify-center px-1 py-1 text-2xl leading-none hover:opacity-80 disabled:opacity-60"
+                      onClick={handleToggleSavedRecipe}
+                      disabled={!canSaveRecipe || isSaveTogglePending}
+                      title={
+                        viewerIsLoggedIn
+                          ? isRecipeSaved
+                            ? 'Remove from saved recipes'
+                            : 'Save recipe'
+                          : 'Log in to save recipes'
+                      }
+                      style={{ color: isRecipeSaved ? '#d97706' : '#6b7280' }}
+                    >
+                      <span aria-hidden="true">{isRecipeSaved ? '★' : '☆'}</span>
+                    </button>
+                  </div>
+                </label>
+              </div>
             ) : (
-              <h2 className="m-0 flex-1">
-                {recipeName} ({recipe?.authorName})
-              </h2>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="m-0">
+                  {recipeName}
+                </h2>
+                <button
+                  type="button"
+                  aria-label={isRecipeSaved ? 'Unsave recipe' : 'Save recipe'}
+                  aria-pressed={isRecipeSaved}
+                  className="inline-flex items-center justify-center px-1 py-1 text-2xl leading-none hover:opacity-80 disabled:opacity-60"
+                  onClick={handleToggleSavedRecipe}
+                  disabled={!canSaveRecipe || isSaveTogglePending}
+                  title={
+                    viewerIsLoggedIn
+                      ? isRecipeSaved
+                        ? 'Remove from saved recipes'
+                        : 'Save recipe'
+                      : 'Log in to save recipes'
+                  }
+                  style={{ color: isRecipeSaved ? '#d97706' : '#6b7280' }}
+                >
+                  <span aria-hidden="true">{isRecipeSaved ? '★' : '☆'}</span>
+                </button>
+              </div>
             )}
             <div className="text-gray-600 flex items-center gap-2 flex-wrap">
               <span>{recipe?.authorName}</span>
@@ -279,6 +379,9 @@ export default function RecipeCard({ recipe, isOwner = false, updateRecipeAction
 
         {updateError ? (
           <p className="text-sm text-red-600 sm:px-8 px-4">{updateError}</p>
+        ) : null}
+        {saveToggleError ? (
+          <p className="text-sm text-red-600 sm:px-8 px-4">{saveToggleError}</p>
         ) : null}
 
         {(editing || recipeDescription || previewUrl) && (

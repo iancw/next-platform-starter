@@ -1,10 +1,9 @@
 import React from "react";
 import Image from "next/image";
+import { getRecipePreviewImage, SAMPLE_IMAGE_SELECTION } from "../lib/recipe-image-selection.js";
 
-export default function RecipeSimpleCard({ recipe, onClick }) {
-  // Prefer sample images, then comparison images (fallback)
-  const previewImage =
-    recipe?.sampleImages?.[0] ?? recipe?.comparisonImages?.[0] ?? null;
+export default function RecipeSimpleCard({ recipe, onClick, selectedImageOption = SAMPLE_IMAGE_SELECTION }) {
+  const previewImage = getRecipePreviewImage(recipe, selectedImageOption);
 
   const previewUrl = previewImage?.smallUrl || previewImage?.fullSizeUrl;
 

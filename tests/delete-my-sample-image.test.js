@@ -75,7 +75,7 @@ describe('deleteMySampleImageAction', () => {
 
         expect(deleteMock).toHaveBeenCalledTimes(1);
         expect(revalidatePathMock).toHaveBeenCalledWith('/recipes/recipe-uuid');
-        expect(revalidatePathMock).toHaveBeenCalledWith('/my-recipes');
+        expect(revalidatePathMock).toHaveBeenCalledWith('/');
         expect(revalidatePathMock).toHaveBeenCalledWith('/my-samples');
     });
 });

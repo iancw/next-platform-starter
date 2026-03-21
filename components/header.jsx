@@ -11,7 +11,6 @@ const publicNavItems = [
 const authedNavItems = [
     { linkText: 'Recipes', href: '/' },
     { linkText: 'Upload', href: '/upload' },
-    { linkText: 'My Recipes', href: '/my-recipes' },
     { linkText: 'My Samples', href: '/my-samples' },
     { linkText: 'Profile', href: '/profile' },
     { href: '/how-to', linkText: 'How-to' }

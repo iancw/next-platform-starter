@@ -5,14 +5,14 @@ import { authors, images, recipeComparisonImages, recipeSampleImages, recipes } 
 import { eq, or } from 'drizzle-orm';
 import RecipeCard from '../../../components/recipe-card.jsx';
 import SampleGallery from '../../../components/SampleGallery.jsx';
-import { deleteMyRecipeAction } from '../../my-recipes/actions';
-import { deleteRecipeSampleImageAction, updateRecipeAction } from './actions';
+import { deleteMyRecipeAction, deleteRecipeSampleImageAction, updateRecipeAction } from './actions';
+import { getSavedRecipeIdsForUser } from '../../../lib/recipe-saves.js';
 
 export const metadata = {
     title: 'Recipe'
 };
 
-async function getRecipeByIdOrSlug(idOrSlug) {
+async function getRecipeByIdOrSlug(idOrSlug, userId = null) {
     const v = String(idOrSlug ?? '').trim();
     if (!v) return null;
     // We treat the route param as either a uuid or a slug.
@@ -124,17 +124,18 @@ async function getRecipeByIdOrSlug(idOrSlug) {
             return { ...r.image, sampleAuthor: r.author ?? null };
         })
         .filter(Boolean);
+    const savedRecipeIds = await getSavedRecipeIdsForUser({ userId, recipeIds: [recipeId] });
 
     return {
         ...base,
+        viewerIsLoggedIn: userId != null,
+        isSaved: savedRecipeIds.has(recipeId),
         comparisonImages,
         sampleImages
     };
 }
 
-async function getAuthedAuthorIds() {
-    const session = await getSession();
-    const userId = session?.user?.id ?? null;
+async function getAuthedAuthorIds(userId = null) {
     if (userId == null) return [];
 
     const rows = await db
@@ -150,10 +151,12 @@ export default async function Page({ params }) {
     // https://nextjs.org/docs/messages/sync-dynamic-apis
     const resolvedParams = await params;
     const id = decodeURIComponent(resolvedParams?.id ?? '');
-    const recipe = await getRecipeByIdOrSlug(id);
+    const session = await getSession();
+    const userId = session?.user?.id ?? null;
+    const recipe = await getRecipeByIdOrSlug(id, userId);
     if (!recipe) return notFound();
 
-    const authedAuthorIds = await getAuthedAuthorIds();
+    const authedAuthorIds = await getAuthedAuthorIds(userId);
     const isOwner = authedAuthorIds.includes(recipe.authorId);
 
     return (

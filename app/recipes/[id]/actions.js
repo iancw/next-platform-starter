@@ -1,9 +1,10 @@
 'use server';
 
 import { db } from '../../../db/index.ts';
-import { authors, recipeSampleImages, recipes } from '../../../db/schema.ts';
+import { authors, recipeComparisonImages, recipeSampleImages, recipes } from '../../../db/schema.ts';
 import { and, eq, inArray } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import { requireUser } from '../../../lib/auth.js';
 
 import { computeRecipeFingerprint } from '../../../lib/recipeFingerprint.js';
@@ -86,6 +87,64 @@ export async function updateRecipeAction(formData) {
     revalidatePath(`/recipes/${r.uuid ?? r.slug}`);
 }
 
+export async function deleteMyRecipeAction(formData) {
+    const recipeIdRaw = formData?.get('recipeId');
+    const recipeId = Number(recipeIdRaw);
+    const confirmName = String(formData?.get('confirmName') ?? '').trim();
+
+    const session = await requireUser();
+    if (!Number.isFinite(recipeId)) throw new Error('Invalid recipe id');
+
+    const authorRows = await db
+        .select({ id: authors.id })
+        .from(authors)
+        .where(eq(authors.userId, session.user.id));
+
+    if (authorRows.length === 0) throw new Error('Author record not found');
+    const authorIds = authorRows.map((row) => row.id);
+
+    const recipeRows = await db
+        .select({ id: recipes.id, authorId: recipes.authorId, recipeName: recipes.recipeName })
+        .from(recipes)
+        .where(and(eq(recipes.id, recipeId), inArray(recipes.authorId, authorIds)))
+        .limit(1);
+
+    if (recipeRows.length === 0) throw new Error('Recipe not found');
+
+    const recipeRow = recipeRows[0];
+    if (!confirmName || confirmName !== recipeRow.recipeName) {
+        throw new Error('Confirmation text did not match recipe name');
+    }
+
+    const [sampleImageIds, comparisonImageIds] = await Promise.all([
+        db
+            .select({ imageId: recipeSampleImages.imageId })
+            .from(recipeSampleImages)
+            .where(eq(recipeSampleImages.recipeId, recipeId)),
+        db
+            .select({ imageId: recipeComparisonImages.imageId })
+            .from(recipeComparisonImages)
+            .where(eq(recipeComparisonImages.recipeId, recipeId))
+    ]);
+
+    const associatedImageIds = Array.from(
+        new Set(
+            [...sampleImageIds, ...comparisonImageIds]
+                .map((row) => row.imageId)
+                .filter((value) => value != null)
+        )
+    );
+
+    const deleted = await db.delete(recipes).where(eq(recipes.id, recipeId)).returning({ id: recipes.id });
+
+    if (deleted.length > 0 && associatedImageIds.length > 0) {
+        await deleteOrphanedImagesByIds(associatedImageIds);
+    }
+
+    revalidatePath('/');
+    redirect('/');
+}
+
 export async function deleteRecipeSampleImageAction({ recipeId, imageId }) {
     const session = await requireUser();
 
@@ -122,6 +181,6 @@ export async function deleteRecipeSampleImageAction({ recipeId, imageId }) {
 
     const recipe = recipeRows[0];
     revalidatePath(`/recipes/${recipe.uuid ?? recipe.slug}`);
-    revalidatePath('/my-recipes');
+    revalidatePath('/');
     revalidatePath('/my-samples');
 }

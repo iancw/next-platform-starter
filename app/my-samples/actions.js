@@ -49,6 +49,6 @@ export async function deleteMySampleImageAction({ recipeId, imageId }) {
 
     const recipe = recipeRows[0];
     revalidatePath(`/recipes/${recipe.uuid ?? recipe.slug}`);
-    revalidatePath('/my-recipes');
+    revalidatePath('/');
     revalidatePath('/my-samples');
 }

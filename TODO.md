@@ -39,6 +39,8 @@
 - [x] Update profile button always enabled, should be clear when you've saved changes
 - [x] Set up email for help@om-recipes.com
 - [x] Author links don't work for ... authors who aren't me
+- [ ] Constrain height of portrait pictures to match height of landscap images for visual consistency
+- [ ] 
 
 # Deployment
 - [x] Configure database and other environnment variables

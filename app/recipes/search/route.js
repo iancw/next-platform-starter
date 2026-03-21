@@ -1,21 +1,49 @@
 import { db } from '../../../db/index.ts';
-import { authors, images, recipeComparisonImages, recipeSampleImages, recipes } from '../../../db/schema.ts';
-import { eq, ilike, inArray, or } from 'drizzle-orm';
+import { authors, images, recipeComparisonImages, recipeSampleImages, recipes, savedRecipes } from '../../../db/schema.ts';
+import { and, count, desc, eq, ilike, inArray, or, sql } from 'drizzle-orm';
+import { getSession } from '../../../lib/auth.js';
+import { getSavedRecipeIdsForUser } from '../../../lib/recipe-saves.js';
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const query = (searchParams.get('q') || '').toLowerCase();
+  const onlyMine = searchParams.get('onlyMine') === '1';
+  const onlySaved = searchParams.get('onlySaved') === '1';
+  const session = await getSession();
+  const userId = session?.user?.id ?? null;
 
   // Limit results to keep responses snappy.
   const limit = Math.min(Number(searchParams.get('limit') ?? 500), 2000);
 
-  const where = query
-    ? or(
+  if ((onlyMine || onlySaved) && userId == null) {
+    return Response.json([]);
+  }
+
+  const filters = [];
+  if (query) {
+    filters.push(
+      or(
         ilike(recipes.recipeName, `%${query}%`),
         ilike(recipes.authorName, `%${query}%`),
         ilike(recipes.description, `%${query}%`)
       )
-    : undefined;
+    );
+  }
+  if (onlyMine) {
+    filters.push(eq(authors.userId, userId));
+  }
+  if (onlySaved) {
+    filters.push(
+      sql`exists (
+        select 1
+        from saved_recipes as viewer_saved_recipes
+        where viewer_saved_recipes.recipe_id = ${recipes.id}
+          and viewer_saved_recipes.user_id = ${userId}
+      )`
+    );
+  }
+
+  const where = filters.length > 0 ? and(...filters) : undefined;
 
   // Fetch the base recipe rows first, then attach image arrays.
   // This avoids a huge Cartesian product when joining multiple image join tables.
@@ -26,55 +54,74 @@ export async function GET(request) {
   //   comparisonImages: [{ id, smallUrl, fullSizeUrl, dimensions, camera, lens, label? }],
   //   sampleImages: [{ id, smallUrl, fullSizeUrl, dimensions, camera, lens }]
   // }
-  const baseRecipes = await db
-    .select({
-      id: recipes.id,
-      uuid: recipes.uuid,
-      slug: recipes.slug,
-      recipeName: recipes.recipeName,
-      authorName: recipes.authorName,
-      description: recipes.description,
+  const recipeFields = {
+    id: recipes.id,
+    uuid: recipes.uuid,
+    slug: recipes.slug,
+    recipeName: recipes.recipeName,
+    authorName: recipes.authorName,
+    description: recipes.description,
 
-      yellow: recipes.yellow,
-      orange: recipes.orange,
-      orangeRed: recipes.orangeRed,
-      red: recipes.red,
-      magenta: recipes.magenta,
-      violet: recipes.violet,
-      blue: recipes.blue,
-      blueCyan: recipes.blueCyan,
-      cyan: recipes.cyan,
-      greenCyan: recipes.greenCyan,
-      green: recipes.green,
-      yellowGreen: recipes.yellowGreen,
+    yellow: recipes.yellow,
+    orange: recipes.orange,
+    orangeRed: recipes.orangeRed,
+    red: recipes.red,
+    magenta: recipes.magenta,
+    violet: recipes.violet,
+    blue: recipes.blue,
+    blueCyan: recipes.blueCyan,
+    cyan: recipes.cyan,
+    greenCyan: recipes.greenCyan,
+    green: recipes.green,
+    yellowGreen: recipes.yellowGreen,
 
-      contrast: recipes.contrast,
-      sharpness: recipes.sharpness,
-      highlights: recipes.highlights,
-      shadows: recipes.shadows,
-      midtones: recipes.midtones,
+    contrast: recipes.contrast,
+    sharpness: recipes.sharpness,
+    highlights: recipes.highlights,
+    shadows: recipes.shadows,
+    midtones: recipes.midtones,
 
-      shadingEffect: recipes.shadingEffect,
-      exposureCompensation: recipes.exposureCompensation,
+    shadingEffect: recipes.shadingEffect,
+    exposureCompensation: recipes.exposureCompensation,
 
-      whiteBalance2: recipes.whiteBalance2,
-      whiteBalanceTemperature: recipes.whiteBalanceTemperature,
-      whiteBalanceAmberOffset: recipes.whiteBalanceAmberOffset,
-      whiteBalanceGreenOffset: recipes.whiteBalanceGreenOffset,
-      authorSocial: {
-        instagram: authors.instagramLink,
-        flickr: authors.flickrLink,
-        website: authors.website,
-        kofi: authors.kofiLink
-      }
-    })
-    .from(recipes)
-    .leftJoin(authors, eq(authors.id, recipes.authorId))
-    .where(where)
-    .limit(limit);
+    whiteBalance2: recipes.whiteBalance2,
+    whiteBalanceTemperature: recipes.whiteBalanceTemperature,
+    whiteBalanceAmberOffset: recipes.whiteBalanceAmberOffset,
+    whiteBalanceGreenOffset: recipes.whiteBalanceGreenOffset,
+    createdAt: recipes.createdAt,
+    authorSocial: {
+      instagram: authors.instagramLink,
+      flickr: authors.flickrLink,
+      website: authors.website,
+      kofi: authors.kofiLink
+    }
+  };
+
+  const baseRecipes = query
+    ? await db
+        .select(recipeFields)
+        .from(recipes)
+        .leftJoin(authors, eq(authors.id, recipes.authorId))
+        .where(where)
+        .orderBy(desc(recipes.createdAt))
+        .limit(limit)
+    : await db
+        .select({
+          ...recipeFields,
+          saveCount: count(savedRecipes.recipeId)
+        })
+        .from(recipes)
+        .leftJoin(authors, eq(authors.id, recipes.authorId))
+        .leftJoin(savedRecipes, eq(savedRecipes.recipeId, recipes.id))
+        .where(where)
+        .groupBy(recipes.id, authors.id)
+        .orderBy(desc(count(savedRecipes.recipeId)), desc(recipes.createdAt))
+        .limit(limit);
 
   const recipeIds = baseRecipes.map((r) => r.id);
   if (recipeIds.length === 0) return Response.json([]);
+
+  const savedRecipeIds = await getSavedRecipeIdsForUser({ userId, recipeIds });
 
   const [comparisonRows, sampleRows] = await Promise.all([
     db
@@ -155,11 +202,16 @@ export async function GET(request) {
     return { ...row.image, sampleAuthor: row.author ?? null };
   });
 
-  const results = baseRecipes.map((r) => ({
-    ...r,
-    comparisonImages: comparisonByRecipeId.get(r.id) ?? [],
-    sampleImages: sampleImagesByRecipeId.get(r.id) ?? []
-  }));
+  const results = baseRecipes.map((r) => {
+    const { saveCount, ...recipe } = r;
+    return {
+      ...recipe,
+      viewerIsLoggedIn: userId != null,
+      isSaved: savedRecipeIds.has(r.id),
+      comparisonImages: comparisonByRecipeId.get(r.id) ?? [],
+      sampleImages: sampleImagesByRecipeId.get(r.id) ?? []
+    };
+  });
 
   // Keep the old recipe field set, but now with image arrays.
   return Response.json(results);
