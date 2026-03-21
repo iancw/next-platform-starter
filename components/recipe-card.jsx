@@ -291,7 +291,13 @@ export default function RecipeCard({ recipe, isOwner = false, updateRecipeAction
                   width={400}
                   height={300}
                   unoptimized
-                  style={{ borderRadius: "4px", maxWidth: "100%", height: "auto" }}
+                  style={{
+                    borderRadius: "4px",
+                    maxWidth: "100%",
+                    maxHeight: "300px",
+                    width: "auto",
+                    height: "auto"
+                  }}
                 />
               </div>
             )}

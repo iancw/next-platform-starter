@@ -1,4 +1,6 @@
 # Features
+- [ ] Save recipes for later, combine this with ranking. Ranking = number of saves
+- [ ] Similarity search ... given a recipe, show similar recipes. During upload and perhaps otherwise
 - [ ] Feature: Liking recipes, sort by order of likes
 - [ ] Refactor frontend to use shadcn components and styling
 - [ ] Limit number of samples and recipes per author
