@@ -1,6 +1,16 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
+import { Button } from 'components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from 'components/ui/dialog';
+import { Input } from 'components/ui/input';
 
 export default function DeleteConfirmationModal({
   open = false,
@@ -24,8 +34,6 @@ export default function DeleteConfirmationModal({
     return typedValue.trim() !== String(confirmValue).trim();
   }, [confirmValue, requiresConfirmation, typedValue]);
 
-  if (!open) return null;
-
   const handleClose = () => {
     if (isDeleting) return;
     setTypedValue('');
@@ -39,47 +47,18 @@ export default function DeleteConfirmationModal({
   };
 
   return (
-    <div
-      className="fixed inset-0 z-[60] flex items-center justify-center px-4"
-      style={{
-        backgroundColor: 'rgba(0, 0, 0, 0.55)',
-        padding: '1.5rem'
-      }}
-      role="presentation"
-    >
-      <div
-        style={{
-          background: '#fff',
-          borderRadius: '8px',
-          padding: '1.5rem',
-          width: '100%',
-          maxWidth: '420px',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.25)'
-        }}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="delete-confirmation-title"
-      >
-        <h3
-          id="delete-confirmation-title"
-          style={{ marginTop: 0, marginBottom: '0.75rem', fontSize: '1.25rem', fontWeight: 600 }}
-        >
-          {title}
-        </h3>
-        {description ? (
-          <p style={{ marginBottom: '1rem', color: '#444' }}>
-            {description}
-          </p>
-        ) : null}
-        {error ? (
-          <p style={{ color: '#b91c1c', marginTop: 0, marginBottom: '0.75rem', fontSize: '0.95rem' }}>{error}</p>
-        ) : null}
-        <form onSubmit={handleConfirm}>
+    <Dialog open={open} onOpenChange={(nextOpen) => (!nextOpen ? handleClose() : null)}>
+      <DialogContent className="max-w-lg p-6">
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          {description ? <DialogDescription>{description}</DialogDescription> : null}
+        </DialogHeader>
+        {error ? <p className="mt-4 text-sm text-destructive">{error}</p> : null}
+        <form onSubmit={handleConfirm} className="mt-5 space-y-5">
           {requiresConfirmation ? (
-            <label className="flex flex-col gap-1" style={{ marginBottom: '1rem' }}>
-              <span className="text-sm text-gray-700">{confirmLabel}</span>
-              <input
-                className="input"
+            <label className="flex flex-col gap-2">
+              <span className="text-sm font-medium text-foreground">{confirmLabel}</span>
+              <Input
                 value={typedValue}
                 onChange={(event) => setTypedValue(event.target.value)}
                 placeholder={confirmPlaceholder ?? String(confirmValue)}
@@ -88,25 +67,16 @@ export default function DeleteConfirmationModal({
               />
             </label>
           ) : null}
-          <div className="flex justify-end gap-3">
-            <button
-              type="button"
-              className="px-4 py-2 rounded border border-gray-300 text-gray-700 hover:bg-gray-100 disabled:opacity-60"
-              onClick={handleClose}
-              disabled={isDeleting}
-            >
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={handleClose} disabled={isDeleting}>
               {cancelButtonText}
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 disabled:opacity-60"
-              disabled={disableDelete || isDeleting}
-            >
+            </Button>
+            <Button type="submit" variant="destructive" disabled={disableDelete || isDeleting}>
               {isDeleting ? 'Deleting…' : confirmButtonText}
-            </button>
-          </div>
+            </Button>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

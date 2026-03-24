@@ -1,57 +1,62 @@
 import React from "react";
 import Image from "next/image";
 import { getRecipePreviewImage, SAMPLE_IMAGE_SELECTION } from "../lib/recipe-image-selection.js";
+import { Badge } from "./ui/badge.jsx";
+import { Card, CardContent } from "./ui/card.jsx";
+import { cn } from "../lib/cn.js";
 
 export default function RecipeSimpleCard({ recipe, onClick, selectedImageOption = SAMPLE_IMAGE_SELECTION }) {
   const previewImage = getRecipePreviewImage(recipe, selectedImageOption);
-
   const previewUrl = previewImage?.smallUrl || previewImage?.fullSizeUrl;
 
-  // Truncate notes to 300 characters and append '...' if longer
   const getTruncatedNotes = (notes) => {
     if (!notes) return "";
     return notes.length > 300 ? notes.slice(0, 300) + "..." : notes;
   };
-  return (
-    <div
-      className="recipe-simple-card"
-      style={{
-        border: "1px solid #eee",
-        display: 'flex',
-        flexDirection: 'column',
-        borderRadius: "8px",
-        padding: "1rem",
-        margin: "1rem auto",
-        background: "#fafbfc",
-        align: "center",
-        cursor: onClick ? "pointer" : undefined,
-        maxWidth: "600px",
-        width: "100%",
-      }}
-      onClick={onClick}
+
+  const cardBody = (
+    <Card
+      className={cn(
+        "group h-full overflow-hidden border-border/70 bg-card/90 transition-transform duration-200",
+        onClick ? "cursor-pointer hover:-translate-y-1 hover:border-primary/35 hover:shadow-xl" : ""
+      )}
     >
-      {previewUrl && (
-        <div style={{ minWidth: 0 }}>
+      <div className="relative aspect-[4/3] overflow-hidden border-b border-border/60 bg-muted/40">
+        {previewUrl ? (
           <Image
             src={previewUrl}
             alt={`${recipe.recipeName} sample`}
-            width={600}
-            height={450}
+            fill
             unoptimized
-            style={{ borderRadius: "6px", maxWidth: "100%", height: "auto" }}
+            className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+            sizes="(min-width: 1536px) 24rem, (min-width: 1024px) 30vw, (min-width: 768px) 45vw, 100vw"
           />
+        ) : (
+          <div className="flex h-full items-center justify-center text-sm text-muted-foreground">No sample image</div>
+        )}
+      </div>
+      <CardContent className="flex h-full flex-col gap-4 p-5">
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge variant="secondary">{recipe?.authorName ?? 'Unknown author'}</Badge>
+          {recipe?.isSaved ? <Badge variant="outline">Saved</Badge> : null}
         </div>
-      )}
-        <h3 style={{ margin: "0.5rem 0 0.75rem 0", fontSize: "1.35rem", lineHeight: 1.1 }}>
-          {recipe.recipeName} -  {recipe.authorName}
-        </h3>
-        <div style={{ color: "#555", marginBottom: "0.75rem" }}>
-          {recipe.description && (
-            <span style={{ whiteSpace: "pre-wrap" }}>
+        <div className="space-y-2">
+          <h3 className="text-xl leading-tight text-foreground">{recipe.recipeName}</h3>
+          {recipe.description ? (
+            <p className="text-sm leading-6 text-muted-foreground whitespace-pre-wrap">
               {getTruncatedNotes(recipe.description)}
-            </span>
+            </p>
+          ) : (
+            <p className="text-sm text-muted-foreground">No description provided.</p>
           )}
         </div>
-      </div>
+      </CardContent>
+    </Card>
+  );
+
+  return (
+    <div className="recipe-simple-card" onClick={onClick}>
+      {cardBody}
+    </div>
   );
 }

@@ -1,15 +1,19 @@
+import { cn } from 'lib/cn';
+
 export function Alert({ children, className, type }) {
     return (
         <div
-            className={[
-                'flex gap-4 p-4 rounded-sm',
-                type === 'error' ? 'bg-rose-400 text-neutral-900' : 'bg-primary text-primary-content',
+            className={cn(
+                'flex gap-4 rounded-2xl border px-4 py-4 shadow-sm',
+                type === 'error'
+                    ? 'border-destructive/20 bg-destructive/8 text-foreground'
+                    : type === 'success'
+                      ? 'border-primary/20 bg-primary/10 text-foreground'
+                      : 'border-border bg-card/90 text-foreground',
                 className
-            ]
-                .filter(Boolean)
-                .join(' ')}
+            )}
         >
-            <AlertIcon type={type} className="w-6 h-6 fill-current shrink-0" />
+            <AlertIcon type={type} className="h-6 w-6 shrink-0 fill-current" />
             {children}
         </div>
     );

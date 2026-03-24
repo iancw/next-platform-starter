@@ -13,8 +13,15 @@ import RecipeSettings from "components/RecipeSettings";
 import { parseMetadata } from '@uswriting/exiftool';
 import {parseRecipeSettingsFromExif} from 'lib/exifparse'
 import { Alert } from 'components/alert';
+import { Button, buttonVariants } from 'components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from 'components/ui/card';
+import { Input } from 'components/ui/input';
+import { Textarea } from 'components/ui/textarea';
+import { cn } from 'lib/cn';
 
 export default function RecipeUpload({ initialAuthor = "" }) {
+  const FINALIZING_NOTICE_DELAY_MS = 5000;
+
   const router = useRouter();
   const [author, setAuthor] = useState(initialAuthor);
   const [name, setName] = useState("");
@@ -40,6 +47,7 @@ export default function RecipeUpload({ initialAuthor = "" }) {
   const [isCheckingDuplicate, setIsCheckingDuplicate] = useState(false);
   const [duplicateError, setDuplicateError] = useState('');
   const [missingColorProfile, setMissingColorProfile] = useState(false);
+  const [showFinalizingNotice, setShowFinalizingNotice] = useState(false);
 
   const hasDroppedImage = imageFiles?.length > 0;
   const hasRedirectedRef = useRef(false);
@@ -152,6 +160,21 @@ export default function RecipeUpload({ initialAuthor = "" }) {
     };
   }, [imageHashHex]);
 
+  useEffect(() => {
+    if (uploadStatus !== 'uploading' || uploadPhase !== 'finalizing') {
+      setShowFinalizingNotice(false);
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setShowFinalizingNotice(true);
+    }, FINALIZING_NOTICE_DELAY_MS);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [uploadPhase, uploadStatus]);
+
   const parseExif = async (file) => {
     const result = await parseMetadata(file)
     return parseRecipeSettingsFromExif(result.data)
@@ -253,64 +276,6 @@ export default function RecipeUpload({ initialAuthor = "" }) {
     multiple: false,
     onDrop
   });
-
-  const dropzoneStyle = {
-    border: "2px dashed #cccccc",
-    padding: "20px",
-    borderRadius: 8,
-    textAlign: "center",
-    background: isDragActive ? "#f0faff" : "#fafafa",
-    cursor: "pointer",
-    width: "400px",
-    maxWidth: "100%",
-    height: "300px",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center"
-  };
-
-  const layoutStyle = {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: 24,
-    alignItems: 'flex-start'
-  };
-
-  const infoPanelStyle = {
-    border: "2px solid #cccccc",
-    padding: "20px",
-    borderRadius: 8,
-    background: "#fafafa",
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-    width: "100%",
-    maxWidth: 420
-  };
-
-  const recipeCardStyle = {
-    border: "2px solid #cccccc",
-    padding: "20px",
-    borderRadius: 8,
-    textAlign: "center",
-    background: "#fafafa",
-    marginBottom: 16
-  };
-
-  const labelStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 6,
-    width: '100%',
-    fontWeight: 500,
-    color: '#1f2937'
-  };
-
-  const labelTextStyle = {
-    fontSize: 14,
-    lineHeight: 1.4
-  };
 
   const handleLinkChange = (idx, value) => {
     setLinks((prev) =>
@@ -454,7 +419,7 @@ export default function RecipeUpload({ initialAuthor = "" }) {
     <div>
       <form className="recipe-upload-form">
         {hasDroppedImage && uploadStatus === 'ok' && (
-          <div style={{ marginBottom: 12 }}>
+          <div className="mb-3">
             <Alert type="success">
               {lastUploadMode === 'attach' ? (() => {
                 const matchId = matchingRecipe?.uuid ?? matchingRecipe?.slug ?? uploadedRecipeUuid ?? uploadedSlug;
@@ -486,36 +451,48 @@ export default function RecipeUpload({ initialAuthor = "" }) {
           </div>
         )}
         {hasDroppedImage && uploadStatus === 'error' && (
-          <div style={{ marginBottom: 12 }}>
+          <div className="mb-3">
             <Alert type="error">Upload error: {uploadError}</Alert>
           </div>
         )}
-        <div style={layoutStyle}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: '1 1 360px', minWidth: 280 }}>
-            <div style={labelStyle}>
-              <span style={labelTextStyle}>Recipe Image</span>
+        {hasDroppedImage && showFinalizingNotice && (
+          <div className="mb-3">
+            <Alert>
+              Processing the image is taking a bit longer than usual. Hang tight for a bit. It usually finishes within a minute.
+            </Alert>
+          </div>
+        )}
+        <div className="flex flex-wrap items-start gap-6">
+          <div className="flex min-w-[280px] flex-[1_1_360px] flex-col gap-3">
+            <div className="flex w-full flex-col gap-2">
+              <span className="text-sm font-medium text-foreground">Recipe Image</span>
               <div
                 {...getRootProps()}
-                style={dropzoneStyle}
+                className={cn(
+                  "flex h-[300px] w-full max-w-[400px] cursor-pointer flex-col items-center justify-center rounded-[1.5rem] border-2 border-dashed px-5 text-center transition-colors",
+                  isDragActive
+                    ? "border-primary/50 bg-primary/8"
+                    : "border-border bg-card/75 hover:border-primary/35 hover:bg-muted/30"
+                )}
                 aria-label="Recipe image uploader"
               >
                 <input {...getInputProps()} />
                 {isDragActive ? (
-                  <p>Drop the image here …</p>
+                  <p className="text-sm text-foreground">Drop the image here …</p>
                 ) : (
-                  <p>
+                  <p className="text-sm leading-6 text-muted-foreground">
                     {hasDroppedImage
                       ? `Selected: ${imageFiles[0].name}`
                       : "Drag 'n' drop an image here, or click to select one"}
                   </p>
                 )}
                 {hasDroppedImage && (
-                  <div style={{ marginTop: 8, display: 'inline-block', position: 'relative' }}>
+                  <div className="relative mt-2 inline-block">
                     {!!previewUrl && (
                       <img
                         src={previewUrl}
                         alt="Preview"
-                        style={{ maxWidth: 120, maxHeight: 120, borderRadius: 8, display: 'block' }}
+                        className="block max-h-[120px] max-w-[120px] rounded-xl border border-border/60 object-cover"
                       />
                     )}
                     <button
@@ -527,48 +504,33 @@ export default function RecipeUpload({ initialAuthor = "" }) {
                         e.stopPropagation();
                         handleRemoveImage();
                       }}
-                      style={{
-                        position: 'absolute',
-                        top: 6,
-                        right: 6,
-                        width: 22,
-                        height: 22,
-                        borderRadius: 9999,
-                        border: '1px solid rgba(0,0,0,0.15)',
-                        background: 'rgba(255,255,255,0.9)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: 16,
-                        lineHeight: 1,
-                        cursor: 'pointer',
-                      }}
+                      className="absolute right-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-card/95 text-sm leading-none shadow-sm"
                     >
                       ×
                     </button>
                   </div>
                 )}
-                {isParsingExif && <p>Reading EXIF…</p>}
+                {isParsingExif && <p className="mt-3 text-sm text-muted-foreground">Reading EXIF…</p>}
                 {uploadStatus === 'uploading' && uploadPhase === 'hashing' && (
-                  <p>Computing image fingerprint…</p>
+                  <p className="mt-3 text-sm text-muted-foreground">Computing image fingerprint…</p>
                 )}
                 {isCheckingDuplicate && (
-                  <p>Checking for existing uploads…</p>
+                  <p className="mt-3 text-sm text-muted-foreground">Checking for existing uploads…</p>
                 )}
                 {!!exifError && (
-                  <p style={{ color: "#b91c1c", marginTop: 8 }}>
+                  <p className="mt-2 text-sm text-destructive">
                     {exifError}
                   </p>
                 )}
                 {!!hashError && (
-                  <p style={{ color: "#b91c1c", marginTop: 8 }}>
+                  <p className="mt-2 text-sm text-destructive">
                     Fingerprint error: {hashError}
                   </p>
                 )}
               </div>
             </div>
             {hasDroppedImage && isCheckingMatch && (
-              <p style={{ color: "#4b5563" }}>Checking for existing recipes…</p>
+              <p className="text-sm text-muted-foreground">Checking for existing recipes…</p>
             )}
             {hasDroppedImage && matchError && (
               <Alert type="error">{matchError}</Alert>
@@ -578,7 +540,11 @@ export default function RecipeUpload({ initialAuthor = "" }) {
             )}
           </div>
           {hasDroppedImage && !missingColorProfile && (
-            <div style={infoPanelStyle}>
+            <Card className="w-full max-w-[420px] border-border/70 bg-card/80">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">Upload Details</CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-4">
               {matchingRecipe && (
                 <>
                   <Alert>
@@ -599,12 +565,11 @@ export default function RecipeUpload({ initialAuthor = "" }) {
                   </Alert>
                   {!duplicateMatch && (
                     <>
-                      <p style={{ color: "#374151", margin: 0 }}>
+                      <p className="m-0 text-sm leading-6 text-muted-foreground">
                         Continue below to attach your image as a community sample or choose a different photo.
                       </p>
-                      <div style={{ display: "flex", gap: 12, flexWrap: 'wrap' }}>
-                        <button
-                          className="btn"
+                      <div className="flex flex-wrap gap-3">
+                        <Button
                           onClick={(event) => handleSubmit(event, { attachToCommunity: true })}
                           disabled={
                             uploadStatus === 'uploading' ||
@@ -613,7 +578,6 @@ export default function RecipeUpload({ initialAuthor = "" }) {
                             !imageFiles?.length ||
                             isCheckingDuplicate
                           }
-                          style={{ flex: '0 0 auto' }}
                         >
                           {uploadStatus === 'uploading'
                             ? (uploadPhase === 'hashing'
@@ -622,17 +586,16 @@ export default function RecipeUpload({ initialAuthor = "" }) {
                                 ? 'Preparing…'
                                 : uploadPhase === 'direct-upload'
                                   ? 'Uploading to storage…'
-                                  : uploadPhase === 'finalizing'
+                                : uploadPhase === 'finalizing'
                                     ? 'Finalizing…'
                                     : 'Uploading…')
                             : 'Attach as community sample'}
-                        </button>
+                        </Button>
                         <button
                           type="button"
-                          className="px-4 py-2 rounded border border-gray-300 text-gray-700 hover:bg-gray-100"
+                          className={buttonVariants({ variant: 'outline' })}
                           onClick={handleRemoveImage}
                           disabled={uploadStatus === 'uploading'}
-                          style={{ flex: '0 0 auto' }}
                         >
                           Choose different image
                         </button>
@@ -671,9 +634,8 @@ export default function RecipeUpload({ initialAuthor = "" }) {
                   </Alert>
                   <button
                     type="button"
-                    className="px-4 py-2 rounded border border-gray-300 text-gray-700 hover:bg-gray-100"
+                    className={buttonVariants({ variant: 'outline', className: 'self-start' })}
                     onClick={handleRemoveImage}
-                    style={{ alignSelf: 'flex-start' }}
                   >
                     Choose different image
                   </button>
@@ -681,86 +643,75 @@ export default function RecipeUpload({ initialAuthor = "" }) {
               )}
               {!matchingRecipe && !duplicateMatch && (
                 <>
-                  <label style={labelStyle}>
-                    <span style={labelTextStyle}>Author Name</span>
-                    <input
-                      className="input"
+                  <label className="flex w-full flex-col gap-2">
+                    <span className="text-sm font-medium text-foreground">Author Name</span>
+                    <Input
                       type="text"
                       value={author}
                       onChange={(e) => setAuthor(e.target.value)}
                       required
                       placeholder="Author Name"
-                      style={{ width: '100%' }}
                     />
                   </label>
-                  <label style={labelStyle}>
-                    <span style={labelTextStyle}>Recipe Name</span>
-                    <input
-                      className="input"
+                  <label className="flex w-full flex-col gap-2">
+                    <span className="text-sm font-medium text-foreground">Recipe Name</span>
+                    <Input
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       required
                       placeholder="Recipe Name"
-                      style={{ width: '100%' }}
                     />
                   </label>
-                  <label style={labelStyle}>
-                    <span style={labelTextStyle}>Notes</span>
-                    <textarea
-                      className="input"
+                  <label className="flex w-full flex-col gap-2">
+                    <span className="text-sm font-medium text-foreground">Notes</span>
+                    <Textarea
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
                       placeholder="Enter any notes"
                       rows={3}
-                      style={{ width: '100%' }}
                     />
                   </label>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%' }}>
-                    <span style={labelTextStyle}>Links</span>
+                  <div className="flex w-full flex-col gap-2">
+                    <span className="text-sm font-medium text-foreground">Links</span>
                     {links.map((link, idx) => (
                       <div
                         key={idx}
-                        style={{
-                          display: "flex",
-                          gap: 8,
-                          alignItems: "center",
-                          width: '100%'
-                        }}
+                        className="flex w-full items-center gap-2"
                       >
-                        <input
-                          className="input"
+                        <Input
                           type="url"
                           value={link}
                           onChange={(e) => handleLinkChange(idx, e.target.value)}
                           placeholder="https://example.com"
-                          style={{ flex: 1 }}
+                          className="flex-1"
                         />
                         {links.length > 1 && (
-                          <button
+                          <Button
                             type="button"
+                            variant="outline"
+                            size="icon"
                             onClick={() => handleRemoveLink(idx)}
                             aria-label="Remove link"
-                            style={{ padding: '4px 8px' }}
                           >
                             −
-                          </button>
+                          </Button>
                         )}
                         {idx === links.length - 1 && (
-                          <button
+                          <Button
                             type="button"
+                            variant="outline"
+                            size="icon"
                             onClick={handleAddLink}
                             aria-label="Add link"
-                            style={{ padding: '4px 8px' }}
                           >
                             +
-                          </button>
+                          </Button>
                         )}
                       </div>
                     ))}
                   </div>
-                  <button
-                    className="btn"
+                  <Button
                     onClick={handleSubmit}
                     disabled={
                       uploadStatus === 'uploading' ||
@@ -781,16 +732,22 @@ export default function RecipeUpload({ initialAuthor = "" }) {
                               ? 'Finalizing…'
                               : 'Uploading…')
                       : 'Upload'}
-                  </button>
+                  </Button>
                 </>
               )}
-            </div>
+              </CardContent>
+            </Card>
           )}
         </div>
         {hasDroppedImage && recipe && (
-          <div style={{ ...recipeCardStyle, marginTop: 24 }}>
-            <RecipeSettings recipe={recipe} />
-          </div>
+          <Card className="mt-6 overflow-hidden border-border/70 bg-card/75">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Detected Recipe Settings</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <RecipeSettings recipe={recipe} />
+            </CardContent>
+          </Card>
         )}
       </form>
     </div>

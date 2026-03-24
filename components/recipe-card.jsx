@@ -7,6 +7,12 @@ import { useRouter } from 'next/navigation';
 import AuthorSocialLinks from './AuthorSocialLinks';
 import DeleteConfirmationModal from './DeleteConfirmationModal.jsx';
 import { getRecipePreviewImage, SAMPLE_IMAGE_SELECTION } from '../lib/recipe-image-selection.js';
+import { Badge } from './ui/badge.jsx';
+import { Button, buttonVariants } from './ui/button.jsx';
+import { Card, CardContent } from './ui/card.jsx';
+import { Input } from './ui/input.jsx';
+import { Textarea } from './ui/textarea.jsx';
+import { cn } from '../lib/cn.js';
 
 function isRedirectError(error) {
   if (!error || typeof error !== 'object') return false;
@@ -213,75 +219,50 @@ export default function RecipeCard({
   };
 
   return (
-    <div className="flex flex-col gap-3 items-start w-full">
+    <div className="flex w-full flex-col gap-4 items-start">
       {(canEdit || canDelete) && (
-        <div className="flex gap-2 flex-wrap self-start">
+        <div className="flex flex-wrap gap-2 self-start">
           {editing && canEdit ? (
             <>
-              <button
-                type="button"
-                className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60"
-                onClick={handleSave}
-                disabled={isSaving}
-              >
+              <Button type="button" onClick={handleSave} disabled={isSaving}>
                 {isSaving ? 'Saving…' : 'Save changes'}
-              </button>
-              <button
-                type="button"
-                className="px-4 py-2 rounded border border-gray-300 text-gray-700 hover:bg-gray-100 disabled:opacity-60"
-                onClick={handleCancelEdit}
-                disabled={isSaving}
-              >
+              </Button>
+              <Button type="button" variant="outline" onClick={handleCancelEdit} disabled={isSaving}>
                 Cancel
-              </button>
+              </Button>
             </>
           ) : (
             <>
               {canEdit && (
-                <button
-                  type="button"
-                  className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
-                  onClick={handleStartEdit}
-                >
+                <Button type="button" onClick={handleStartEdit}>
                   Edit recipe
-                </button>
+                </Button>
               )}
               {canDelete && (
-                <button
-                  type="button"
-                  className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
-                  onClick={openDeleteModal}
-                >
+                <Button type="button" variant="destructive" onClick={openDeleteModal}>
                   Delete recipe
-                </button>
+                </Button>
               )}
             </>
           )}
         </div>
       )}
-      <div
-        className="recipe-card"
-        style={{
-          border: "1px solid #ddd",
-          borderRadius: "8px",
-          padding: "1rem",
-          margin: "1rem 0",
-          background: "#fff",
-          boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
-          width: "100%"
-        }}
-      >
-        <div
-          className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:p-8 p-4"
-        >
-          <div className="flex-1 flex flex-col gap-3">
+      <Card className="w-full overflow-hidden">
+        <CardContent className="space-y-8 p-5 sm:p-8">
+          <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
+            <div className="flex-1 space-y-4">
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant="secondary">Recipe</Badge>
+                {recipe?.camera ? <Badge variant="outline">{recipe.camera}</Badge> : null}
+                {recipe?.filmSimulation ? <Badge variant="outline">{recipe.filmSimulation}</Badge> : null}
+              </div>
             {editing ? (
-              <div className="flex items-start gap-3 flex-wrap">
-                <label className="flex flex-col gap-1 flex-1 min-w-[240px]">
-                  <span className="text-sm text-gray-700">Recipe name</span>
+              <div className="flex items-start gap-3 flex-wrap rounded-2xl border border-border/70 bg-muted/35 p-4">
+                <label className="flex min-w-[240px] flex-1 flex-col gap-2">
+                  <span className="text-sm font-medium text-foreground">Recipe name</span>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <input
-                      className="input flex-1 min-w-[240px]"
+                    <Input
+                      className="min-w-[240px] flex-1"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       disabled={isSaving}
@@ -291,7 +272,12 @@ export default function RecipeCard({
                       type="button"
                       aria-label={isRecipeSaved ? 'Unsave recipe' : 'Save recipe'}
                       aria-pressed={isRecipeSaved}
-                      className="inline-flex items-center justify-center px-1 py-1 text-2xl leading-none hover:opacity-80 disabled:opacity-60"
+                      className={cn(
+                        'inline-flex h-11 w-11 items-center justify-center rounded-full border text-2xl leading-none transition-colors',
+                        isRecipeSaved
+                          ? 'border-primary/30 bg-primary/10 text-primary'
+                          : 'border-border bg-card text-muted-foreground hover:border-primary/25 hover:text-primary'
+                      )}
                       onClick={handleToggleSavedRecipe}
                       disabled={!canSaveRecipe || isSaveTogglePending}
                       title={
@@ -301,7 +287,6 @@ export default function RecipeCard({
                             : 'Save recipe'
                           : 'Log in to save recipes'
                       }
-                      style={{ color: isRecipeSaved ? '#d97706' : '#6b7280' }}
                     >
                       <span aria-hidden="true">{isRecipeSaved ? '★' : '☆'}</span>
                     </button>
@@ -310,14 +295,19 @@ export default function RecipeCard({
               </div>
             ) : (
               <div className="flex items-center gap-2 flex-wrap">
-                <h2 className="m-0">
+                <h2 className="m-0 text-3xl sm:text-4xl">
                   {recipeName}
                 </h2>
                 <button
                   type="button"
                   aria-label={isRecipeSaved ? 'Unsave recipe' : 'Save recipe'}
                   aria-pressed={isRecipeSaved}
-                  className="inline-flex items-center justify-center px-1 py-1 text-2xl leading-none hover:opacity-80 disabled:opacity-60"
+                  className={cn(
+                    'inline-flex h-11 w-11 items-center justify-center rounded-full border text-2xl leading-none transition-colors',
+                    isRecipeSaved
+                      ? 'border-primary/30 bg-primary/10 text-primary'
+                      : 'border-border bg-card text-muted-foreground hover:border-primary/25 hover:text-primary'
+                  )}
                   onClick={handleToggleSavedRecipe}
                   disabled={!canSaveRecipe || isSaveTogglePending}
                   title={
@@ -327,32 +317,28 @@ export default function RecipeCard({
                         : 'Save recipe'
                       : 'Log in to save recipes'
                   }
-                  style={{ color: isRecipeSaved ? '#d97706' : '#6b7280' }}
                 >
                   <span aria-hidden="true">{isRecipeSaved ? '★' : '☆'}</span>
                 </button>
               </div>
             )}
-            <div className="text-gray-600 flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap text-muted-foreground">
               <span>{recipe?.authorName}</span>
-              <AuthorSocialLinks links={authorLinks} authorName={recipe?.authorName} />
+              <AuthorSocialLinks
+                links={authorLinks}
+                authorName={recipe?.authorName}
+                iconClassName="text-muted-foreground transition-colors hover:text-foreground"
+              />
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 items-end">
-            <div className="flex flex-col gap-3 sm:gap-3 justify-start md:justify-end items-end text-right">
+          <div className="flex flex-col gap-3 xl:items-end">
+            <div className="flex flex-col gap-3 xl:items-end xl:text-right">
               {slug ? (
                 <a
                   href={oesHref}
                   download
-                  style={{
-                    display: "inline-block",
-                    padding: "0.5rem 1rem",
-                    background: "#0070f3",
-                    color: "#fff",
-                    borderRadius: "4px",
-                    textDecoration: "none"
-                  }}
+                  className={buttonVariants({ className: 'no-underline' })}
                 >
                   OM Workspace Batch Processing File
                 </a>
@@ -361,14 +347,7 @@ export default function RecipeCard({
                 <a
                   href={downloadImageHref}
                   download={slug || undefined}
-                  style={{
-                    display: "inline-block",
-                    padding: "0.5rem 1rem",
-                    background: "#0070f3",
-                    color: "#fff",
-                    borderRadius: "4px",
-                    textDecoration: "none"
-                  }}
+                  className={buttonVariants({ variant: 'outline', className: 'no-underline' })}
                 >
                   Download Recipe Image
                 </a>
@@ -378,51 +357,41 @@ export default function RecipeCard({
         </div>
 
         {updateError ? (
-          <p className="text-sm text-red-600 sm:px-8 px-4">{updateError}</p>
+          <p className="text-sm text-destructive">{updateError}</p>
         ) : null}
         {saveToggleError ? (
-          <p className="text-sm text-red-600 sm:px-8 px-4">{saveToggleError}</p>
+          <p className="text-sm text-destructive">{saveToggleError}</p>
         ) : null}
 
         {(editing || recipeDescription || previewUrl) && (
-          <div className="recipe-notes-image-row">
+          <div className="recipe-notes-image-row rounded-[1.5rem] border border-border/70 bg-muted/25 p-4 sm:p-5">
             {previewUrl && (
-              <div style={{ flex: "0 0 auto", display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <div className="flex flex-[0_0_auto] flex-col items-center">
                 <Image
                   src={previewUrl}
                   alt="Lighthouse"
                   width={400}
                   height={300}
                   unoptimized
-                  style={{
-                    borderRadius: "4px",
-                    maxWidth: "100%",
-                    maxHeight: "300px",
-                    width: "auto",
-                    height: "auto"
-                  }}
+                  className="max-h-[300px] w-auto max-w-full rounded-xl border border-border/60 object-cover"
                 />
               </div>
             )}
             {(editing || recipeDescription) && (
-              <div style={{ marginBottom: "0.5rem", flex: "1 1 0", padding: "2rem", width: "100%" }}>
+              <div className="mb-2 flex-1 px-0 py-2 sm:px-3">
                 {editing ? (
-                  <label className="flex flex-col gap-1">
-                    <span className="text-sm text-gray-700">Notes / description</span>
-                    <textarea
-                      className="input"
+                  <label className="flex flex-col gap-2">
+                    <span className="text-sm font-medium text-foreground">Notes / description</span>
+                    <Textarea
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       rows={4}
                       placeholder="Optional notes..."
                       disabled={isSaving}
-                      style={{ width: "100%" }}
                     />
                   </label>
                 ) : (
-                  <div style={{ whiteSpace: "pre-wrap" }}>
-                    {recipeDescription}
-                  </div>
+                  <div className="whitespace-pre-wrap text-sm leading-7 text-muted-foreground">{recipeDescription}</div>
                 )}
               </div>
             )}
@@ -432,9 +401,9 @@ export default function RecipeCard({
         <RecipeSettings recipe={recipe} />
 
         {recipe.Links && Array.isArray(recipe.Links) && recipe.Links.length > 0 && (
-          <div>
-            <strong>Links:</strong>
-            <ul style={{ marginTop: 0, listStyleType: "disc", paddingLeft: "1.25em" }}>
+          <div className="rounded-[1.5rem] border border-border/70 bg-card/70 p-5">
+            <strong className="text-sm uppercase tracking-[0.18em] text-muted-foreground">Links</strong>
+            <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-muted-foreground">
               {recipe.Links.map((url, i) => (
                 <li key={i}>
                   <a href={url} target="_blank" rel="noopener noreferrer">
@@ -445,7 +414,8 @@ export default function RecipeCard({
             </ul>
           </div>
         )}
-      </div>
+        </CardContent>
+      </Card>
 
       {showDeleteModal && (
         <DeleteConfirmationModal

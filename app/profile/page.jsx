@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { buttonVariants } from 'components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'components/ui/card';
 import { getSession } from '../../lib/auth.js';
 import { updateMyProfileAction } from './actions';
 import { ProfileForm } from './profile-form';
@@ -14,25 +16,30 @@ export default async function Page() {
 
     if (!user) {
         return (
-            <>
-                <h1 className="mb-4">Profile</h1>
-                <p className="action-text mb-4">Please log in to edit your profile.</p>
-                <Link href="/login?redirectTo=%2Fprofile" className="inline-block px-4 py-2 rounded bg-blue-600 text-white">
+            <Card className="max-w-xl">
+                <CardHeader>
+                    <CardTitle>Profile</CardTitle>
+                    <CardDescription>Please log in to edit your profile.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                <Link href="/login?redirectTo=%2Fprofile" className={buttonVariants()}>
                     Log in
                 </Link>
-            </>
+                </CardContent>
+            </Card>
         );
     }
 
     return (
-        <div className="flex flex-col min-h-screen bg-white text-gray-800 px-8 py-8 w-full">
-            <div className="max-w-xl w-full">
-                <h1 className="text-3xl font-bold mb-6">Profile</h1>
-
-                <p className="text-gray-600 mb-6">
-                    These fields control what’s shown publicly for you as an author profile.
-                </p>
-
+        <div className="w-full">
+            <Card className="max-w-xl">
+                <CardHeader>
+                    <CardTitle>Profile</CardTitle>
+                    <CardDescription>
+                        These fields control what’s shown publicly for you as an author profile.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
                 <ProfileForm
                     action={updateMyProfileAction}
                     initialValues={{
@@ -42,7 +49,8 @@ export default async function Page() {
                         website: author?.website ?? ''
                     }}
                 />
-            </div>
+                </CardContent>
+            </Card>
         </div>
     );
 }

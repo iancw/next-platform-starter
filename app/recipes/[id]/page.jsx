@@ -5,6 +5,8 @@ import { authors, images, recipeComparisonImages, recipeSampleImages, recipes } 
 import { eq, or } from 'drizzle-orm';
 import RecipeCard from '../../../components/recipe-card.jsx';
 import SampleGallery from '../../../components/SampleGallery.jsx';
+import { Badge } from '../../../components/ui/badge.jsx';
+import { Card, CardContent } from '../../../components/ui/card.jsx';
 import { deleteMyRecipeAction, deleteRecipeSampleImageAction, updateRecipeAction } from './actions';
 import { getSavedRecipeIdsForUser } from '../../../lib/recipe-saves.js';
 
@@ -160,8 +162,20 @@ export default async function Page({ params }) {
     const isOwner = authedAuthorIds.includes(recipe.authorId);
 
     return (
-        <div className="flex flex-col min-h-screen bg-white text-gray-800 px-8 py-8 w-full">
-            <div className="mt-2">
+        <div className="flex w-full flex-col gap-8 pb-10 pt-2">
+            <Card className="overflow-hidden border-border/60 bg-card/80">
+                <CardContent className="space-y-4 p-6 lg:p-8">
+                    <Badge>Recipe Detail</Badge>
+                    <div className="space-y-3">
+                        <h1 className="max-w-4xl">{recipe.recipeName}</h1>
+                        <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
+                            Full recipe details, download links, and submitted sample images for {recipe.authorName}.
+                        </p>
+                    </div>
+                </CardContent>
+            </Card>
+
+            <div>
                 <RecipeCard
                     recipe={recipe}
                     isOwner={isOwner}
@@ -170,15 +184,17 @@ export default async function Page({ params }) {
                 />
             </div>
 
-            <SampleGallery
-                images={recipe.sampleImages}
-                title="Sample images"
-                canDelete={isOwner}
-                recipeId={recipe.id}
-                recipeName={recipe.recipeName}
-                deleteImageAction={deleteRecipeSampleImageAction}
-            />
-            <SampleGallery images={recipe.comparisonImages} title="Comparison images" />
+            <div className="space-y-8">
+                <SampleGallery
+                    images={recipe.sampleImages}
+                    title="Sample images"
+                    canDelete={isOwner}
+                    recipeId={recipe.id}
+                    recipeName={recipe.recipeName}
+                    deleteImageAction={deleteRecipeSampleImageAction}
+                />
+                <SampleGallery images={recipe.comparisonImages} title="Comparison images" />
+            </div>
         </div>
     );
 }

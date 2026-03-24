@@ -1,13 +1,16 @@
 import Link from 'next/link';
-import { and, desc, eq, inArray, notInArray } from 'drizzle-orm';
+import { desc, eq, inArray } from 'drizzle-orm';
 import MySamplesGrid from '../../components/MySamplesGrid.jsx';
+import { Badge } from '../../components/ui/badge.jsx';
+import { buttonVariants } from '../../components/ui/button.jsx';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card.jsx';
 import { db } from '../../db/index.ts';
 import { authors, images, recipeSampleImages, recipes } from '../../db/schema.ts';
 import { getSession } from '../../lib/auth.js';
 import { deleteMySampleImageAction } from './actions.js';
 
 export const metadata = {
-    title: 'My Samples'
+    title: 'Samples'
 };
 
 async function getSampleImagesUploadedByUserId({ userId, limit = 500 }) {
@@ -39,12 +42,7 @@ async function getSampleImagesUploadedByUserId({ userId, limit = 500 }) {
         .from(recipeSampleImages)
         .innerJoin(recipes, eq(recipes.id, recipeSampleImages.recipeId))
         .leftJoin(images, eq(images.id, recipeSampleImages.imageId))
-        .where(
-            and(
-                inArray(recipeSampleImages.authorId, uploaderAuthorIds),
-                notInArray(recipes.authorId, uploaderAuthorIds)
-            )
-        )
+        .where(inArray(recipeSampleImages.authorId, uploaderAuthorIds))
         .orderBy(desc(images.createdAt))
         .limit(limit);
 }
@@ -55,31 +53,52 @@ export default async function Page() {
 
     if (!user) {
         return (
-            <>
-                <h1 className="mb-4">My Samples</h1>
-                <p className="action-text mb-4">Welcome! Please log in to access your protected content.</p>
-                <Link href="/login?redirectTo=%2Fmy-samples" className="inline-block px-4 py-2 rounded bg-blue-600 text-white">
-                    Log in
-                </Link>
-            </>
+            <Card className="max-w-xl">
+                <CardHeader>
+                    <CardTitle>Samples</CardTitle>
+                    <CardDescription>Welcome! Please log in to access your protected content.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Link href="/login?redirectTo=%2Fmy-samples" className={buttonVariants()}>
+                        Log in
+                    </Link>
+                </CardContent>
+            </Card>
         );
     }
 
     const uploadedSamples = await getSampleImagesUploadedByUserId({ userId: user.id });
 
     return (
-        <div className="flex flex-col min-h-screen bg-white text-gray-800 px-8 py-8 w-full">
-            <div className="flex flex-col md:pt-0 md:flex-row items-start justify-between w-full">
-                <h1 className="text-3xl font-bold mb-6 flex-shrink-0">My Samples</h1>
-            </div>
+        <div className="flex w-full flex-col gap-8 pb-10 pt-2">
+            <Card className="overflow-hidden border-border/60 bg-card/80">
+                <CardContent className="space-y-4 p-6 lg:p-8">
+                    <Badge>Samples</Badge>
+                    <div className="space-y-3">
+                        <h1 className="max-w-3xl">Samples</h1>
+                        <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
+                            Manage sample images you’ve uploaded across recipes, including your own and community matches.
+                        </p>
+                    </div>
+                </CardContent>
+            </Card>
 
             {uploadedSamples.length === 0 ? (
-                <div className="text-gray-600">
-                    <p className="mb-4">You haven’t uploaded any sample images to other authors’ recipes yet.</p>
-                    <Link href="/upload" className="text-blue-600 underline">
-                        Upload your first sample
-                    </Link>
-                </div>
+                <Card className="max-w-2xl border-dashed bg-card/75">
+                    <CardContent className="space-y-4 p-8">
+                        <div className="space-y-2">
+                            <h2 className="text-2xl font-semibold text-foreground">No samples yet</h2>
+                            <p className="text-muted-foreground">
+                                You haven’t uploaded any sample images yet.
+                            </p>
+                        </div>
+                        <div>
+                            <Link href="/upload" className={buttonVariants()}>
+                                Upload your first sample
+                            </Link>
+                        </div>
+                    </CardContent>
+                </Card>
             ) : (
                 <MySamplesGrid samples={uploadedSamples} deleteSampleAction={deleteMySampleImageAction} />
             )}

@@ -1,21 +1,48 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
 @import 'tailwindcss';
 
 @theme {
+    --color-background: #f5efe2;
+    --color-foreground: #1d2924;
+    --color-card: #fffaf0;
+    --color-card-foreground: #1d2924;
+    --color-popover: #fffaf0;
+    --color-popover-foreground: #1d2924;
     --background-image-noise: linear-gradient(
             to bottom,
             color-mix(in oklab, var(--color-neutral-950) 0%, transparent),
             color-mix(in oklab, var(--color-neutral-950) 100%, transparent)
         );
-    --color-primary: #2bdcd2;
-    --color-primary-content: #171717;
-    --color-secondary: #016968;
-    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-        'Noto Color Emoji';
+    --color-primary: #285d50;
+    --color-primary-foreground: #f7f2e8;
+    --color-secondary: #d8ccb0;
+    --color-secondary-foreground: #1d2924;
+    --color-accent: #e6dcc4;
+    --color-accent-foreground: #1d2924;
+    --color-muted: #ede5d5;
+    --color-muted-foreground: #58665f;
+    --color-border: #d1c5ad;
+    --color-ring: #285d50;
+    --color-destructive: #b33b2e;
+    --color-destructive-foreground: #fff7f3;
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 }
 
 @layer base {
+    html {
+        color-scheme: light;
+    }
+
+    body {
+        @apply min-h-screen bg-background text-foreground;
+        background-image:
+            radial-gradient(circle at top left, color-mix(in srgb, var(--color-secondary) 65%, white) 0, transparent 34%),
+            linear-gradient(180deg, color-mix(in srgb, var(--color-background) 88%, white), var(--color-background));
+    }
+
     h1 {
         @apply text-4xl font-bold tracking-tight sm:text-5xl;
     }
@@ -35,6 +62,9 @@
     :not(pre) > code {
         @apply px-1 py-0.5 font-mono rounded bg-neutral-900 text-yellow-200;
         font-size: 0.9em;
+    }
+    ::selection {
+        background: color-mix(in srgb, var(--color-primary) 25%, white);
     }
 }
 
@@ -97,17 +127,17 @@
     }
 
     .btn {
-        @apply inline-flex items-center justify-center gap-2 font-bold text-center no-underline transition-colors cursor-pointer bg-primary text-primary-content;
-        padding: var(--btn-py, 0.875rem) var(--btn-px, 1.25rem);
+        @apply inline-flex items-center justify-center gap-2 rounded-lg font-medium text-center no-underline transition-colors cursor-pointer bg-primary text-primary-foreground shadow-sm;
+        padding: var(--btn-py, 0.625rem) var(--btn-px, 1rem);
         font-size: var(--btn-font-size, 0.875rem);
-        border-radius: var(--btn-border-radius, 0.25rem);
+        border-radius: var(--btn-border-radius, 0.75rem);
 
         &:hover {
             @apply bg-primary/85;
         }
 
         &:disabled {
-            @apply cursor-default text-neutral-400 bg-neutral-700;
+            @apply cursor-default opacity-50;
         }
     }
 
@@ -118,7 +148,8 @@
     }
 
     .input {
-        @apply px-4 py-3 text-sm border rounded-sm border-neutral-300 text-neutral-900 focus:border-primary focus:outline-3 focus:outline-primary/30;
+        @apply h-11 rounded-lg border border-border bg-card px-4 py-2 text-sm text-foreground shadow-sm;
+        @apply focus:border-primary focus:outline-3 focus:outline-primary/15;
     }
 
     .diff {

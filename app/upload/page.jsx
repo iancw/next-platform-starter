@@ -4,6 +4,8 @@ import { Markdown } from 'components/markdown';
 import RecipeUpload from './RecipeUpload';
 import { getSession } from '../../lib/auth.js';
 import LoginButton from 'components/LoginButton';
+import { Badge } from 'components/ui/badge';
+import { Card, CardContent } from 'components/ui/card';
 
 export const metadata = {
     title: 'Upload'
@@ -22,14 +24,21 @@ export default async function Page() {
     const user = session?.user;
 
     return (
-        <>
+        <div className="flex w-full flex-col gap-8 pb-10 pt-2">
             {uploadDisabled ? (
                 <Alert className="mb-6">
                     <Markdown content={uploadDisabledText} />
                 </Alert>
             ) : null}
-            <h1 className="mb-8">Recipes</h1>
-            <Markdown content={explainer} className="mb-12" />
+            <Card className="overflow-hidden border-border/60 bg-card/80">
+                <CardContent className="space-y-4 p-6 lg:p-8">
+                    <Badge>Upload</Badge>
+                    <div className="space-y-3">
+                        <h1 className="max-w-3xl">Upload Recipe Samples</h1>
+                        <Markdown content={explainer} className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg" />
+                    </div>
+                </CardContent>
+            </Card>
             {!uploadDisabled &&
                 <>
                     {user ? (
@@ -44,6 +53,6 @@ export default async function Page() {
                     )}
                 </>
             }
-        </>
+        </div>
     );
 }

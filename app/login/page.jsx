@@ -1,4 +1,8 @@
 import Link from 'next/link';
+import { Alert } from 'components/alert';
+import { Button, buttonVariants } from 'components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'components/ui/card';
+import { Input } from 'components/ui/input';
 import { getSession, normalizeRedirectPath } from '../../lib/auth.js';
 
 export const metadata = {
@@ -33,55 +37,52 @@ export default async function LoginPage({ searchParams }) {
 
     if (session?.user) {
         return (
-            <div className="max-w-xl py-12">
-                <h1 className="mb-4">Log In</h1>
-                <p className="mb-6">You’re already signed in as {session.user.email}.</p>
-                <Link href={redirectTo} className="btn">
-                    Continue
-                </Link>
-            </div>
+            <Card className="max-w-xl">
+                <CardHeader>
+                    <CardTitle>Log In</CardTitle>
+                    <CardDescription>You’re already signed in as {session.user.email}.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Link href={redirectTo} className={buttonVariants()}>
+                        Continue
+                    </Link>
+                </CardContent>
+            </Card>
         );
     }
 
     return (
-        <div className="max-w-xl py-12">
-            <h1 className="mb-4">Log In</h1>
-            <p className="mb-6">
-                Enter your email address and OM Recipes will send you a one-time magic link. Sessions roll for 14
-                days while you stay active.
-            </p>
+        <Card className="max-w-xl">
+            <CardHeader>
+                <CardTitle>Log In</CardTitle>
+                <CardDescription>
+                    Enter your email address and OM Recipes will send you a one-time magic link. Sessions roll for 14
+                    days while you stay active.
+                </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                {sent ? <Alert type="success">Check your email for a sign-in link.</Alert> : null}
+                {error ? <Alert type="error">{error}</Alert> : null}
 
-            {sent ? (
-                <div className="mb-6 rounded border border-green-200 bg-green-50 px-4 py-3 text-green-800">
-                    Check your email for a sign-in link.
-                </div>
-            ) : null}
+                <form action="/auth/request-link" method="post" className="flex flex-col gap-4">
+                    <input type="hidden" name="redirectTo" value={redirectTo} />
 
-            {error ? (
-                <div className="mb-6 rounded border border-red-200 bg-red-50 px-4 py-3 text-red-800">{error}</div>
-            ) : null}
+                    <label className="flex flex-col gap-2">
+                        <span className="text-sm font-medium text-foreground">Email address</span>
+                        <Input
+                            type="email"
+                            name="email"
+                            autoComplete="email"
+                            placeholder="you@example.com"
+                            required
+                        />
+                    </label>
 
-            <form action="/auth/request-link" method="post" className="flex flex-col gap-4">
-                <input type="hidden" name="redirectTo" value={redirectTo} />
-
-                <label className="flex flex-col gap-1">
-                    <span className="text-sm text-gray-700">Email address</span>
-                    <input
-                        className="input"
-                        type="email"
-                        name="email"
-                        autoComplete="email"
-                        placeholder="you@example.com"
-                        required
-                    />
-                </label>
-
-                <div className="pt-2">
-                    <button type="submit" className="btn">
-                        Send Magic Link
-                    </button>
-                </div>
-            </form>
-        </div>
+                    <div className="pt-2">
+                        <Button type="submit">Send Magic Link</Button>
+                    </div>
+                </form>
+            </CardContent>
+        </Card>
     );
 }

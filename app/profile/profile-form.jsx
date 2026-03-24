@@ -2,6 +2,8 @@
 
 import { useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
+import { Button } from 'components/ui/button';
+import { Input } from 'components/ui/input';
 
 const FIELD_NAMES = ['name', 'instagramLink', 'flickrLink', 'website'];
 
@@ -25,9 +27,9 @@ function ProfileSubmitButton({ isDirty }) {
     const { pending } = useFormStatus();
 
     return (
-        <button type="submit" className="btn" disabled={!isDirty || pending}>
+        <Button type="submit" disabled={!isDirty || pending}>
             {pending ? 'Saving...' : 'Update profile'}
-        </button>
+        </Button>
     );
 }
 
@@ -47,17 +49,16 @@ export function ProfileForm({ action, initialValues }) {
         setIsDirty(false);
     };
 
-    return (
+        return (
         <form ref={formRef} action={handleSubmit} className="flex flex-col gap-4" onInput={handleInput}>
-            <label className="flex flex-col gap-1">
-                <span className="text-sm text-gray-700">Display name</span>
-                <input className="input" name="name" defaultValue={initialValues.name} required />
+            <label className="flex flex-col gap-2">
+                <span className="text-sm font-medium text-foreground">Display name</span>
+                <Input name="name" defaultValue={initialValues.name} required />
             </label>
 
-            <label className="flex flex-col gap-1">
-                <span className="text-sm text-gray-700">Instagram link</span>
-                <input
-                    className="input"
+            <label className="flex flex-col gap-2">
+                <span className="text-sm font-medium text-foreground">Instagram link</span>
+                <Input
                     name="instagramLink"
                     type="url"
                     defaultValue={initialValues.instagramLink}
@@ -65,10 +66,9 @@ export function ProfileForm({ action, initialValues }) {
                 />
             </label>
 
-            <label className="flex flex-col gap-1">
-                <span className="text-sm text-gray-700">Flickr link</span>
-                <input
-                    className="input"
+            <label className="flex flex-col gap-2">
+                <span className="text-sm font-medium text-foreground">Flickr link</span>
+                <Input
                     name="flickrLink"
                     type="url"
                     defaultValue={initialValues.flickrLink}
@@ -76,10 +76,9 @@ export function ProfileForm({ action, initialValues }) {
                 />
             </label>
 
-            <label className="flex flex-col gap-1">
-                <span className="text-sm text-gray-700">Website</span>
-                <input
-                    className="input"
+            <label className="flex flex-col gap-2">
+                <span className="text-sm font-medium text-foreground">Website</span>
+                <Input
                     name="website"
                     type="url"
                     defaultValue={initialValues.website}

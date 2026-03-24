@@ -3,6 +3,12 @@ import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import RecipeSimpleCard from "../components/recipe-simple-card.jsx";
 import Link from 'next/link';
 import RecipeCard from "../components/recipe-card.jsx";
+import { Badge } from "../components/ui/badge.jsx";
+import { Button, buttonVariants } from "../components/ui/button.jsx";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card.jsx";
+import { Dialog, DialogContent } from "../components/ui/dialog.jsx";
+import { Input } from "../components/ui/input.jsx";
+import { cn } from "../lib/cn.js";
 import {
   comparisonImageSelectionValue,
   formatComparisonImageLabelForDisplay,
@@ -11,6 +17,25 @@ import {
 } from "../lib/recipe-image-selection.js";
 
 const PAGE_SIZE = 12;
+
+function TogglePill({ checked, label, onClick }) {
+  return (
+    <button
+      type="button"
+      role="radio"
+      aria-checked={checked}
+      onClick={onClick}
+      className={cn(
+        "inline-flex items-center rounded-full border px-3 py-2 text-sm transition-colors",
+        checked
+          ? "border-primary bg-primary text-primary-foreground shadow-sm"
+          : "border-border bg-card/80 text-muted-foreground hover:border-primary/35 hover:text-foreground"
+      )}
+    >
+      {label}
+    </button>
+  );
+}
 
 function getRecipeId(recipe) {
   if (!recipe) return null;
@@ -398,16 +423,6 @@ export default function Page() {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [closeModal, isModalOpen, openRecipeAtIndex, openNextRecipe, selectedRecipeIndex]);
 
-  // Prevent background scroll while modal is open.
-  useEffect(() => {
-    if (!isModalOpen) return;
-    const prevOverflow = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = prevOverflow;
-    };
-  }, [isModalOpen]);
-
   useEffect(() => {
     const sentinel = loadMoreSentinelRef.current;
     if (!sentinel || isModalOpen) return;
@@ -451,286 +466,224 @@ export default function Page() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-white text-gray-800 px-8 py-8 w-full">
-      <div className="flex flex-col w-full gap-4 mb-5 md:mb-10">
-        <div className="flex flex-col md:pt-0 md:flex-row items-start justify-between w-full gap-4">
-          <h1 className="text-3xl font-bold mb-0 flex-shrink-0">OM System Color Recipes</h1>
-          <div className="flex w-full flex-col items-start md:items-end md:ml-8">
-            <form onSubmit={handleSubmit} className="flex w-full max-w-sm justify-start md:justify-end">
-              <input
-                type="text"
-                name="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search color recipes..."
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-l focus:outline-none text-gray-800"
-              />
-              <button
-                type="submit"
-                className="px-6 py-2 bg-blue-600 text-white rounded-r hover:bg-blue-700"
-              >
-                Search
-              </button>
-            </form>
+    <div className="flex w-full flex-col gap-8 pb-10 pt-2">
+      <Card className="overflow-hidden border-border/60 bg-card/80">
+        <CardContent className="grid gap-8 p-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(320px,0.95fr)] lg:p-8">
+          <div className="space-y-5">
+            <Badge>Recipe Library</Badge>
+            <div className="space-y-3">
+              <h1 className="max-w-3xl">OM System Color Recipes</h1>
+              <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
+                Search the library, compare author sample images, and open any recipe into a focused detail view with export downloads.
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="flex w-full flex-col gap-4 md:flex-row md:items-start md:justify-between">
-          <fieldset className="m-0 flex min-w-0 flex-col gap-2 rounded-lg border border-gray-300 px-4 py-3">
-            <legend id="recipe-image-group-label" className="text-sm font-medium text-gray-700">
-              Image
-            </legend>
-            <div
-              role="radiogroup"
-              aria-labelledby="recipe-image-group-label"
-              className="flex flex-row flex-wrap items-center gap-4 text-sm text-gray-700 justify-start"
-            >
-              {imageOptions.map((option) => {
-                const checked = selectedImageOption === option.value;
-                return (
-                  <button
-                    key={option.value}
-                    type="button"
-                    role="radio"
-                    aria-checked={checked}
-                    onClick={() => setSelectedImageOption(option.value)}
-                    className="inline-flex items-center gap-2 hover:opacity-80"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className={`inline-flex h-5 w-5 items-center justify-center rounded-full border transition-colors ${
-                        checked ? 'border-blue-600 bg-blue-600' : 'border-gray-400 bg-white'
-                      }`}
-                    >
-                      <span className="h-2 w-2 rounded-full bg-white" />
+          <div className="grid gap-4">
+            <Card className="border-border/60 bg-background/55">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Search Recipes</CardTitle>
+                <CardDescription>Find by author, recipe name, or description.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row">
+                  <Input
+                    type="text"
+                    name="search"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Search color recipes..."
+                    className="flex-1"
+                  />
+                  <Button type="submit" className="sm:self-start">
+                    Search
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+            <div className="grid gap-4 md:grid-cols-2">
+              <Card className="border-border/60 bg-background/55">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base">Image View</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div role="radiogroup" aria-labelledby="recipe-image-group-label" className="flex flex-wrap gap-2">
+                    <span id="recipe-image-group-label" className="sr-only">
+                      Image view
                     </span>
-                    <span>{option.label}</span>
-                  </button>
-                );
-              })}
+                    {imageOptions.map((option) => (
+                      <TogglePill
+                        key={option.value}
+                        checked={selectedImageOption === option.value}
+                        label={option.label}
+                        onClick={() => setSelectedImageOption(option.value)}
+                      />
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="border-border/60 bg-background/55">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base">Filters</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div role="radiogroup" aria-labelledby="recipe-filter-group-label" className="flex flex-wrap gap-2">
+                    <span id="recipe-filter-group-label" className="sr-only">
+                      Recipe filter
+                    </span>
+                    <TogglePill
+                      checked={!onlyMine && !onlySaved}
+                      label="All"
+                      onClick={() => {
+                        setOnlyMine(false);
+                        setOnlySaved(false);
+                      }}
+                    />
+                    <TogglePill
+                      checked={onlyMine}
+                      label="Mine"
+                      onClick={() => {
+                        setOnlyMine(true);
+                        setOnlySaved(false);
+                      }}
+                    />
+                    <TogglePill
+                      checked={onlySaved}
+                      label="Saved"
+                      onClick={() => {
+                        setOnlySaved(true);
+                        setOnlyMine(false);
+                      }}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          </fieldset>
-          <fieldset className="m-0 flex min-w-0 flex-col gap-2 rounded-lg border border-gray-300 px-4 py-3 md:items-end">
-            <legend id="recipe-filter-group-label" className="text-sm font-medium text-gray-700">
-              Filter
-            </legend>
-            <div
-              role="radiogroup"
-              aria-labelledby="recipe-filter-group-label"
-              className="flex flex-row flex-wrap items-center gap-4 text-sm text-gray-700 md:justify-end"
-            >
-              <button
-                type="button"
-                role="radio"
-                aria-checked={!onlyMine && !onlySaved}
-                onClick={() => {
-                  setOnlyMine(false);
-                  setOnlySaved(false);
-                }}
-                className="inline-flex items-center gap-2 hover:opacity-80"
-              >
-                <span
-                  aria-hidden="true"
-                  className={`inline-flex h-5 w-5 items-center justify-center rounded-full border transition-colors ${
-                    !onlyMine && !onlySaved ? 'border-blue-600 bg-blue-600' : 'border-gray-400 bg-white'
-                  }`}
-                >
-                  <span className="h-2 w-2 rounded-full bg-white" />
-                </span>
-                <span>All</span>
-              </button>
-              <button
-                type="button"
-                role="radio"
-                aria-checked={onlyMine}
-                onClick={() => {
-                  setOnlyMine(true);
-                  setOnlySaved(false);
-                }}
-                className="inline-flex items-center gap-2 hover:opacity-80"
-              >
-                <span
-                  aria-hidden="true"
-                  className={`inline-flex h-5 w-5 items-center justify-center rounded-full border transition-colors ${
-                    onlyMine ? 'border-blue-600 bg-blue-600' : 'border-gray-400 bg-white'
-                  }`}
-                >
-                  <span className="h-2 w-2 rounded-full bg-white" />
-                </span>
-                <span>Mine</span>
-              </button>
-              <button
-                type="button"
-                role="radio"
-                aria-checked={onlySaved}
-                onClick={() => {
-                  setOnlySaved(true);
-                  setOnlyMine(false);
-                }}
-                className="inline-flex items-center gap-2 hover:opacity-80"
-              >
-                <span
-                  aria-hidden="true"
-                  className={`inline-flex h-5 w-5 items-center justify-center rounded-full border transition-colors ${
-                    onlySaved ? 'border-blue-600 bg-blue-600' : 'border-gray-400 bg-white'
-                  }`}
-                >
-                  <span className="h-2 w-2 rounded-full bg-white" />
-                </span>
-                <span>Saved</span>
-              </button>
-            </div>
-          </fieldset>
-        </div>
-      </div>
-      <div className="w-full">
-        {isModalOpen ? (
-          <div
-            className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
-            onClick={(e) => {
-              // Backdrop click closes; clicks inside the dialog should not.
-              if (e.target === e.currentTarget) closeModal();
-            }}
-          >
-            <div
-              className="bg-white rounded shadow-lg relative max-w-5xl w-full p-6 flex flex-col items-center"
-              role="dialog"
-              aria-modal="true"
-              aria-label="Recipe details"
-            >
-              {/* Arrow Navigation */}
-              <div className="absolute left-0 top-1/2 transform -translate-y-1/2 pl-4">
-                {selectedRecipeIndex > 0 && (
-                  <button
-                    onClick={() => openRecipeAtIndex(selectedRecipeIndex - 1)}
-                    aria-label="Previous Recipe"
-                    className="bg-white rounded-full shadow p-2 text-2xl hover:bg-gray-200"
-                  >
-                    &#8592;
-                  </button>
-                )}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Dialog open={isModalOpen} onOpenChange={(open) => (!open ? closeModal() : null)}>
+        <DialogContent className="max-w-[min(96vw,84rem)] overflow-hidden p-0">
+          <div className="relative flex max-h-[88vh] flex-col">
+            <div className="flex items-center justify-between gap-3 border-b border-border/70 bg-card/90 px-5 py-4">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Badge variant="outline">Recipe Detail</Badge>
+                <span>Use left and right arrow keys to browse.</span>
               </div>
-              <div className="absolute right-0 top-1/2 transform -translate-y-1/2 pr-4">
+              <div className="flex items-center gap-2">
+                {selectedRecipeIndex > 0 ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    aria-label="Previous recipe"
+                    onClick={() => openRecipeAtIndex(selectedRecipeIndex - 1)}
+                  >
+                    ←
+                  </Button>
+                ) : null}
                 {(Array.isArray(results) && selectedRecipeIndex < results.length - 1) || hasMore ? (
-                  <button
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    aria-label="Next recipe"
                     onClick={() => {
                       void openNextRecipe();
                     }}
-                    aria-label="Next Recipe"
-                    className="bg-white rounded-full shadow p-2 text-2xl hover:bg-gray-200"
                   >
-                    &#8594;
-                  </button>
+                    →
+                  </Button>
                 ) : null}
+                <Button type="button" variant="ghost" size="icon" aria-label="Close recipe dialog" onClick={closeModal}>
+                  ×
+                </Button>
               </div>
-
-              <button
-                onClick={closeModal}
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl font-bold"
-                aria-label="Close"
-                style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  padding: 0,
-                  lineHeight: 1
-                }}
-              >
-                ×
-              </button>
-
-              <div className="w-full flex items-center justify-end pr-10">
+            </div>
+            <div className="overflow-y-auto px-4 py-4 sm:px-6 sm:py-6">
+              <div className="mb-4 flex items-center justify-end">
                 {(() => {
                   const id = getRecipeId(selectedRecipe);
                   if (!id) return null;
                   return (
                     <Link
                       href={`/recipes/${encodeURIComponent(id)}`}
-                      className="text-sm text-blue-700 hover:underline"
+                      className={buttonVariants({ variant: 'ghost', className: 'no-underline' })}
                     >
                       Open full recipe page
                     </Link>
                   );
                 })()}
               </div>
-
-              <div
-                className="w-full"
-                style={{
-                  maxHeight: "80vh",
-                  overflowY: "auto",
-                  width: "100%"
-                }}
-              >
-                <RecipeCard
-                  recipe={selectedRecipe}
-                  onSavedChange={handleSavedChange}
-                  selectedImageOption={selectedImageOption}
-                />
-              </div>
+              <RecipeCard
+                recipe={selectedRecipe}
+                onSavedChange={handleSavedChange}
+                selectedImageOption={selectedImageOption}
+              />
             </div>
           </div>
-        ) : (
-          <>
-            {loading && <div className="text-center text-gray-500">Searching...</div>}
-            {error && <div className="text-center text-red-500">{error}</div>}
-            {!loading && !error && results.length === 0 && (query || onlyMine || onlySaved) && (
-              <div className="text-center text-gray-500">No recipes found.</div>
-            )}
-            {!loading && !error && results.length > 0 && (
-              <ul className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 w-full">
-                {results.map((r, i) => (
-                  <li key={getRecipeListKey(r, i)} className="p-0">
-                    {(() => {
-                      const id = getRecipeId(r);
-                      if (!id) {
-                        return (
-                          <div className="block opacity-60 cursor-not-allowed" title="Recipe is missing uuid/slug">
-                            <RecipeSimpleCard recipe={r} selectedImageOption={selectedImageOption} />
-                          </div>
-                        );
-                      }
+        </DialogContent>
+      </Dialog>
 
-                      return (
-                        <div
-                          role="button"
-                          tabIndex={0}
-                          className="block text-left w-full"
-                          onClick={() => openRecipeAtIndex(i)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              e.preventDefault();
-                              openRecipeAtIndex(i);
-                            }
-                          }}
-                        >
-                          <RecipeSimpleCard recipe={r} selectedImageOption={selectedImageOption} />
-                        </div>
-                      );
-                    })()}
-                  </li>
-                ))}
-              </ul>
-            )}
-            {!loading && !error && results.length > 0 && (
-              <div ref={loadMoreSentinelRef} className="flex flex-col items-center gap-3 py-6 text-sm text-gray-500">
-                <div>
-                  {loadingMore ? "Loading more recipes..." : hasMore ? "Scroll for more recipes" : "All recipes loaded"}
-                </div>
-                {hasMore && !loadingMore ? (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      void loadMoreRecipes();
-                    }}
-                    className="rounded border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50"
-                  >
-                    Load more
-                  </button>
-                ) : null}
-              </div>
-            )}
-          </>
-        )}
+      <div className="w-full">
+        {loading ? <div className="text-center text-muted-foreground">Searching...</div> : null}
+        {error ? <div className="text-center text-destructive">{error}</div> : null}
+        {!loading && !error && results.length === 0 && (query || onlyMine || onlySaved) ? (
+          <Card className="mx-auto max-w-xl border-dashed bg-card/75">
+            <CardContent className="p-8 text-center text-muted-foreground">No recipes found.</CardContent>
+          </Card>
+        ) : null}
+        {!loading && !error && results.length > 0 ? (
+          <ul className="grid w-full grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+            {results.map((r, i) => (
+              <li key={getRecipeListKey(r, i)} className="p-0">
+                {(() => {
+                  const id = getRecipeId(r);
+                  if (!id) {
+                    return (
+                      <div className="block cursor-not-allowed opacity-60" title="Recipe is missing uuid/slug">
+                        <RecipeSimpleCard recipe={r} selectedImageOption={selectedImageOption} />
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      className="block w-full text-left"
+                      onClick={() => openRecipeAtIndex(i)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          openRecipeAtIndex(i);
+                        }
+                      }}
+                    >
+                      <RecipeSimpleCard recipe={r} selectedImageOption={selectedImageOption} />
+                    </div>
+                  );
+                })()}
+              </li>
+            ))}
+          </ul>
+        ) : null}
+        {!loading && !error && results.length > 0 ? (
+          <div ref={loadMoreSentinelRef} className="flex flex-col items-center gap-3 py-8 text-sm text-muted-foreground">
+            <div>{loadingMore ? "Loading more recipes..." : hasMore ? "Scroll for more recipes" : "All recipes loaded"}</div>
+            {hasMore && !loadingMore ? (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  void loadMoreRecipes();
+                }}
+              >
+                Load more
+              </Button>
+            ) : null}
+          </div>
+        ) : null}
       </div>
     </div>
   );

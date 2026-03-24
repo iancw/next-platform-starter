@@ -48,10 +48,12 @@ export default function RootLayout({ children }) {
                 <Suspense fallback={null}>
                     <GA4PageView measurementId={measurementId} />
                 </Suspense>
-                <div className="flex flex-col min-h-screen px-6 sm:px-12">
+                <div className="flex min-h-screen flex-col px-4 sm:px-6">
                     <div className="flex flex-col w-full grow">
                         <Header />
-                        <main className="grow">{children}</main>
+                        <main className="grow">
+                            <div className="mx-auto w-full max-w-7xl">{children}</div>
+                        </main>
                         <Footer />
                     </div>
                 </div>
