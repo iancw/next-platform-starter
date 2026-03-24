@@ -10,10 +10,51 @@ import {
   SAMPLE_IMAGE_SELECTION
 } from "../lib/recipe-image-selection.js";
 
+const PAGE_SIZE = 12;
+
+function getRecipeId(recipe) {
+  if (!recipe) return null;
+  // Prefer uuid for URL identity; fall back to slug for older data.
+  const id = recipe.uuid ?? recipe.slug;
+  return id == null || String(id).trim() === '' ? null : id;
+}
+
+function getRecipeListKey(recipe, index) {
+  if (recipe?.id != null) return `recipe-${recipe.id}`;
+  const recipeId = getRecipeId(recipe);
+  if (recipeId) return `recipe-${recipeId}`;
+  return `recipe-fallback-${index}`;
+}
+
+function mergeUniqueRecipes(existingRecipes, incomingRecipes) {
+  const seen = new Set();
+  const merged = [];
+
+  for (const recipe of [...existingRecipes, ...incomingRecipes]) {
+    const identity =
+      recipe?.id != null
+        ? `id:${recipe.id}`
+        : getRecipeId(recipe)
+          ? `recipe:${getRecipeId(recipe)}`
+          : null;
+
+    if (identity) {
+      if (seen.has(identity)) continue;
+      seen.add(identity);
+    }
+
+    merged.push(recipe);
+  }
+
+  return merged;
+}
+
 export default function Page() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
   const [error, setError] = useState(null);
   const [selectedRecipeIndex, setSelectedRecipeIndex] = useState(null);
   const [onlyMine, setOnlyMine] = useState(false);
@@ -21,35 +62,145 @@ export default function Page() {
   const [selectedImageOption, setSelectedImageOption] = useState(SAMPLE_IMAGE_SELECTION);
   const hasLoadedInitialResults = useRef(false);
   const queryRef = useRef("");
+  const resultsRef = useRef([]);
+  const hasMoreRef = useRef(false);
+  const loadingRef = useRef(false);
+  const loadingMoreRef = useRef(false);
+  const activeSearchKeyRef = useRef("");
+  const currentSearchRef = useRef({ query: "", onlyMine: false, onlySaved: false });
+  const activeResetRequestRef = useRef(null);
+  const loadMoreSentinelRef = useRef(null);
 
-  // Shared search handler for both initial load and submission
-  async function doSearch(searchQuery, filters = {}) {
-    setLoading(true);
-    setError(null);
-    setResults([]);
+  const updateResults = useCallback((nextValue) => {
+    setResults((current) => {
+      const nextResults = typeof nextValue === "function" ? nextValue(current) : nextValue;
+      resultsRef.current = nextResults;
+      return nextResults;
+    });
+  }, []);
+
+  const updateHasMore = useCallback((nextHasMore) => {
+    hasMoreRef.current = nextHasMore;
+    setHasMore(nextHasMore);
+  }, []);
+
+  const buildSearchKey = useCallback(
+    (searchQuery, filters) =>
+      JSON.stringify({
+        q: searchQuery,
+        onlyMine: Boolean(filters.onlyMine),
+        onlySaved: Boolean(filters.onlySaved)
+      }),
+    []
+  );
+
+  const fetchRecipePage = useCallback(async ({ searchQuery, filters = {}, offset = 0, append = false }) => {
+    const searchKey = buildSearchKey(searchQuery, filters);
+    const controller = new AbortController();
+
+    if (!append) {
+      activeSearchKeyRef.current = searchKey;
+      currentSearchRef.current = {
+        query: searchQuery,
+        onlyMine: Boolean(filters.onlyMine),
+        onlySaved: Boolean(filters.onlySaved)
+      };
+      if (activeResetRequestRef.current) {
+        activeResetRequestRef.current.abort();
+      }
+      activeResetRequestRef.current = controller;
+      setLoading(true);
+      setError(null);
+      updateResults([]);
+      updateHasMore(false);
+      setSelectedRecipeIndex(null);
+    } else {
+      if (loadingRef.current || loadingMoreRef.current || !hasMoreRef.current) return null;
+      if (activeSearchKeyRef.current !== searchKey) return null;
+      loadingMoreRef.current = true;
+      setLoadingMore(true);
+    }
+
     try {
       const params = new URLSearchParams();
       params.set('q', searchQuery);
       if (filters.onlyMine) params.set('onlyMine', '1');
       if (filters.onlySaved) params.set('onlySaved', '1');
-      const res = await fetch(`/recipes/search?${params.toString()}`);
+      params.set('limit', String(PAGE_SIZE));
+      params.set('offset', String(offset));
+
+      const res = await fetch(`/recipes/search?${params.toString()}`, {
+        signal: controller.signal
+      });
       if (!res.ok) throw new Error("Failed to fetch recipes");
       const data = await res.json();
-      setResults(data);
-    } catch (err) {
-      setError(err.message || "Unknown error");
-    } finally {
-      setLoading(false);
-    }
-  }
+      if (activeSearchKeyRef.current !== searchKey) return null;
 
-  // Helper function to get recipe id from a recipe row
-  function getRecipeId(recipe) {
-    if (!recipe) return null;
-    // Prefer uuid for URL identity; fall back to slug for older data.
-    const id = recipe.uuid ?? recipe.slug;
-    return id == null || String(id).trim() === '' ? null : id;
-  }
+      const pageResults = Array.isArray(data?.results) ? data.results : [];
+      const nextResults = append ? mergeUniqueRecipes(resultsRef.current, pageResults) : pageResults;
+
+      updateResults(nextResults);
+      updateHasMore(Boolean(data?.hasMore));
+
+      return {
+        results: pageResults,
+        mergedResults: nextResults,
+        hasMore: Boolean(data?.hasMore)
+      };
+    } catch (err) {
+      if (err?.name === 'AbortError') return null;
+      setError(err.message || "Unknown error");
+      if (!append) updateHasMore(false);
+      return null;
+    } finally {
+      if (!append) {
+        if (activeResetRequestRef.current === controller) {
+          activeResetRequestRef.current = null;
+        }
+        setLoading(false);
+      } else {
+        loadingMoreRef.current = false;
+        setLoadingMore(false);
+      }
+    }
+  }, [buildSearchKey, updateHasMore, updateResults]);
+
+  const loadMoreRecipes = useCallback(async () => {
+    if (loadingRef.current || loadingMoreRef.current || !hasMoreRef.current) return null;
+
+    const { query: currentQuery, onlyMine: currentOnlyMine, onlySaved: currentOnlySaved } = currentSearchRef.current;
+
+    return fetchRecipePage({
+      searchQuery: currentQuery,
+      filters: {
+        onlyMine: currentOnlyMine,
+        onlySaved: currentOnlySaved
+      },
+      offset: resultsRef.current.length,
+      append: true
+    });
+  }, [fetchRecipePage]);
+
+  const startSearch = useCallback((searchQuery, filters = {}) => {
+    void fetchRecipePage({
+      searchQuery,
+      filters,
+      offset: 0,
+      append: false
+    });
+  }, [fetchRecipePage]);
+
+  const maybeLoadMoreRecipes = useCallback(() => {
+    const sentinel = loadMoreSentinelRef.current;
+    if (!sentinel) return;
+    if (loadingRef.current || loadingMoreRef.current || !hasMoreRef.current) return;
+
+    const sentinelTop = sentinel.getBoundingClientRect().top;
+    const viewportBottom = window.innerHeight + 300;
+    if (sentinelTop <= viewportBottom) {
+      void loadMoreRecipes();
+    }
+  }, [loadMoreRecipes]);
 
   const selectedRecipe = useMemo(() => {
     if (selectedRecipeIndex == null) return null;
@@ -77,11 +228,11 @@ export default function Page() {
   );
 
   const openRecipeAtIndex = useCallback(
-    (index) => {
-      if (!Array.isArray(results) || results.length === 0) return;
+    (index, recipeList = resultsRef.current) => {
+      if (!Array.isArray(recipeList) || recipeList.length === 0) return;
       if (!Number.isInteger(index)) return;
-      if (index < 0 || index >= results.length) return;
-      const r = results[index];
+      if (index < 0 || index >= recipeList.length) return;
+      const r = recipeList[index];
       const id = getRecipeId(r);
       if (!id) return;
 
@@ -91,7 +242,7 @@ export default function Page() {
       url.searchParams.set('id', id);
       window.history.pushState({}, '', url);
     },
-    [results]
+    []
   );
 
   const closeModal = useCallback(() => {
@@ -103,14 +254,14 @@ export default function Page() {
 
   const handleSavedChange = useCallback((recipeId, isSaved) => {
     if (onlySaved && !isSaved) {
-      setResults((current) => current.filter((recipe) => recipe?.id !== recipeId));
+      updateResults((current) => current.filter((recipe) => recipe?.id !== recipeId));
       if (selectedRecipe?.id === recipeId) {
         closeModal();
       }
       return;
     }
 
-    setResults((current) =>
+    updateResults((current) =>
       current.map((recipe) =>
         recipe?.id === recipeId
           ? {
@@ -120,21 +271,29 @@ export default function Page() {
           : recipe
       )
     );
-  }, [closeModal, onlySaved, selectedRecipe?.id]);
+  }, [closeModal, onlySaved, selectedRecipe?.id, updateResults]);
 
   useEffect(() => {
     queryRef.current = query;
   }, [query]);
 
   useEffect(() => {
-      doSearch("", { onlyMine: false, onlySaved: false });
-      hasLoadedInitialResults.current = true;
-  }, []);
+    startSearch("", { onlyMine: false, onlySaved: false });
+    hasLoadedInitialResults.current = true;
+  }, [startSearch]);
 
   useEffect(() => {
     if (!hasLoadedInitialResults.current) return;
-    doSearch(queryRef.current, { onlyMine, onlySaved });
-  }, [onlyMine, onlySaved]);
+    startSearch(queryRef.current, { onlyMine, onlySaved });
+  }, [onlyMine, onlySaved, startSearch]);
+
+  useEffect(() => {
+    loadingRef.current = loading;
+  }, [loading]);
+
+  useEffect(() => {
+    loadingMoreRef.current = loadingMore;
+  }, [loadingMore]);
 
   useEffect(() => {
     if (imageOptions.some((option) => option.value === selectedImageOption)) return;
@@ -143,8 +302,6 @@ export default function Page() {
 
   // Auto-select recipe if URL contains ?id=... once results are loaded.
   useEffect(() => {
-    if (!results || results.length === 0) return;
-
     const params = new URLSearchParams(window.location.search);
     const recipeKey = params.get("id") || params.get("uuid") || params.get("slug");
     if (!recipeKey) {
@@ -153,8 +310,20 @@ export default function Page() {
     }
 
     const index = results.findIndex((r) => getRecipeId(r) === recipeKey);
-    setSelectedRecipeIndex(index >= 0 ? index : null);
-  }, [results]);
+    if (index >= 0) {
+      setSelectedRecipeIndex(index);
+      return;
+    }
+
+    if (!loading && !loadingMore && hasMore) {
+      void loadMoreRecipes();
+      return;
+    }
+
+    if (!loading && !loadingMore && !hasMore) {
+      setSelectedRecipeIndex(null);
+    }
+  }, [hasMore, loading, loadingMore, loadMoreRecipes, results]);
 
   // Keep modal state in sync with back/forward browser navigation.
   useEffect(() => {
@@ -165,15 +334,40 @@ export default function Page() {
         setSelectedRecipeIndex(null);
         return;
       }
-      if (!results || results.length === 0) return;
 
-      const index = results.findIndex((r) => getRecipeId(r) === recipeKey);
-      setSelectedRecipeIndex(index >= 0 ? index : null);
+      const index = resultsRef.current.findIndex((r) => getRecipeId(r) === recipeKey);
+      if (index >= 0) {
+        setSelectedRecipeIndex(index);
+        return;
+      }
+
+      if (hasMoreRef.current && !loadingRef.current && !loadingMoreRef.current) {
+        void loadMoreRecipes();
+        return;
+      }
+
+      setSelectedRecipeIndex(null);
     }
 
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
-  }, [results]);
+  }, [loadMoreRecipes]);
+
+  const openNextRecipe = useCallback(async () => {
+    if (selectedRecipeIndex == null) return;
+
+    const nextIndex = selectedRecipeIndex + 1;
+    if (nextIndex < resultsRef.current.length) {
+      openRecipeAtIndex(nextIndex);
+      return;
+    }
+
+    const page = await loadMoreRecipes();
+    const nextResults = page?.mergedResults ?? resultsRef.current;
+    if (nextIndex < nextResults.length) {
+      openRecipeAtIndex(nextIndex, nextResults);
+    }
+  }, [loadMoreRecipes, openRecipeAtIndex, selectedRecipeIndex]);
 
   // Keyboard controls when modal is open.
   useEffect(() => {
@@ -195,32 +389,65 @@ export default function Page() {
         return;
       }
       if (e.key === 'ArrowRight') {
-        if (selectedRecipeIndex == null) return;
-        const next = selectedRecipeIndex + 1;
-        if (Array.isArray(results) && next < results.length) {
-          e.preventDefault();
-          openRecipeAtIndex(next);
-        }
+        e.preventDefault();
+        void openNextRecipe();
       }
     }
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [closeModal, isModalOpen, openRecipeAtIndex, results, selectedRecipeIndex]);
+  }, [closeModal, isModalOpen, openRecipeAtIndex, openNextRecipe, selectedRecipeIndex]);
 
   // Prevent background scroll while modal is open.
   useEffect(() => {
     if (!isModalOpen) return;
     const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = prevOverflow;
     };
   }, [isModalOpen]);
 
+  useEffect(() => {
+    const sentinel = loadMoreSentinelRef.current;
+    if (!sentinel || isModalOpen) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        if (loadingRef.current || loadingMoreRef.current || !hasMoreRef.current || error) return;
+        void loadMoreRecipes();
+      },
+      {
+        rootMargin: "300px 0px"
+      }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [error, isModalOpen, loadMoreRecipes]);
+
+  useEffect(() => {
+    if (isModalOpen) return;
+
+    function handleWindowPositionChange() {
+      if (error) return;
+      maybeLoadMoreRecipes();
+    }
+
+    window.addEventListener('scroll', handleWindowPositionChange, { passive: true });
+    window.addEventListener('resize', handleWindowPositionChange);
+    handleWindowPositionChange();
+
+    return () => {
+      window.removeEventListener('scroll', handleWindowPositionChange);
+      window.removeEventListener('resize', handleWindowPositionChange);
+    };
+  }, [error, isModalOpen, maybeLoadMoreRecipes, results]);
+
   async function handleSubmit(e) {
     e.preventDefault();
-    doSearch(query, { onlyMine, onlySaved });
+    startSearch(query, { onlyMine, onlySaved });
   }
 
   return (
@@ -383,15 +610,17 @@ export default function Page() {
                 )}
               </div>
               <div className="absolute right-0 top-1/2 transform -translate-y-1/2 pr-4">
-                {Array.isArray(results) && selectedRecipeIndex < results.length - 1 && (
+                {(Array.isArray(results) && selectedRecipeIndex < results.length - 1) || hasMore ? (
                   <button
-                    onClick={() => openRecipeAtIndex(selectedRecipeIndex + 1)}
+                    onClick={() => {
+                      void openNextRecipe();
+                    }}
                     aria-label="Next Recipe"
                     className="bg-white rounded-full shadow p-2 text-2xl hover:bg-gray-200"
                   >
                     &#8594;
                   </button>
-                )}
+                ) : null}
               </div>
 
               <button
@@ -450,7 +679,7 @@ export default function Page() {
             {!loading && !error && results.length > 0 && (
               <ul className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 w-full">
                 {results.map((r, i) => (
-                  <li key={r.slug} className="p-0">
+                  <li key={getRecipeListKey(r, i)} className="p-0">
                     {(() => {
                       const id = getRecipeId(r);
                       if (!id) {
@@ -481,6 +710,24 @@ export default function Page() {
                   </li>
                 ))}
               </ul>
+            )}
+            {!loading && !error && results.length > 0 && (
+              <div ref={loadMoreSentinelRef} className="flex flex-col items-center gap-3 py-6 text-sm text-gray-500">
+                <div>
+                  {loadingMore ? "Loading more recipes..." : hasMore ? "Scroll for more recipes" : "All recipes loaded"}
+                </div>
+                {hasMore && !loadingMore ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      void loadMoreRecipes();
+                    }}
+                    className="rounded border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50"
+                  >
+                    Load more
+                  </button>
+                ) : null}
+              </div>
             )}
           </>
         )}

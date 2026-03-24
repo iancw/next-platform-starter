@@ -12,11 +12,17 @@ export async function GET(request) {
   const session = await getSession();
   const userId = session?.user?.id ?? null;
 
-  // Limit results to keep responses snappy.
-  const limit = Math.min(Number(searchParams.get('limit') ?? 500), 2000);
+  // Paginate results so the homepage can load incrementally.
+  const limit = Math.min(Math.max(Number(searchParams.get('limit') ?? 12), 1), 100);
+  const offset = Math.max(Number(searchParams.get('offset') ?? 0), 0);
+  const fetchLimit = limit + 1;
 
   if ((onlyMine || onlySaved) && userId == null) {
-    return Response.json([]);
+    return Response.json({
+      results: [],
+      hasMore: false,
+      nextOffset: offset
+    });
   }
 
   const filters = [];
@@ -104,7 +110,8 @@ export async function GET(request) {
         .leftJoin(authors, eq(authors.id, recipes.authorId))
         .where(where)
         .orderBy(desc(recipes.createdAt))
-        .limit(limit)
+        .limit(fetchLimit)
+        .offset(offset)
     : await db
         .select({
           ...recipeFields,
@@ -116,10 +123,20 @@ export async function GET(request) {
         .where(where)
         .groupBy(recipes.id, authors.id)
         .orderBy(desc(count(savedRecipes.recipeId)), desc(recipes.createdAt))
-        .limit(limit);
+        .limit(fetchLimit)
+        .offset(offset);
 
-  const recipeIds = baseRecipes.map((r) => r.id);
-  if (recipeIds.length === 0) return Response.json([]);
+  const hasMore = baseRecipes.length > limit;
+  const pageRecipes = hasMore ? baseRecipes.slice(0, limit) : baseRecipes;
+  const recipeIds = pageRecipes.map((r) => r.id);
+
+  if (recipeIds.length === 0) {
+    return Response.json({
+      results: [],
+      hasMore: false,
+      nextOffset: offset
+    });
+  }
 
   const savedRecipeIds = await getSavedRecipeIdsForUser({ userId, recipeIds });
 
@@ -202,7 +219,7 @@ export async function GET(request) {
     return { ...row.image, sampleAuthor: row.author ?? null };
   });
 
-  const results = baseRecipes.map((r) => {
+  const results = pageRecipes.map((r) => {
     const { saveCount, ...recipe } = r;
     return {
       ...recipe,
@@ -213,6 +230,9 @@ export async function GET(request) {
     };
   });
 
-  // Keep the old recipe field set, but now with image arrays.
-  return Response.json(results);
+  return Response.json({
+    results,
+    hasMore,
+    nextOffset: offset + results.length
+  });
 }
