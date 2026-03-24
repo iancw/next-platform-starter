@@ -1,10 +1,10 @@
 # Features
-- [ ] Save recipes for later, combine this with ranking. Ranking = number of saves
+- [x] Save recipes for later, combine this with ranking. Ranking = number of saves
 - [ ] Similarity search ... given a recipe, show similar recipes. During upload and perhaps otherwise
-- [ ] Feature: Liking recipes, sort by order of likes
-- [ ] Refactor frontend to use shadcn components and styling
+- [x] Feature: Liking recipes, sort by order of likes
+- [x] Refactor frontend to use shadcn components and styling
 - [ ] Limit number of samples and recipes per author
-- [ ] Feature: User saves favorite recipes
+- [x] Feature: User saves favorite recipes
 - [ ] Feature: Commenting on recipes
 - [ ] Feature: Notifications for activity on your recipes
 
@@ -24,14 +24,17 @@
 
 # Pre-Deploy Features
 - [ ] Add instructions on uploading image to camera
-- [ ] Test uploading resized images to camera
+- [x] Test uploading resized images to camera
 
 # Tasks
 - [x] Set up unique authors and author emails for current recipes. Add a note when you log in to claim a particular recipe by emailing help@om-recipes.com
 - [x] Set up budgets in OCI compartment to limit spend
+- [ ] Add lighthouse samples to all images
+- [ ] Add other types of samples to all images
+- [ ] Track down original images for authors
+- [ ] Post announcements on boards & sites
 
 # Bugs
-
 - [x] There are two recipes pages and one throws errors ... reconsile /recipes/app and app
 - [x] Log In button doesn't change after logout right away, needs extra refresh
 - [x] Log in button isn't aligned properly
@@ -39,8 +42,7 @@
 - [x] Update profile button always enabled, should be clear when you've saved changes
 - [x] Set up email for help@om-recipes.com
 - [x] Author links don't work for ... authors who aren't me
-- [ ] Constrain height of portrait pictures to match height of landscap images for visual consistency
-- [ ] 
+- [x] Constrain height of portrait pictures to match height of landscap images for visual consistency
 
 # Deployment
 - [x] Configure database and other environnment variables
