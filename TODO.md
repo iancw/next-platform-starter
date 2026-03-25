@@ -36,6 +36,8 @@
 - [x] Fuzzy match on white balance name (auto vs keep warm colors ... call it a match still)
 - [x] Don't allow images processed by OM Workspace -- exif data is incorrect (but do allow them for comparisons)
 - [x] Render links for recipe
+- [ ] Looks like we aren't saving exif string in DB with images, we should
+- [ ] Disable image download when image doesn't have sample string (e.g. as with dave herring's and possibly other samples)
 
 # Bugs
 - [x] There are two recipes pages and one throws errors ... reconsile /recipes/app and app
