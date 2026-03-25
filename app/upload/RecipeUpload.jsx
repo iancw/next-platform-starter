@@ -26,7 +26,6 @@ export default function RecipeUpload({ initialAuthor = "" }) {
   const [author, setAuthor] = useState(initialAuthor);
   const [name, setName] = useState("");
   const [notes, setNotes] = useState("");
-  const [links, setLinks] = useState([""]);
   const [imageFiles, setImageFiles] = useState([]);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [recipe, setRecipeDetails] = useState(null)
@@ -277,20 +276,6 @@ export default function RecipeUpload({ initialAuthor = "" }) {
     onDrop
   });
 
-  const handleLinkChange = (idx, value) => {
-    setLinks((prev) =>
-      prev.map((link, i) => (i === idx ? value : link))
-    );
-  };
-
-  const handleAddLink = () => {
-    setLinks((prev) => [...prev, ""]);
-  };
-
-  const handleRemoveLink = (idx) => {
-    setLinks((prev) => prev.filter((_, i) => i !== idx));
-  };
-
   const handleSubmit = async (event, options = {}) => {
     if (event?.preventDefault) event.preventDefault();
     const { attachToCommunity = false } = options;
@@ -326,7 +311,6 @@ export default function RecipeUpload({ initialAuthor = "" }) {
           author,
           name,
           notes,
-          links: links.filter(Boolean),
           imageMeta: { name: file.name, type: file.type, size: file.size, sha256: digest },
           recipeSettings: recipe
         }
@@ -672,45 +656,6 @@ export default function RecipeUpload({ initialAuthor = "" }) {
                       rows={3}
                     />
                   </label>
-                  <div className="flex w-full flex-col gap-2">
-                    <span className="text-sm font-medium text-foreground">Links</span>
-                    {links.map((link, idx) => (
-                      <div
-                        key={idx}
-                        className="flex w-full items-center gap-2"
-                      >
-                        <Input
-                          type="url"
-                          value={link}
-                          onChange={(e) => handleLinkChange(idx, e.target.value)}
-                          placeholder="https://example.com"
-                          className="flex-1"
-                        />
-                        {links.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            onClick={() => handleRemoveLink(idx)}
-                            aria-label="Remove link"
-                          >
-                            −
-                          </Button>
-                        )}
-                        {idx === links.length - 1 && (
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            onClick={handleAddLink}
-                            aria-label="Add link"
-                          >
-                            +
-                          </Button>
-                        )}
-                      </div>
-                    ))}
-                  </div>
                   <Button
                     onClick={handleSubmit}
                     disabled={
