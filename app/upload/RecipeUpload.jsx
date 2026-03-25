@@ -226,6 +226,12 @@ export default function RecipeUpload({ initialAuthor = "" }) {
       }
 
       const recipe = await parseExif(file);
+      if (recipe?.isOmWorkspace) {
+        setRecipeDetails(null);
+        setExifError('Only images straight out of camera from OM-3, Pen-F, or E-P7 are allowed.');
+        setMissingColorProfile(true);
+        return;
+      }
       if (!recipe?.hasColorProfileSettings) {
         setRecipeDetails(null);
         setExifError('No recipe found. Upload straight out of camera JPGs from OM-3, Pen-F, or E-P7 cameras.');

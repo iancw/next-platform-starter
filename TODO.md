@@ -33,10 +33,9 @@
 - [ ] Add other types of samples to all images
 - [ ] Track down original images for authors
 - [ ] Post announcements on boards & sites
-- [ ] Fuzzy match on white balance name (auto vs keep warm colors ... call it a match still)
-- [ ] Don't allow images processed by OM Workspace -- exif data is incorrect (but do allow them for comparisons)
-- [ ] Render links for recipes
-
+- [x] Fuzzy match on white balance name (auto vs keep warm colors ... call it a match still)
+- [x] Don't allow images processed by OM Workspace -- exif data is incorrect (but do allow them for comparisons)
+- [x] Render links for recipe
 
 # Bugs
 - [x] There are two recipes pages and one throws errors ... reconsile /recipes/app and app

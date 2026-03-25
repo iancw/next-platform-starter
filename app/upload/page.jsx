@@ -12,7 +12,7 @@ export const metadata = {
 };
 
 const explainer = `
-Upload a sample image for your recipe -- either a JPG straight out of your camera, or something produced by OM Workspace.
+Upload a sample image for your recipe -- must be a JPG straight out of an OM-3, Pen-F, or E-P7.
 `;
 
 const uploadDisabledText = `
