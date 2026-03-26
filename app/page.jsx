@@ -8,6 +8,7 @@ import { Button, buttonVariants } from "../components/ui/button.jsx";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card.jsx";
 import { Dialog, DialogContent } from "../components/ui/dialog.jsx";
 import { Input } from "../components/ui/input.jsx";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select.jsx";
 import { cn } from "../lib/cn.js";
 import {
   comparisonImageSelectionValue,
@@ -506,18 +507,38 @@ export default function Page() {
                   <CardTitle className="text-base">Image View</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div role="radiogroup" aria-labelledby="recipe-image-group-label" className="flex flex-wrap gap-2">
+                  <div aria-labelledby="recipe-image-group-label" className="flex flex-wrap items-center gap-2">
                     <span id="recipe-image-group-label" className="sr-only">
                       Image view
                     </span>
-                    {imageOptions.map((option) => (
+                    <TogglePill
+                      checked={selectedImageOption === SAMPLE_IMAGE_SELECTION}
+                      label="Author sample"
+                      onClick={() => setSelectedImageOption(SAMPLE_IMAGE_SELECTION)}
+                    />
+                    {imageOptions.length === 2 ? (
                       <TogglePill
-                        key={option.value}
-                        checked={selectedImageOption === option.value}
-                        label={option.label}
-                        onClick={() => setSelectedImageOption(option.value)}
+                        checked={selectedImageOption === imageOptions[1].value}
+                        label={imageOptions[1].label}
+                        onClick={() => setSelectedImageOption(imageOptions[1].value)}
                       />
-                    ))}
+                    ) : imageOptions.length > 2 ? (
+                      <Select
+                        value={selectedImageOption !== SAMPLE_IMAGE_SELECTION ? selectedImageOption : ""}
+                        onValueChange={(val) => setSelectedImageOption(val || SAMPLE_IMAGE_SELECTION)}
+                      >
+                        <SelectTrigger className={selectedImageOption !== SAMPLE_IMAGE_SELECTION ? "border-primary ring-4 ring-primary/20" : ""}>
+                          <SelectValue placeholder="Comparison image" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {imageOptions.slice(1).map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : null}
                   </div>
                 </CardContent>
               </Card>
