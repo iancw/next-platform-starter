@@ -279,6 +279,7 @@ describe('prepareRecipeUploadAction duplicate handling', () => {
         expect(createParMock).toHaveBeenCalledTimes(1);
         expect(capturedImageValues).toBeDefined();
         expect(capturedImageValues.sha256Hash).toBe(digest);
+        expect(capturedImageValues.validExif).toBe(true);
         expect(selectResults.length).toBe(0);
         expect(insertHandlers.length).toBe(0);
     });

@@ -12,7 +12,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "netlify dev:exec drizzle-kit migrate",
     "db:studio": "netlify dev:exec drizzle-kit studio",
-    "db:import:om-recipes": "node scripts/import-om-recipes-to-db.mjs"
+    "db:import:om-recipes": "node scripts/import-om-recipes-to-db.mjs",
+    "db:link:public-sample-image": "node scripts/link-public-sample-image.mjs"
   },
   "dependencies": {
     "@netlify/blobs": "^10.6.0",

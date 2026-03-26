@@ -167,7 +167,8 @@ export async function GET(request) {
           fullSizeUrl: images.fullSizeUrl,
           dimensions: images.dimensions,
           camera: images.camera,
-          lens: images.lens
+          lens: images.lens,
+          validExif: images.validExif
         },
         author: {
           id: authors.id,

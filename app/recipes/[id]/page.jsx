@@ -99,7 +99,8 @@ async function getRecipeByIdOrSlug(idOrSlug, userId = null) {
                     fullSizeUrl: images.fullSizeUrl,
                     dimensions: images.dimensions,
                     camera: images.camera,
-                    lens: images.lens
+                    lens: images.lens,
+                    validExif: images.validExif
                 },
                 author: {
                     id: authors.id,

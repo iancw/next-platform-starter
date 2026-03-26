@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
     comparisonImageSelectionValue,
     getAvailableComparisonImageLabels,
+    getRecipeDownloadImage,
     getRecipePreviewImage,
     SAMPLE_IMAGE_SELECTION
 } from '../lib/recipe-image-selection.js';
@@ -58,5 +59,28 @@ describe('recipe image selection helpers', () => {
         expect(
             getRecipePreviewImage(recipe, comparisonImageSelectionValue('lighthouse'))
         ).toBeNull();
+    });
+
+    it('returns the first sample image with valid exif for downloads', () => {
+        const recipe = {
+            sampleImages: [
+                { id: 'sample-1', validExif: false },
+                { id: 'sample-2', validExif: true },
+                { id: 'sample-3', validExif: true }
+            ]
+        };
+
+        expect(getRecipeDownloadImage(recipe)).toEqual({ id: 'sample-2', validExif: true });
+    });
+
+    it('returns null when no sample image has valid exif', () => {
+        const recipe = {
+            sampleImages: [
+                { id: 'sample-1', validExif: false },
+                { id: 'sample-2' }
+            ]
+        };
+
+        expect(getRecipeDownloadImage(recipe)).toBeNull();
     });
 });

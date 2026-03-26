@@ -392,6 +392,7 @@ export async function prepareRecipeUploadAction({ parameters }) {
                 // async resize means this may not exist immediately, but URL is deterministic
                 smallUrl: null,
                 originalFileSize: imageMeta?.size || null,
+                validExif: true,
                 sha256Hash: imageSha
             })
             .returning({ id: images.id, uuid: images.uuid });

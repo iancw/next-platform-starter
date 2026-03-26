@@ -6,7 +6,11 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import AuthorSocialLinks from './AuthorSocialLinks';
 import DeleteConfirmationModal from './DeleteConfirmationModal.jsx';
-import { getRecipePreviewImage, SAMPLE_IMAGE_SELECTION } from '../lib/recipe-image-selection.js';
+import {
+  getRecipeDownloadImage,
+  getRecipePreviewImage,
+  SAMPLE_IMAGE_SELECTION
+} from '../lib/recipe-image-selection.js';
 import { Badge } from './ui/badge.jsx';
 import { Button, buttonVariants } from './ui/button.jsx';
 import { Card, CardContent } from './ui/card.jsx';
@@ -68,9 +72,9 @@ export default function RecipeCard({
   }, [recipe?.isSaved, recipe?.id]);
 
   const previewImage = getRecipePreviewImage(recipe, selectedImageOption);
-
+  const downloadImage = getRecipeDownloadImage(recipe);
   const downloadImageHref =
-    previewImage?.fullSizeUrl ?? previewImage?.smallUrl ?? null;
+    downloadImage?.fullSizeUrl ?? downloadImage?.smallUrl ?? null;
 
   const previewUrl = previewImage?.smallUrl ?? previewImage?.fullSizeUrl ?? null;
 

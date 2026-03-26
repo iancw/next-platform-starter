@@ -1,5 +1,6 @@
 import { relations, sql } from 'drizzle-orm';
 import {
+    boolean,
     index,
     integer,
     pgTable,
@@ -122,6 +123,7 @@ export const images = pgTable(
         lens: text('lens'),
         originalFileSize: integer('original_file_size'),
         exif: text('exif_string'),
+        validExif: boolean('valid_exif').default(false).notNull(),
         fullSizeUrl: text('full_size_url'),
         smallUrl: text('small_url'),
         sha256Hash: text('sha256_hash'),
