@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState, useTransition } from 
 import { useRouter } from 'next/navigation';
 import AuthorSocialLinks from './AuthorSocialLinks';
 import DeleteConfirmationModal from './DeleteConfirmationModal.jsx';
+import { formatComparisonImageLabelForDisplay } from '../lib/recipe-image-selection';
 
 function collectSocialLinks(author) {
   if (!author) return [];
@@ -183,11 +184,11 @@ export default function SampleGallery({
               onClick={() => openModal(idx)}
               className="focus:outline-none"
               style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
-              title={img.label ?? ''}
+              title={img.label ? formatComparisonImageLabelForDisplay(img.label) : ''}
             >
               <img
                 src={img.displaySrc}
-                alt={img.label ? `Sample (${img.label})` : 'Sample image'}
+                alt={img.label ? `Sample (${formatComparisonImageLabelForDisplay(img.label)})` : 'Sample image'}
                 style={{ height: 180, width: 'auto', borderRadius: 8 }}
               />
             </button>
@@ -274,7 +275,11 @@ export default function SampleGallery({
                   />
                 </div>
               )}
-              {activeImage.label && <p className="font-medium">{activeImage.label}</p>}
+              {activeImage.label && (
+                <p className="font-medium">
+                  {[recipeName, formatComparisonImageLabelForDisplay(activeImage.label)].filter(Boolean).join(' — ')}
+                </p>
+              )}
               {(activeImage.camera || activeImage.lens) && (
                 <p>
                   {[activeImage.camera, activeImage.lens].filter(Boolean).join(' • ')}

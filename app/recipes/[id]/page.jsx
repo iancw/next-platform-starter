@@ -194,7 +194,7 @@ export default async function Page({ params }) {
                     recipeName={recipe.recipeName}
                     deleteImageAction={deleteRecipeSampleImageAction}
                 />
-                <SampleGallery images={recipe.comparisonImages} title="Comparison images" />
+                <SampleGallery images={recipe.comparisonImages} title="Comparison images" recipeName={recipe.recipeName} />
             </div>
         </div>
     );
