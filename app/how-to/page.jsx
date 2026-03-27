@@ -5,6 +5,12 @@ export const metadata = {
 };
 
 const content = `
+# Contents
+
+- [Load a recipe via OES file in OM Workspace](#oes)
+- [Load a recipe into your camera using a JPG image](#camera-upload)
+
+<a id="oes"></a>
 # How to use OM Workspace batch processing files (.OES)
 
 This site includes downloadable **OM Workspace batch processing files** (with the extension **.OES**). These allow you
@@ -60,6 +66,41 @@ The exact menu names can vary slightly by OM Workspace version, but the workflow
 ### Tip: apply to many photos (batch)
 
 If you want to use the same look on multiple images, select multiple photos first, then apply the loaded preset so the settings are applied in one go.
+
+
+<a id="camera-upload"></a>
+# Load a recipe into your camera using a JPG image
+
+OM System cameras store recipe settings in the EXIF data of straight-out-of-camera JPG files.
+OM Workspace can read that EXIF data and send the recipe directly into your camera — no manual entry required.
+
+> **Note:** Loading a recipe this way will **not** transfer the white balance settings from the recipe. You will need to set those manually on the camera.
+
+### Steps
+
+<ol>
+<li>In OM Workspace, open the <strong>Camera</strong> menu and select <strong>Load Color/Monochrome Profile</strong>.
+<figure>
+  <img src="/images/how-to/om-camera-upload-1.png" alt="OM Workspace: Camera menu — Load Color/Monochrome Profile" class="w-full max-w-3xl rounded border border-neutral-800" />
+  <figcaption class="mt-2 text-sm text-neutral-400">OM Workspace: Camera → Load Color/Monochrome Profile.</figcaption>
+</figure>
+</li>
+<li>Select the recipe image JPG file you downloaded from this site.
+<figure>
+  <img src="/images/how-to/om-camera-upload-2.png" alt="OM Workspace: selecting the recipe JPG file" class="w-full max-w-3xl rounded border border-neutral-800" />
+  <figcaption class="mt-2 text-sm text-neutral-400">Select the straight-out-of-camera JPG containing the recipe.</figcaption>
+</figure>
+</li>
+<li>Click <strong>Next</strong>.</li>
+<li>When prompted, connect your camera via USB and select <strong>MTP</strong> mode on the camera. <em>(Tip: It can help to wait until OM Workspace asks you to connect before plugging in — connecting too early sometimes causes it to hang indefinitely.)</em></li>
+<li>Select which <strong>Custom Mode</strong> slot(s) and <strong>Color Profile</strong> slot to load the recipe into.
+<figure>
+  <img src="/images/how-to/om-camera-upload-3.png" alt="OM Workspace: selecting Custom Mode and Color Profile slots" class="w-full max-w-3xl rounded border border-neutral-800" />
+  <figcaption class="mt-2 text-sm text-neutral-400">Choose which Custom Mode and Color Profile slots to write the recipe to.</figcaption>
+</figure>
+</li>
+<li>Click <strong>Load</strong>.</li>
+</ol>
 `;
 
 export default function HowToPage() {

@@ -46,7 +46,8 @@ export default async function Page() {
                         name: author?.name ?? user.name ?? '',
                         instagramLink: author?.instagramLink ?? '',
                         flickrLink: author?.flickrLink ?? '',
-                        website: author?.website ?? ''
+                        website: author?.website ?? '',
+                        kofiLink: author?.kofiLink ?? ''
                     }}
                 />
                 </CardContent>

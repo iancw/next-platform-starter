@@ -5,14 +5,15 @@ import { useFormStatus } from 'react-dom';
 import { Button } from 'components/ui/button';
 import { Input } from 'components/ui/input';
 
-const FIELD_NAMES = ['name', 'instagramLink', 'flickrLink', 'website'];
+const FIELD_NAMES = ['name', 'instagramLink', 'flickrLink', 'website', 'kofiLink'];
 
 function getValuesFromFormData(formData) {
     return {
         name: String(formData.get('name') ?? ''),
         instagramLink: String(formData.get('instagramLink') ?? ''),
         flickrLink: String(formData.get('flickrLink') ?? ''),
-        website: String(formData.get('website') ?? '')
+        website: String(formData.get('website') ?? ''),
+        kofiLink: String(formData.get('kofiLink') ?? '')
     };
 }
 
@@ -83,6 +84,16 @@ export function ProfileForm({ action, initialValues }) {
                     type="url"
                     defaultValue={initialValues.website}
                     placeholder="https://example.com"
+                />
+            </label>
+
+            <label className="flex flex-col gap-2">
+                <span className="text-sm font-medium text-foreground">Ko-fi link</span>
+                <Input
+                    name="kofiLink"
+                    type="url"
+                    defaultValue={initialValues.kofiLink}
+                    placeholder="https://ko-fi.com/yourhandle"
                 />
             </label>
 
