@@ -7,7 +7,8 @@ import { cn } from 'lib/cn';
 
 const publicNavItems = [
     { linkText: 'Recipes', href: '/' },
-    { href: '/how-to', linkText: 'How-to' }
+    { href: '/how-to', linkText: 'How-to' },
+    { href: '/about', linkText: 'About' }
 ];
 
 const authedNavItems = [
@@ -15,7 +16,8 @@ const authedNavItems = [
     { linkText: 'Upload', href: '/upload' },
     { linkText: 'Samples', href: '/my-samples' },
     { linkText: 'Profile', href: '/profile' },
-    { href: '/how-to', linkText: 'How-to' }
+    { href: '/how-to', linkText: 'How-to' },
+    { href: '/about', linkText: 'About' }
 ];
 
 export async function Header() {
