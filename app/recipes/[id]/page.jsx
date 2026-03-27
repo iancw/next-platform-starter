@@ -26,6 +26,7 @@ async function getRecipeByIdOrSlug(idOrSlug, userId = null) {
             recipeName: recipes.recipeName,
             authorName: recipes.authorName,
             description: recipes.description,
+            sourceUrl: recipes.sourceUrl,
 
             yellow: recipes.yellow,
             orange: recipes.orange,

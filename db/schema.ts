@@ -155,6 +155,7 @@ export const recipes = pgTable(
         // Denormalized display name from the source schema/JSON.
         authorName: text('author_name').notNull(),
         description: text('description'),
+        sourceUrl: text('source_url'),
 
         // Saturation wheel adjustments
         yellow: smallint('yellow'),

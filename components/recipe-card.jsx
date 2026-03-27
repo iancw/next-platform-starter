@@ -36,6 +36,7 @@ export default function RecipeCard({
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(recipe?.recipeName ?? '');
   const [description, setDescription] = useState(recipe?.description ?? '');
+  const [sourceUrl, setSourceUrl] = useState(recipe?.sourceUrl ?? '');
   const [updateError, setUpdateError] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
@@ -48,6 +49,7 @@ export default function RecipeCard({
 
   const recipeName = recipe?.recipeName ?? '';
   const recipeDescription = recipe?.description ?? '';
+  const recipeSourceUrl = recipe?.sourceUrl ?? '';
   const canSaveRecipe = Number.isFinite(Number(recipe?.id));
   const viewerIsLoggedIn = Boolean(recipe?.viewerIsLoggedIn);
 
@@ -58,8 +60,9 @@ export default function RecipeCard({
     if (!editing) {
       setName(recipeName);
       setDescription(recipeDescription);
+      setSourceUrl(recipeSourceUrl);
     }
-  }, [editing, recipeName, recipeDescription]);
+  }, [editing, recipeName, recipeDescription, recipeSourceUrl]);
 
   useEffect(() => {
     if (!canEdit && editing) {
@@ -119,6 +122,7 @@ export default function RecipeCard({
     setUpdateError('');
     setName(recipeName);
     setDescription(recipeDescription);
+    setSourceUrl(recipeSourceUrl);
   };
 
   const handleSave = async () => {
@@ -136,6 +140,7 @@ export default function RecipeCard({
     formData.append('recipeId', String(recipe?.id));
     formData.append('recipeName', name);
     formData.append('description', description);
+    formData.append('sourceUrl', sourceUrl);
 
     try {
       await updateRecipeAction(formData);
@@ -367,7 +372,7 @@ export default function RecipeCard({
           <p className="text-sm text-destructive">{saveToggleError}</p>
         ) : null}
 
-        {(editing || recipeDescription || previewUrl) && (
+        {(editing || recipeDescription || recipeSourceUrl || previewUrl) && (
           <div className="recipe-notes-image-row rounded-[1.5rem] border border-border/70 bg-muted/25 p-4 sm:p-5">
             {previewUrl && (
               <div className="flex flex-[0_0_auto] flex-col items-center">
@@ -381,21 +386,50 @@ export default function RecipeCard({
                 />
               </div>
             )}
-            {(editing || recipeDescription) && (
+            {(editing || recipeDescription || recipeSourceUrl) && (
               <div className="mb-2 flex-1 px-0 py-2 sm:px-3">
                 {editing ? (
-                  <label className="flex flex-col gap-2">
-                    <span className="text-sm font-medium text-foreground">Notes / description</span>
-                    <Textarea
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                      rows={4}
-                      placeholder="Optional notes..."
-                      disabled={isSaving}
-                    />
-                  </label>
+                  <div className="flex flex-col gap-4">
+                    <label className="flex flex-col gap-2">
+                      <span className="text-sm font-medium text-foreground">Notes / description</span>
+                      <Textarea
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        rows={4}
+                        placeholder="Optional notes..."
+                        disabled={isSaving}
+                      />
+                    </label>
+                    <label className="flex flex-col gap-2">
+                      <span className="text-sm font-medium text-foreground">Source link</span>
+                      <Input
+                        type="url"
+                        value={sourceUrl}
+                        onChange={(e) => setSourceUrl(e.target.value)}
+                        placeholder="https://example.com/original-recipe"
+                        disabled={isSaving}
+                      />
+                    </label>
+                  </div>
                 ) : (
-                  <div className="whitespace-pre-wrap text-sm leading-7 text-muted-foreground">{recipeDescription}</div>
+                  <div className="space-y-4">
+                    {recipeDescription ? (
+                      <div className="whitespace-pre-wrap text-sm leading-7 text-muted-foreground">{recipeDescription}</div>
+                    ) : null}
+                    {recipeSourceUrl ? (
+                      <div className="text-sm leading-7 text-muted-foreground">
+                        <span>Source: </span>
+                        <a
+                          href={recipeSourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="break-all underline underline-offset-4 transition-colors hover:text-foreground"
+                        >
+                          {recipeSourceUrl}
+                        </a>
+                      </div>
+                    ) : null}
+                  </div>
                 )}
               </div>
             )}
@@ -404,20 +438,6 @@ export default function RecipeCard({
 
         <RecipeSettings recipe={recipe} />
 
-        {recipe.Links && Array.isArray(recipe.Links) && recipe.Links.length > 0 && (
-          <div className="rounded-[1.5rem] border border-border/70 bg-card/70 p-5">
-            <strong className="text-sm uppercase tracking-[0.18em] text-muted-foreground">Links</strong>
-            <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-muted-foreground">
-              {recipe.Links.map((url, i) => (
-                <li key={i}>
-                  <a href={url} target="_blank" rel="noopener noreferrer">
-                    {url}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
         </CardContent>
       </Card>
 

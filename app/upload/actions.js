@@ -99,6 +99,24 @@ function isBlank(v) {
     return v == null || String(v).trim() === '';
 }
 
+function normalizeOptionalUrl(value) {
+    if (isBlank(value)) return null;
+    const raw = String(value).trim();
+
+    let parsed;
+    try {
+        parsed = new URL(raw);
+    } catch {
+        throw new Error('Source URL must be a valid URL');
+    }
+
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+        throw new Error('Source URL must start with http:// or https://');
+    }
+
+    return parsed.toString();
+}
+
 function slugify(value) {
     return String(value ?? '')
         .trim()
@@ -216,7 +234,7 @@ export async function prepareRecipeUploadAction({ parameters }) {
 
         const session = await requireUser();
 
-        const { author, name, notes, links, imageMeta, recipeSettings } = parameters ?? {};
+        const { author, name, notes, sourceUrl, imageMeta, recipeSettings } = parameters ?? {};
 
         if (isBlank(author) || isBlank(name)) {
             return { ok: false, error: 'Author Name and Recipe Name are required' };
@@ -328,6 +346,7 @@ export async function prepareRecipeUploadAction({ parameters }) {
         let createdRecipeId = recipeId;
         let createdRecipeUuid = recipeUuid;
         let createdSlug = slug;
+        const normalizedSourceUrl = normalizeOptionalUrl(sourceUrl);
 
         if (shouldCreateRecipe) {
             const baseSlug = `${slugify(author)}_${slugify(name)}`;
@@ -342,6 +361,7 @@ export async function prepareRecipeUploadAction({ parameters }) {
                     recipeName: String(name),
                     authorName: String(author),
                     description: isBlank(notes) ? null : String(notes),
+                    sourceUrl: normalizedSourceUrl,
 
                     recipeFingerprint,
 
@@ -417,9 +437,6 @@ export async function prepareRecipeUploadAction({ parameters }) {
             expiresAt: fiveMinutesFromNow(),
             name: `upload-${imageUuid}`
         });
-
-        // TODO: store links somewhere (schema doesn’t include yet)
-        void links;
 
         return {
             ok: true,

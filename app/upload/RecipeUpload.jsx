@@ -26,6 +26,7 @@ export default function RecipeUpload({ initialAuthor = "" }) {
   const [author, setAuthor] = useState(initialAuthor);
   const [name, setName] = useState("");
   const [notes, setNotes] = useState("");
+  const [sourceUrl, setSourceUrl] = useState("");
   const [imageFiles, setImageFiles] = useState([]);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [recipe, setRecipeDetails] = useState(null)
@@ -317,6 +318,7 @@ export default function RecipeUpload({ initialAuthor = "" }) {
           author,
           name,
           notes,
+          sourceUrl,
           imageMeta: { name: file.name, type: file.type, size: file.size, sha256: digest },
           recipeSettings: recipe
         }
@@ -660,6 +662,15 @@ export default function RecipeUpload({ initialAuthor = "" }) {
                       onChange={(e) => setNotes(e.target.value)}
                       placeholder="Enter any notes"
                       rows={3}
+                    />
+                  </label>
+                  <label className="flex w-full flex-col gap-2">
+                    <span className="text-sm font-medium text-foreground">Source Link</span>
+                    <Input
+                      type="url"
+                      value={sourceUrl}
+                      onChange={(e) => setSourceUrl(e.target.value)}
+                      placeholder="https://example.com/original-recipe"
                     />
                   </label>
                   <Button

@@ -67,6 +67,7 @@ export async function GET(request) {
     recipeName: recipes.recipeName,
     authorName: recipes.authorName,
     description: recipes.description,
+    sourceUrl: recipes.sourceUrl,
 
     yellow: recipes.yellow,
     orange: recipes.orange,

@@ -284,6 +284,78 @@ describe('prepareRecipeUploadAction duplicate handling', () => {
         expect(insertHandlers.length).toBe(0);
     });
 
+    it('stores a normalized source URL when creating a new recipe', async () => {
+        let capturedRecipeValues = null;
+        selectResults = [
+            [],
+            [],
+            []
+        ];
+
+        insertHandlers = [
+            () => ({
+                values: vi.fn((values) => {
+                    capturedRecipeValues = values;
+                    return {
+                        returning: vi.fn(() =>
+                            Promise.resolve([{ id: 777, uuid: 'recipe-uuid-1', slug: 'author_recipe-name' }])
+                        )
+                    };
+                })
+            }),
+            () => ({
+                values: vi.fn(() => ({
+                    returning: vi.fn(() => Promise.resolve([{ id: 888, uuid: 'image-uuid-1' }]))
+                }))
+            })
+        ];
+
+        const { prepareRecipeUploadAction } = await loadActionsModule();
+
+        const result = await prepareRecipeUploadAction({
+            parameters: {
+                author: 'Author',
+                name: 'Recipe Name',
+                notes: '',
+                sourceUrl: 'https://example.com/original-recipe',
+                imageMeta: {
+                    name: 'photo.jpg',
+                    type: 'image/jpeg',
+                    size: 4096,
+                    sha256: 'd'.repeat(64)
+                },
+                recipeSettings: {
+                    hasColorProfileSettings: true,
+                    hasToneLevel: true,
+                    yellow: 0,
+                    orange: 0,
+                    orangeRed: 0,
+                    red: 0,
+                    magenta: 0,
+                    violet: 0,
+                    blue: 0,
+                    blueCyan: 0,
+                    cyan: 0,
+                    greenCyan: 0,
+                    green: 0,
+                    yellowGreen: 0,
+                    contrast: 0,
+                    sharpness: 0,
+                    highlights: 0,
+                    shadows: 0,
+                    midtones: 0,
+                    whiteBalance2: 'Custom WB 1',
+                    whiteBalanceTemperature: 5200,
+                    whiteBalanceAmberOffset: 0,
+                    whiteBalanceGreenOffset: 0
+                }
+            }
+        });
+
+        expect(result.ok).toBe(true);
+        expect(capturedRecipeValues.sourceUrl).toBe('https://example.com/original-recipe');
+    });
+
     it('detects duplicates via checkImageDuplicateAction', async () => {
         selectResults = [
             [{ id: 555 }],

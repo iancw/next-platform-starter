@@ -14,6 +14,24 @@ function isBlank(v) {
     return v == null || String(v).trim() === '';
 }
 
+function normalizeOptionalUrl(value) {
+    if (isBlank(value)) return null;
+    const raw = String(value).trim();
+
+    let parsed;
+    try {
+        parsed = new URL(raw);
+    } catch {
+        throw new Error('Source URL must be a valid URL');
+    }
+
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+        throw new Error('Source URL must start with http:// or https://');
+    }
+
+    return parsed.toString();
+}
+
 export async function updateRecipeAction(formData) {
     const session = await requireUser();
 
@@ -22,6 +40,7 @@ export async function updateRecipeAction(formData) {
 
     const recipeName = String(formData?.get('recipeName') ?? '').trim();
     const description = String(formData?.get('description') ?? '').trim();
+    const sourceUrl = normalizeOptionalUrl(formData?.get('sourceUrl'));
     if (isBlank(recipeName)) throw new Error('Recipe name is required');
 
     const authorRow = await db
@@ -77,6 +96,7 @@ export async function updateRecipeAction(formData) {
         .set({
             recipeName,
             description: isBlank(description) ? null : description,
+            sourceUrl,
             recipeFingerprint,
             updatedAt: new Date()
         })

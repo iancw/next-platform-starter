@@ -85,6 +85,13 @@
       "when": 1774487596000,
       "tag": "0011_valid_exif_flag",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1774636462490,
+      "tag": "0012_old_hobgoblin",
+      "breakpoints": true
     }
   ]
 }
