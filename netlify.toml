@@ -1,6 +1,3 @@
 [build]
   publish = ".next"
   command = "npm run build"
-
-[functions]
-  timeout = 180
