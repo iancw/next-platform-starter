@@ -16,9 +16,9 @@ import { findOrCreateAuthorForUser, requireUser } from '../../lib/auth.js';
 
 const ORIGINAL_BUCKET = process.env.OCI_IMAGES_ORIGINAL_BUCKET;
 const RESIZED_BUCKET = process.env.OCI_IMAGES_PROCESSED_BUCKET;
-const RESIZE_TIMEOUT_MS = Math.max(0, Number(process.env.IMAGE_RESIZE_TIMEOUT_MS ?? 90000));
+const RESIZE_TIMEOUT_MS = Math.max(0, Number(process.env.IMAGE_RESIZE_TIMEOUT_MS ?? 120000));
 const RESIZE_INVOKE_MAX_ATTEMPTS = Math.max(1, Number(process.env.IMAGE_RESIZE_INVOKE_ATTEMPTS ?? 3));
-const RESIZE_RETRY_DELAY_MS = Math.max(0, Number(process.env.IMAGE_RESIZE_RETRY_DELAY_MS ?? 1500));
+const RESIZE_RETRY_DELAY_MS = Math.max(0, Number(process.env.IMAGE_RESIZE_RETRY_DELAY_MS ?? 15000));
 const UPLOAD_DISABLED_ERROR = 'Uploads are disabled right now.';
 
 function withResizeTimeout(promise, timeoutMs) {
@@ -54,7 +54,7 @@ function shouldRetryResizeInvoke(err) {
                 ? metadataCode
                 : null;
 
-    return status === 503 || message.includes('server too busy') || message.includes('503');
+    return status === 502 || status === 503 || message.includes('server too busy') || message.includes('502') || message.includes('503');
 }
 
 function sleep(ms) {
