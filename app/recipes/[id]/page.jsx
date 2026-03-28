@@ -2,12 +2,17 @@ import { notFound } from 'next/navigation';
 import { getSession } from '../../../lib/auth.js';
 import { db } from '../../../db/index.ts';
 import { authors, images, recipeComparisonImages, recipeSampleImages, recipes } from '../../../db/schema.ts';
-import { eq, or } from 'drizzle-orm';
+import { asc, desc, eq, or } from 'drizzle-orm';
 import RecipeCard from '../../../components/recipe-card.jsx';
 import SampleGallery from '../../../components/SampleGallery.jsx';
 import { Badge } from '../../../components/ui/badge.jsx';
 import { Card, CardContent } from '../../../components/ui/card.jsx';
-import { deleteMyRecipeAction, deleteRecipeSampleImageAction, updateRecipeAction } from './actions';
+import {
+    deleteMyRecipeAction,
+    deleteRecipeSampleImageAction,
+    setPrimaryRecipeSampleImageAction,
+    updateRecipeAction
+} from './actions';
 import { getSavedRecipeIdsForUser } from '../../../lib/recipe-saves.js';
 
 export const metadata = {
@@ -103,6 +108,7 @@ async function getRecipeByIdOrSlug(idOrSlug, userId = null) {
                     lens: images.lens,
                     validExif: images.validExif
                 },
+                isPrimary: recipeSampleImages.isPrimary,
                 author: {
                     id: authors.id,
                     uuid: authors.uuid,
@@ -117,6 +123,7 @@ async function getRecipeByIdOrSlug(idOrSlug, userId = null) {
             .leftJoin(images, eq(images.id, recipeSampleImages.imageId))
             .leftJoin(authors, eq(authors.id, recipeSampleImages.authorId))
             .where(eq(recipeSampleImages.recipeId, recipeId))
+            .orderBy(asc(recipeSampleImages.imageId))
     ]);
 
     const comparisonImages = (comparisonRows ?? [])
@@ -125,7 +132,7 @@ async function getRecipeByIdOrSlug(idOrSlug, userId = null) {
     const sampleImages = (sampleRows ?? [])
         .map((r) => {
             if (!r?.image?.id) return null;
-            return { ...r.image, sampleAuthor: r.author ?? null };
+            return { ...r.image, isPrimary: r.isPrimary, sampleAuthor: r.author ?? null };
         })
         .filter(Boolean);
     const savedRecipeIds = await getSavedRecipeIdsForUser({ userId, recipeIds: [recipeId] });
@@ -191,9 +198,11 @@ export default async function Page({ params }) {
                     images={recipe.sampleImages}
                     title="Sample images"
                     canDelete={isOwner}
+                    canSetPrimary={isOwner}
                     recipeId={recipe.id}
                     recipeName={recipe.recipeName}
                     deleteImageAction={deleteRecipeSampleImageAction}
+                    setPrimaryImageAction={setPrimaryRecipeSampleImageAction}
                 />
                 <SampleGallery images={recipe.comparisonImages} title="Comparison images" recipeName={recipe.recipeName} />
             </div>

@@ -3,6 +3,7 @@ import {
     comparisonImageSelectionValue,
     getAvailableComparisonImageLabels,
     getRecipeDownloadImage,
+    getPrimarySampleImage,
     getRecipePreviewImage,
     SAMPLE_IMAGE_SELECTION
 } from '../lib/recipe-image-selection.js';
@@ -27,13 +28,21 @@ describe('recipe image selection helpers', () => {
         expect(labels).toEqual(['city', 'lighthouse', 'watch hill']);
     });
 
-    it('returns the first sample image when sample is selected', () => {
+    it('returns the primary sample image when sample is selected', () => {
         const recipe = {
-            sampleImages: [{ id: 'sample-1' }, { id: 'sample-2' }],
+            sampleImages: [{ id: 'sample-1' }, { id: 'sample-2', isPrimary: true }],
             comparisonImages: [{ id: 'comparison-1', label: 'lighthouse' }]
         };
 
-        expect(getRecipePreviewImage(recipe, SAMPLE_IMAGE_SELECTION)).toEqual({ id: 'sample-1' });
+        expect(getRecipePreviewImage(recipe, SAMPLE_IMAGE_SELECTION)).toEqual({ id: 'sample-2', isPrimary: true });
+    });
+
+    it('falls back to the first sample image when none are primary', () => {
+        const recipe = {
+            sampleImages: [{ id: 'sample-1' }, { id: 'sample-2' }]
+        };
+
+        expect(getPrimarySampleImage(recipe)).toEqual({ id: 'sample-1' });
     });
 
     it('returns the matching comparison image by label', () => {

@@ -204,3 +204,50 @@ export async function deleteRecipeSampleImageAction({ recipeId, imageId }) {
     revalidatePath('/');
     revalidatePath('/my-samples');
 }
+
+export async function setPrimaryRecipeSampleImageAction({ recipeId, imageId }) {
+    const session = await requireUser();
+
+    const parsedRecipeId = Number(recipeId);
+    const parsedImageId = Number(imageId);
+    if (!Number.isFinite(parsedRecipeId)) throw new Error('Invalid recipe id');
+    if (!Number.isFinite(parsedImageId)) throw new Error('Invalid image id');
+
+    const authorRow = await db
+        .select({ id: authors.id })
+        .from(authors)
+        .where(eq(authors.userId, session.user.id));
+    if (authorRow.length === 0) throw new Error('Author record not found');
+
+    const ownerAuthorIds = authorRow.map((row) => row.id);
+
+    const recipeRows = await db
+        .select({ id: recipes.id, uuid: recipes.uuid, slug: recipes.slug })
+        .from(recipes)
+        .where(and(eq(recipes.id, parsedRecipeId), inArray(recipes.authorId, ownerAuthorIds)))
+        .limit(1);
+    if (recipeRows.length === 0) throw new Error('Not authorized');
+
+    const sampleRows = await db
+        .select({ imageId: recipeSampleImages.imageId })
+        .from(recipeSampleImages)
+        .where(and(eq(recipeSampleImages.recipeId, parsedRecipeId), eq(recipeSampleImages.imageId, parsedImageId)))
+        .limit(1);
+    if (sampleRows.length === 0) {
+        throw new Error('Sample image not found');
+    }
+
+    await db
+        .update(recipeSampleImages)
+        .set({ isPrimary: false })
+        .where(eq(recipeSampleImages.recipeId, parsedRecipeId));
+
+    await db
+        .update(recipeSampleImages)
+        .set({ isPrimary: true })
+        .where(and(eq(recipeSampleImages.recipeId, parsedRecipeId), eq(recipeSampleImages.imageId, parsedImageId)));
+
+    const recipe = recipeRows[0];
+    revalidatePath(`/recipes/${recipe.uuid ?? recipe.slug}`);
+    revalidatePath('/');
+}

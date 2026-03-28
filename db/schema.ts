@@ -215,7 +215,8 @@ export const recipeSampleImages = pgTable(
         imageId: integer('image_id')
             .notNull()
             .references(() => images.id, { onDelete: 'cascade' }),
-        authorId: integer('author_id').references(() => authors.id, { onDelete: 'set null' })
+        authorId: integer('author_id').references(() => authors.id, { onDelete: 'set null' }),
+        isPrimary: boolean('is_primary').notNull().default(false)
     },
     (t) => [
         primaryKey({ columns: [t.recipeId, t.imageId], name: 'recipe_sample_images_pk' }),

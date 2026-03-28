@@ -1,0 +1,1 @@
+ALTER TABLE "recipe_sample_images" ADD COLUMN "is_primary" boolean DEFAULT false NOT NULL;

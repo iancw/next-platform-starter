@@ -1,6 +1,6 @@
 import { db } from '../../../db/index.ts';
 import { authors, images, recipeComparisonImages, recipeSampleImages, recipes, savedRecipes } from '../../../db/schema.ts';
-import { and, count, desc, eq, ilike, inArray, or, sql } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ilike, inArray, or, sql } from 'drizzle-orm';
 import { getSession } from '../../../lib/auth.js';
 import { getSavedRecipeIdsForUser } from '../../../lib/recipe-saves.js';
 
@@ -171,6 +171,7 @@ export async function GET(request) {
           lens: images.lens,
           validExif: images.validExif
         },
+        isPrimary: recipeSampleImages.isPrimary,
         author: {
           id: authors.id,
           uuid: authors.uuid,
@@ -185,6 +186,10 @@ export async function GET(request) {
       .leftJoin(images, eq(images.id, recipeSampleImages.imageId))
       .leftJoin(authors, eq(authors.id, recipeSampleImages.authorId))
       .where(inArray(recipeSampleImages.recipeId, recipeIds))
+      .orderBy(
+        asc(recipeSampleImages.recipeId),
+        asc(recipeSampleImages.imageId)
+      )
   ]);
 
   /**
@@ -218,7 +223,7 @@ export async function GET(request) {
 
   const sampleImagesByRecipeId = groupByRecipeId(sampleRows, (row) => {
     if (!row.image?.id) return null;
-    return { ...row.image, sampleAuthor: row.author ?? null };
+    return { ...row.image, isPrimary: row.isPrimary, sampleAuthor: row.author ?? null };
   });
 
   const results = pageRecipes.map((r) => {

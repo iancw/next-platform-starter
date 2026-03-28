@@ -61,19 +61,40 @@ function normalizeImages(images) {
     .filter(Boolean);
 }
 
+function StarIcon({ filled = false }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-4 w-4"
+      fill={filled ? 'currentColor' : 'none'}
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 3.75 14.55 8.92l5.7.83-4.12 4.01.97 5.67L12 16.75l-5.1 2.68.97-5.67-4.12-4.01 5.7-.83L12 3.75Z" />
+    </svg>
+  );
+}
+
 export default function SampleGallery({
   images,
   title = 'Sample images',
   canDelete = false,
+  canSetPrimary = false,
   recipeId = null,
   recipeName = '',
-  deleteImageAction = null
+  deleteImageAction = null,
+  setPrimaryImageAction = null
 }) {
   const normalizedImages = useMemo(() => normalizeImages(images), [images]);
   const [activeIndex, setActiveIndex] = useState(null);
   const [isDeletePending, startDeleteTransition] = useTransition();
+  const [isPrimaryPending, startPrimaryTransition] = useTransition();
   const [deleteCandidate, setDeleteCandidate] = useState(null);
   const [deleteError, setDeleteError] = useState('');
+  const [primaryError, setPrimaryError] = useState('');
   const router = useRouter();
 
   const openModal = useCallback(
@@ -143,6 +164,7 @@ export default function SampleGallery({
   const openDeleteModal = useCallback((image) => {
     if (!canDelete || !deleteImageAction || !Number.isFinite(Number(recipeId)) || !image?.id) return;
     setDeleteError('');
+    setPrimaryError('');
     setDeleteCandidate(image);
   }, [canDelete, deleteImageAction, recipeId]);
 
@@ -150,6 +172,7 @@ export default function SampleGallery({
     if (isDeletePending) return;
     setDeleteCandidate(null);
     setDeleteError('');
+    setPrimaryError('');
   }, [isDeletePending]);
 
   const handleDelete = useCallback(() => {
@@ -168,11 +191,28 @@ export default function SampleGallery({
     });
   }, [canDelete, deleteCandidate, deleteImageAction, recipeId, router]);
 
+  const handleSetPrimary = useCallback((image) => {
+    if (!canSetPrimary || !setPrimaryImageAction || !Number.isFinite(Number(recipeId)) || image?.id == null || image?.isPrimary) {
+      return;
+    }
+
+    setPrimaryError('');
+    startPrimaryTransition(async () => {
+      try {
+        await setPrimaryImageAction({ recipeId: Number(recipeId), imageId: image.id });
+        router.refresh();
+      } catch (error) {
+        setPrimaryError(error?.message || 'Failed to update overview image');
+      }
+    });
+  }, [canSetPrimary, recipeId, router, setPrimaryImageAction]);
+
   if (normalizedImages.length === 0) return null;
 
   return (
     <section className="mt-8">
       <h2 className="text-xl font-semibold mb-3">{title}</h2>
+      {primaryError ? <p className="mb-3 text-sm text-destructive">{primaryError}</p> : null}
       <div className="flex gap-3 overflow-x-auto pb-2">
         {normalizedImages.map((img, idx) => (
           <div
@@ -192,11 +232,27 @@ export default function SampleGallery({
                 style={{ height: 180, width: 'auto', borderRadius: 8 }}
               />
             </button>
+            {canSetPrimary && (
+              <button
+                type="button"
+                onClick={() => handleSetPrimary(img)}
+                disabled={isPrimaryPending || img.isPrimary}
+                className={`absolute top-2 left-2 rounded-full border p-2 backdrop-blur-sm transition disabled:cursor-default disabled:opacity-100 ${
+                  img.isPrimary
+                    ? 'border-amber-300/80 bg-amber-400/90 text-black shadow'
+                    : 'border-white/50 bg-black/45 text-white hover:border-amber-200 hover:text-amber-200'
+                }`}
+                aria-label={img.isPrimary ? 'Shown in overview' : 'Show in overview'}
+                title={img.isPrimary ? 'Shown in overview' : 'Show in overview'}
+              >
+                <StarIcon filled={img.isPrimary} />
+              </button>
+            )}
             {canDelete && deleteImageAction && (
               <button
                 type="button"
                 onClick={() => openDeleteModal(img)}
-                disabled={isDeletePending}
+                disabled={isDeletePending || isPrimaryPending}
                 className="absolute top-2 right-2 rounded bg-black/70 px-2 py-1 text-xs text-white disabled:opacity-60"
               >
                 Delete
@@ -253,11 +309,16 @@ export default function SampleGallery({
                   <button
                     type="button"
                     onClick={() => openDeleteModal(activeImage)}
-                    disabled={isDeletePending}
+                    disabled={isDeletePending || isPrimaryPending}
                     className="rounded bg-white px-3 py-1.5 text-sm font-medium text-black disabled:opacity-60"
                   >
                     Delete sample image
                   </button>
+                </div>
+              )}
+              {canSetPrimary && activeImage?.isPrimary && (
+                <div className="mb-3 text-xs font-medium uppercase tracking-wide text-white/80">
+                  Overview image
                 </div>
               )}
               {(activeImage.sampleAuthorName ||

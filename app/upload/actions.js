@@ -1,7 +1,7 @@
 'use server';
 import { db } from '../../db/index.ts';
 import { images, recipeComparisonImages, recipeSampleImages, recipes } from '../../db/schema.ts';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import {
     getObjectStorageClientFromEnv,
     getObjectStorageNamespaceFromEnv,
@@ -556,7 +556,16 @@ export async function finalizeRecipeUploadAction({ parameters }) {
 
         await db
             .insert(recipeSampleImages)
-            .values({ recipeId, imageId, authorId })
+            .values({
+                recipeId,
+                imageId,
+                authorId,
+                isPrimary: sql`not exists (
+                    select 1
+                    from recipe_sample_images existing_samples
+                    where existing_samples.recipe_id = ${recipeId}
+                )`
+            })
             .onConflictDoNothing();
 
         const resizedUrl = `/assets/images/600/${objectKey}`;
