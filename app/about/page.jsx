@@ -43,7 +43,7 @@ export default function AboutPage() {
                     <CardHeader>
                         <CardTitle>Get in Touch</CardTitle>
                         <CardDescription>
-                            Want to claim a recipe or have yours taken down? Reach out any time.
+                            Want to claim a recipe or have other questions? Reach out any time.
                         </CardDescription>
                     </CardHeader>
                     <CardContent>

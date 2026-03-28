@@ -8,13 +8,14 @@ import { cn } from 'lib/cn';
 
 const publicNavItems = [
     { linkText: 'Recipes', href: '/' },
+    { linkText: 'Create', href: '/upload' },
     { href: '/how-to', linkText: 'How-to' },
     { href: '/about', linkText: 'About' }
 ];
 
 const authedNavItems = [
     { linkText: 'Recipes', href: '/' },
-    { linkText: 'Upload', href: '/upload' },
+    { linkText: 'Create', href: '/upload' },
     { linkText: 'Samples', href: '/my-samples' },
     { linkText: 'Profile', href: '/profile' },
     { href: '/how-to', linkText: 'How-to' },

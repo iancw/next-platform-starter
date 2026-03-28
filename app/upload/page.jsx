@@ -5,15 +5,18 @@ import RecipeUpload from './RecipeUpload';
 import { getSession } from '../../lib/auth.js';
 import LoginButton from 'components/LoginButton';
 import { Badge } from 'components/ui/badge';
-import { Card, CardContent } from 'components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'components/ui/card';
 
 export const metadata = {
     title: 'Upload'
 };
 
 const explainer = `
-Upload a sample image for your recipe -- must be a JPG straight out of an OM-3, Pen-F, or E-P7.
+OM system color recipes are embedded in the JPG files produced by a camera.
+Creating a recipe on this site is as simple as uploading a JPG produced by the camera!
 `;
+
+const explainerNote = `Only JPGs produced by Olympus or OM System cameras with custom color profiles (OM-3, Pen-F, or E-P7) will work. Even JPGs produced by OM Workspace don't work, because OM Workspace doesn't seem to reliably update the EXIF data to exported JPGs.`;
 
 const uploadDisabledText = `
 Sorry! Uploads are disabled right now.
@@ -32,10 +35,13 @@ export default async function Page() {
             ) : null}
             <Card className="overflow-hidden border-border/60 bg-card/80">
                 <CardContent className="space-y-4 p-6 lg:p-8">
-                    <Badge>Upload</Badge>
+                    <Badge>Create</Badge>
                     <div className="space-y-3">
-                        <h1 className="max-w-3xl">Upload Recipe Samples</h1>
+                        <h1 className="max-w-3xl">Create Color Recipes</h1>
                         <Markdown content={explainer} className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg" />
+                        <p className="max-w-2xl text-xs italic leading-5 text-muted-foreground/70 sm:text-sm">
+                            {explainerNote}
+                        </p>
                     </div>
                 </CardContent>
             </Card>
@@ -44,12 +50,17 @@ export default async function Page() {
                     {user ? (
                         <RecipeUpload initialAuthor={session?.author?.name ?? user?.name ?? ''} />
                     ) : (
-                        <>
-                        <p className="action-text">
-                            Welcome! Please log in to access your protected content.
-                        </p>
-                        <LoginButton redirectTo="/upload" />
-                        </>
+                        <Card className="max-w-xl border-border/60 bg-background/55">
+                            <CardHeader className="pb-3">
+                                <CardTitle className="text-base">Log in to upload</CardTitle>
+                                <CardDescription>
+                                    Sign in to upload a sample image and manage your recipe over time.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <LoginButton redirectTo="/upload" />
+                            </CardContent>
+                        </Card>
                     )}
                 </>
             }
