@@ -1,8 +1,9 @@
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import { getSession } from '../../../lib/auth.js';
 import { db } from '../../../db/index.ts';
 import { authors, images, recipeComparisonImages, recipeSampleImages, recipes } from '../../../db/schema.ts';
-import { asc, desc, eq, or } from 'drizzle-orm';
+import { and, asc, eq, ilike, ne, or, sql } from 'drizzle-orm';
 import RecipeCard from '../../../components/recipe-card.jsx';
 import SampleGallery from '../../../components/SampleGallery.jsx';
 import { Badge } from '../../../components/ui/badge.jsx';
@@ -14,6 +15,7 @@ import {
     updateRecipeAction
 } from './actions';
 import { getSavedRecipeIdsForUser } from '../../../lib/recipe-saves.js';
+import { getEquivalentWhiteBalance } from '../../../lib/whiteBalanceEquivalence.js';
 
 export const metadata = {
     title: 'Recipe'
@@ -157,6 +159,54 @@ async function getAuthedAuthorIds(userId = null) {
     return rows.map((row) => row.id);
 }
 
+async function getRelatedWhiteBalanceRecipes(recipeId, whiteBalance) {
+    if (!Number.isFinite(Number(recipeId)) || whiteBalance?.key == null) return [];
+
+    const offsetFilters = [
+        sql`coalesce(${recipes.whiteBalanceAmberOffset}, 0) = ${whiteBalance.amberOffset}`,
+        sql`coalesce(${recipes.whiteBalanceGreenOffset}, 0) = ${whiteBalance.greenOffset}`
+    ];
+
+    let whereClause = null;
+
+    if (whiteBalance.type === 'temperature') {
+        whereClause = and(
+            ne(recipes.id, recipeId),
+            eq(recipes.whiteBalanceTemperature, whiteBalance.temperature),
+            ...offsetFilters
+        );
+    } else if (whiteBalance.type === 'auto') {
+        whereClause = and(
+            ne(recipes.id, recipeId),
+            sql`${recipes.whiteBalanceTemperature} is null`,
+            ilike(recipes.whiteBalance2, 'auto%'),
+            ...offsetFilters
+        );
+    } else if (whiteBalance.type === 'preset') {
+        whereClause = and(
+            ne(recipes.id, recipeId),
+            sql`${recipes.whiteBalanceTemperature} is null`,
+            eq(recipes.whiteBalance2, whiteBalance.label),
+            ...offsetFilters
+        );
+    }
+
+    if (whereClause == null) return [];
+
+    return db
+        .select({
+            id: recipes.id,
+            uuid: recipes.uuid,
+            slug: recipes.slug,
+            recipeName: recipes.recipeName,
+            authorName: recipes.authorName
+        })
+        .from(recipes)
+        .where(whereClause)
+        .orderBy(asc(recipes.recipeName), asc(recipes.authorName))
+        .limit(8);
+}
+
 export default async function Page({ params }) {
     // Next.js 16+ passes `params` as a Promise in some runtimes.
     // https://nextjs.org/docs/messages/sync-dynamic-apis
@@ -166,6 +216,8 @@ export default async function Page({ params }) {
     const userId = session?.user?.id ?? null;
     const recipe = await getRecipeByIdOrSlug(id, userId);
     if (!recipe) return notFound();
+    const whiteBalance = getEquivalentWhiteBalance(recipe);
+    const relatedWhiteBalanceRecipes = await getRelatedWhiteBalanceRecipes(recipe.id, whiteBalance);
 
     const authedAuthorIds = await getAuthedAuthorIds(userId);
     const isOwner = authedAuthorIds.includes(recipe.authorId);
@@ -206,6 +258,35 @@ export default async function Page({ params }) {
                 />
                 <SampleGallery images={recipe.comparisonImages} title="Comparison images" recipeName={recipe.recipeName} />
             </div>
+
+            {relatedWhiteBalanceRecipes.length > 0 ? (
+                <Card className="overflow-hidden border-border/60 bg-card/80">
+                    <CardContent className="space-y-4 p-6">
+                        <div className="space-y-2">
+                            <Badge variant="secondary">Related Recipes</Badge>
+                            <div className="space-y-1">
+                                <h2 className="text-2xl">White Balance Compatibility</h2>
+                                <p className="text-sm leading-6 text-muted-foreground">
+                                    Other recipes using the same effective white balance settings.
+                                    {' '}These recipes could share the same custom mode.
+                                </p>
+                            </div>
+                        </div>
+                        <div className="flex flex-wrap gap-3">
+                            {relatedWhiteBalanceRecipes.map((relatedRecipe) => (
+                                <Link
+                                    key={relatedRecipe.id}
+                                    href={`/recipes/${relatedRecipe.uuid ?? relatedRecipe.slug}`}
+                                    className="rounded-full border border-border/70 bg-muted/30 px-4 py-2 text-sm transition-colors hover:border-primary/35 hover:text-foreground"
+                                >
+                                    {relatedRecipe.recipeName}
+                                    <span className="ml-2 text-muted-foreground">{relatedRecipe.authorName}</span>
+                                </Link>
+                            ))}
+                        </div>
+                    </CardContent>
+                </Card>
+            ) : null}
         </div>
     );
 }
