@@ -327,6 +327,7 @@ describe('prepareRecipeUploadAction duplicate handling', () => {
                 recipeSettings: {
                     hasColorProfileSettings: true,
                     hasToneLevel: true,
+                    source: 'OM-3/OM System Camera',
                     yellow: 0,
                     orange: 0,
                     orangeRed: 0,
@@ -353,6 +354,7 @@ describe('prepareRecipeUploadAction duplicate handling', () => {
         });
 
         expect(result.ok).toBe(true);
+        expect(capturedRecipeValues.source).toBe('OM-3/OM System Camera');
         expect(capturedRecipeValues.sourceUrl).toBe('https://example.com/original-recipe');
     });
 

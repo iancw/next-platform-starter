@@ -280,9 +280,27 @@ Contrast Setting                : -1
             expect(result.isOmWorkspace).toBe(true);
         });
 
-        it('does not flag isOmWorkspace for other software', () => {
-            const exif = makeExif(`Software                        : OM System Camera`);
+        it('flags isOmWorkspace for OM Workspace 2.4M and preserves source metadata', () => {
+            const exif = makeExif(`
+Camera Model Name               : OM-3
+Software                        : OM Workspace 2.4M
+`);
             const result = parseRecipeSettingsFromExif(exif);
+            expect(result.cameraModelName).toBe('OM-3');
+            expect(result.software).toBe('OM Workspace 2.4M');
+            expect(result.source).toBe('OM-3/OM Workspace 2.4M');
+            expect(result.isOmWorkspace).toBe(true);
+        });
+
+        it('builds recipe source from Camera Model Name and Software', () => {
+            const exif = makeExif(`
+Camera Model Name               : OM-3
+Software                        : Version 1.1
+`);
+            const result = parseRecipeSettingsFromExif(exif);
+            expect(result.cameraModelName).toBe('OM-3');
+            expect(result.software).toBe('Version 1.1');
+            expect(result.source).toBe('OM-3/Version 1.1');
             expect(result.isOmWorkspace).toBe(false);
         });
     });

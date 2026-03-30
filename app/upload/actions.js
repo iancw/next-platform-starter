@@ -361,6 +361,7 @@ export async function prepareRecipeUploadAction({ parameters }) {
                     recipeName: String(name),
                     authorName: String(author),
                     description: isBlank(notes) ? null : String(notes),
+                    source: recipeSettings.source ?? null,
                     sourceUrl: normalizedSourceUrl,
 
                     recipeFingerprint,
