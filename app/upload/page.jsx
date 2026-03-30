@@ -16,7 +16,7 @@ OM system color recipes are embedded in the JPG files produced by a camera.
 Creating a recipe on this site is as simple as uploading a JPG produced by the camera!
 `;
 
-const explainerNote = `Only JPGs produced by Olympus or OM System cameras with custom color profiles (OM-3, Pen-F, or E-P7) will work. Even JPGs produced by OM Workspace don't work, because OM Workspace doesn't seem to reliably update the EXIF data to exported JPGs.`;
+const explainerNote = `Only JPGs produced by Olympus or OM System cameras with custom color profiles (OM-3, Pen-F, or E-P7) will work reliably. JPGs produced by OM Workspace are allowed, but recipes stored in those files may not be accurate and should be carefully checked before you publish them.`;
 
 const uploadDisabledText = `
 Sorry! Uploads are disabled right now.

@@ -246,13 +246,6 @@ export async function prepareRecipeUploadAction({ parameters }) {
 
         // Enforce maker notes presence: require Color Profile Settings + Tone Level.
         // These are necessary to produce a valid OM recipe match.
-        if (recipeSettings?.isOmWorkspace) {
-            return {
-                ok: false,
-                error: 'Only images straight out of camera from OM-3, Pen-F, or E-P7 are allowed.'
-            };
-        }
-
         if (!recipeSettings?.hasColorProfileSettings) {
             return {
                 ok: false,

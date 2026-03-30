@@ -154,6 +154,57 @@ describe('prepareRecipeUploadAction duplicate handling', () => {
         expect(insertMock).not.toHaveBeenCalled();
     });
 
+    it('allows OM Workspace images when recipe maker notes are present', async () => {
+        selectResults = [
+            [],
+            [],
+            []
+        ];
+
+        insertHandlers = [
+            () => ({
+                values: vi.fn(() => ({
+                    returning: vi.fn(() =>
+                        Promise.resolve([{ id: 777, uuid: 'recipe-uuid-1', slug: 'author_recipe-name' }])
+                    )
+                }))
+            }),
+            () => ({
+                values: vi.fn((values) => {
+                    capturedImageValues = values;
+                    return {
+                        returning: vi.fn(() => Promise.resolve([{ id: 888, uuid: 'image-uuid-1' }]))
+                    };
+                })
+            })
+        ];
+
+        const { prepareRecipeUploadAction } = await loadActionsModule();
+
+        const result = await prepareRecipeUploadAction({
+            parameters: {
+                author: 'Author',
+                name: 'Recipe Name',
+                notes: '',
+                imageMeta: {
+                    name: 'photo.jpg',
+                    type: 'image/jpeg',
+                    size: 2048,
+                    sha256: 'a'.repeat(64)
+                },
+                recipeSettings: {
+                    isOmWorkspace: true,
+                    hasColorProfileSettings: true,
+                    hasToneLevel: true
+                }
+            }
+        });
+
+        expect(result.ok).toBe(true);
+        expect(createParMock).toHaveBeenCalledTimes(1);
+        expect(insertMock).toHaveBeenCalledTimes(2);
+    });
+
     it('rejects a duplicate image and reports its recipe association', async () => {
         selectResults = [
             [{ id: 99 }],

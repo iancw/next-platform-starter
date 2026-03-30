@@ -48,6 +48,9 @@ export default function RecipeUpload({ initialAuthor = "" }) {
   const [duplicateError, setDuplicateError] = useState('');
   const [missingColorProfile, setMissingColorProfile] = useState(false);
   const [showFinalizingNotice, setShowFinalizingNotice] = useState(false);
+  const omWorkspaceWarning = recipe?.isOmWorkspace
+    ? 'Warning: This JPG was produced by OM Workspace. JPGs produced by OM Workspace may not have accurate recipe data in EXIF. CAREFULLY CHECK the recipe data shown before uploading.'
+    : '';
 
   const hasDroppedImage = imageFiles?.length > 0;
   const hasRedirectedRef = useRef(false);
@@ -227,12 +230,6 @@ export default function RecipeUpload({ initialAuthor = "" }) {
       }
 
       const recipe = await parseExif(file);
-      if (recipe?.isOmWorkspace) {
-        setRecipeDetails(null);
-        setExifError('Only images straight out of camera from OM-3, Pen-F, or E-P7 are allowed.');
-        setMissingColorProfile(true);
-        return;
-      }
       if (!recipe?.hasColorProfileSettings) {
         setRecipeDetails(null);
         setExifError('No recipe found. Upload straight out of camera JPGs from OM-3, Pen-F, or E-P7 cameras.');
@@ -529,6 +526,9 @@ export default function RecipeUpload({ initialAuthor = "" }) {
             )}
             {hasDroppedImage && !duplicateMatch && !!duplicateError && (
               <Alert type="error">{duplicateError}</Alert>
+            )}
+            {hasDroppedImage && !!omWorkspaceWarning && (
+              <Alert>{omWorkspaceWarning}</Alert>
             )}
           </div>
           {hasDroppedImage && !missingColorProfile && (
