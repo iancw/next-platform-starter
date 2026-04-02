@@ -38,6 +38,8 @@ export default function RecipeUpload({ initialAuthor = "" }) {
   const [uploadedRecipeUuid, setUploadedRecipeUuid] = useState('');
   const [uploadPhase, setUploadPhase] = useState(''); // preparing | direct-upload | finalizing
   const [matchingRecipe, setMatchingRecipe] = useState(null);
+  const [matchType, setMatchType] = useState(null); // 'full' | 'no-wb' | null
+  const [similarRecipes, setSimilarRecipes] = useState([]);
   const [matchError, setMatchError] = useState('');
   const [isCheckingMatch, setIsCheckingMatch] = useState(false);
   const [lastUploadMode, setLastUploadMode] = useState('create'); // create | attach
@@ -70,9 +72,13 @@ export default function RecipeUpload({ initialAuthor = "" }) {
     if (!hasDroppedImage || !recipe) {
       if (!hasDroppedImage) {
         setMatchingRecipe(null);
+        setMatchType(null);
+        setSimilarRecipes([]);
         setMatchError('');
       } else {
         setMatchingRecipe(null);
+        setMatchType(null);
+        setSimilarRecipes([]);
       }
       setIsCheckingMatch(false);
       return;
@@ -91,15 +97,35 @@ export default function RecipeUpload({ initialAuthor = "" }) {
         if (!res?.ok) {
           setMatchError(res?.error || 'Failed to check for existing recipes');
           setMatchingRecipe(null);
+          setMatchType(null);
+          setSimilarRecipes([]);
           return;
         }
-        setMatchingRecipe(res.match);
+
+        // Full and no-wb matches both block the upload form.
+        const blockingMatch = res.full ?? res.noWb ?? null;
+        setMatchingRecipe(blockingMatch);
+        setMatchType(blockingMatch ? (res.full ? 'full' : 'no-wb') : null);
+
+        // Build deduplicated list of informational partial matches.
+        // no-wb is excluded here since it's treated as a blocking match above.
+        const seenIds = new Set(blockingMatch ? [blockingMatch.id] : []);
+        const partials = [];
+        const addIfNew = (type, recipe, label) => {
+          if (!recipe || seenIds.has(recipe.id)) return;
+          seenIds.add(recipe.id);
+          partials.push({ type, recipe, label });
+        };
+        addIfNew('color-tone', res.colorTone, 'Same color wheel and tone adjustments');
+        addIfNew('color', res.color, 'Same color wheel');
+        setSimilarRecipes(partials);
       })
       .catch((err) => {
         if (cancelled) return;
         console.error(err);
         setMatchError(err?.message || 'Failed to check for existing recipes');
         setMatchingRecipe(null);
+        setSimilarRecipes([]);
       })
       .finally(() => {
         if (cancelled) return;
@@ -261,6 +287,8 @@ export default function RecipeUpload({ initialAuthor = "" }) {
     setDuplicateError('');
     setIsCheckingDuplicate(false);
     setMatchingRecipe(null);
+    setMatchType(null);
+    setSimilarRecipes([]);
     setMatchError('');
     setIsCheckingMatch(false);
     setUploadStatus('idle');
@@ -290,6 +318,8 @@ export default function RecipeUpload({ initialAuthor = "" }) {
     setUploadedSlug('');
     setUploadedRecipeUuid('');
     setMatchError('');
+    setMatchType(null);
+    setSimilarRecipes([]);
 
     try {
       const file = imageFiles[0] || null;
@@ -544,9 +574,12 @@ export default function RecipeUpload({ initialAuthor = "" }) {
                       const matchId = matchingRecipe.uuid ?? matchingRecipe.slug ?? '';
                       const linkHref = matchId ? `/recipes/${encodeURIComponent(matchId)}` : '/recipes';
                       const linkLabel = matchingRecipe.recipeName || matchId || 'View recipe';
+                      const intro = matchType === 'no-wb'
+                        ? 'A recipe with these settings already exists (white balance differs):'
+                        : 'Exact match — this recipe already exists:';
                       return (
                         <>
-                          We found an existing recipe with identical settings:&nbsp;
+                          {intro}&nbsp;
                           <Link href={linkHref}>
                             {linkLabel}
                           </Link>
@@ -555,7 +588,7 @@ export default function RecipeUpload({ initialAuthor = "" }) {
                       );
                     })()}
                   </Alert>
-                  {!duplicateMatch && (
+                  {!duplicateMatch && matchType === 'full' && (
                     <>
                       <p className="m-0 text-sm leading-6 text-muted-foreground">
                         Continue below to attach your image as a community sample or choose a different photo.
@@ -593,6 +626,15 @@ export default function RecipeUpload({ initialAuthor = "" }) {
                         </button>
                       </div>
                     </>
+                  )}
+                  {matchType === 'no-wb' && (
+                    <button
+                      type="button"
+                      className={buttonVariants({ variant: 'outline', className: 'self-start' })}
+                      onClick={handleRemoveImage}
+                    >
+                      Choose different image
+                    </button>
                   )}
                 </>
               )}
@@ -632,6 +674,22 @@ export default function RecipeUpload({ initialAuthor = "" }) {
                     Choose different image
                   </button>
                 </>
+              )}
+              {!matchingRecipe && !duplicateMatch && similarRecipes.length > 0 && (
+                <div className="flex flex-col gap-2">
+                  {similarRecipes.map(({ type, recipe, label }) => {
+                    const matchId = recipe.uuid ?? recipe.slug ?? '';
+                    const linkHref = matchId ? `/recipes/${encodeURIComponent(matchId)}` : '/recipes';
+                    const linkLabel = recipe.recipeName || matchId || 'View recipe';
+                    return (
+                      <Alert key={type}>
+                        {label}:{' '}
+                        <Link href={linkHref}>{linkLabel}</Link>
+                        {recipe.authorName ? ` by ${recipe.authorName}` : ''}.
+                      </Alert>
+                    );
+                  })}
+                </div>
               )}
               {!matchingRecipe && !duplicateMatch && (
                 <>

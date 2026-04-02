@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { computeRecipeFingerprint } from '../lib/recipeFingerprint.js';
+import {
+    computeRecipeFingerprint,
+    computeColorFingerprint,
+    computeColorToneFingerprint,
+    computeNoWbFingerprint
+} from '../lib/recipeFingerprint.js';
 import crypto from 'node:crypto';
 
 // Canonical settings used as a stable baseline throughout these tests.
@@ -83,6 +88,96 @@ describe('computeRecipeFingerprint', () => {
         expect(() => computeRecipeFingerprint(undefined)).not.toThrow();
     });
 
+    it('all four fingerprints differ from each other for the same settings', () => {
+        const fps = [
+            computeColorFingerprint(BASE_SETTINGS),
+            computeColorToneFingerprint(BASE_SETTINGS),
+            computeNoWbFingerprint(BASE_SETTINGS),
+            computeRecipeFingerprint(BASE_SETTINGS)
+        ];
+        expect(new Set(fps).size).toBe(4);
+    });
+});
+
+describe('computeColorFingerprint', () => {
+    it('returns a 64-character hex string', () => {
+        expect(computeColorFingerprint(BASE_SETTINGS)).toMatch(/^[0-9a-f]{64}$/);
+    });
+
+    it('changes when a saturation wheel value changes', () => {
+        expect(computeColorFingerprint(BASE_SETTINGS))
+            .not.toBe(computeColorFingerprint({ ...BASE_SETTINGS, yellow: 0 }));
+    });
+
+    it('is unaffected by highlights/shadows/midtones', () => {
+        expect(computeColorFingerprint(BASE_SETTINGS))
+            .toBe(computeColorFingerprint({ ...BASE_SETTINGS, highlights: 99, shadows: 99, midtones: 99 }));
+    });
+
+    it('is unaffected by contrast and sharpness', () => {
+        expect(computeColorFingerprint(BASE_SETTINGS))
+            .toBe(computeColorFingerprint({ ...BASE_SETTINGS, contrast: 99, sharpness: 99 }));
+    });
+
+    it('is unaffected by white balance', () => {
+        expect(computeColorFingerprint(BASE_SETTINGS))
+            .toBe(computeColorFingerprint({ ...BASE_SETTINGS, whiteBalanceTemperature: 9999 }));
+    });
+});
+
+describe('computeColorToneFingerprint', () => {
+    it('returns a 64-character hex string', () => {
+        expect(computeColorToneFingerprint(BASE_SETTINGS)).toMatch(/^[0-9a-f]{64}$/);
+    });
+
+    it('changes when a saturation wheel value changes', () => {
+        expect(computeColorToneFingerprint(BASE_SETTINGS))
+            .not.toBe(computeColorToneFingerprint({ ...BASE_SETTINGS, yellow: 0 }));
+    });
+
+    it('changes when highlights/shadows/midtones change', () => {
+        expect(computeColorToneFingerprint(BASE_SETTINGS))
+            .not.toBe(computeColorToneFingerprint({ ...BASE_SETTINGS, shadows: 99 }));
+    });
+
+    it('is unaffected by contrast and sharpness', () => {
+        expect(computeColorToneFingerprint(BASE_SETTINGS))
+            .toBe(computeColorToneFingerprint({ ...BASE_SETTINGS, contrast: 99, sharpness: 99 }));
+    });
+
+    it('is unaffected by white balance', () => {
+        expect(computeColorToneFingerprint(BASE_SETTINGS))
+            .toBe(computeColorToneFingerprint({ ...BASE_SETTINGS, whiteBalanceTemperature: 9999 }));
+    });
+});
+
+describe('computeNoWbFingerprint', () => {
+    it('returns a 64-character hex string', () => {
+        expect(computeNoWbFingerprint(BASE_SETTINGS)).toMatch(/^[0-9a-f]{64}$/);
+    });
+
+    it('changes when a saturation wheel value changes', () => {
+        expect(computeNoWbFingerprint(BASE_SETTINGS))
+            .not.toBe(computeNoWbFingerprint({ ...BASE_SETTINGS, yellow: 0 }));
+    });
+
+    it('changes when contrast or sharpness changes', () => {
+        expect(computeNoWbFingerprint(BASE_SETTINGS))
+            .not.toBe(computeNoWbFingerprint({ ...BASE_SETTINGS, contrast: 99 }));
+    });
+
+    it('changes when highlights/shadows/midtones change', () => {
+        expect(computeNoWbFingerprint(BASE_SETTINGS))
+            .not.toBe(computeNoWbFingerprint({ ...BASE_SETTINGS, midtones: 99 }));
+    });
+
+    it('is unaffected by white balance', () => {
+        expect(computeNoWbFingerprint(BASE_SETTINGS))
+            .toBe(computeNoWbFingerprint({ ...BASE_SETTINGS, whiteBalanceTemperature: 9999 }));
+    });
+});
+
+describe('computeRecipeFingerprint — golden hash', () => {
     it('produces the expected hash for an all-zeros recipe', () => {
         const settings = {
             yellow: 0, orange: 0, orangeRed: 0, red: 0,

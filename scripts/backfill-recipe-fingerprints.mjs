@@ -1,8 +1,12 @@
-import 'dotenv/config';
 import { db } from '../db/index.ts';
 import { recipes } from '../db/schema.ts';
 import { eq } from 'drizzle-orm';
-import { computeRecipeFingerprint } from '../lib/recipeFingerprint.js';
+import {
+    computeRecipeFingerprint,
+    computeColorFingerprint,
+    computeColorToneFingerprint,
+    computeNoWbFingerprint
+} from '../lib/recipeFingerprint.js';
 
 async function main() {
     const rows = await db
@@ -35,15 +39,20 @@ async function main() {
         })
         .from(recipes);
 
-    let updated = 0;
+    let updated = 0;    
     for (const r of rows) {
-        const fp = computeRecipeFingerprint(r);
         // eslint-disable-next-line no-await-in-loop
-        await db.update(recipes).set({ recipeFingerprint: fp, updatedAt: new Date() }).where(eq(recipes.id, r.id));
+        await db.update(recipes).set({
+            recipeFingerprint: computeRecipeFingerprint(r),
+            colorFingerprint: computeColorFingerprint(r),
+            colorToneFingerprint: computeColorToneFingerprint(r),
+            noWbFingerprint: computeNoWbFingerprint(r),
+            updatedAt: new Date()
+        }).where(eq(recipes.id, r.id));
         updated++;
     }
 
-    console.log(`Backfilled ${updated} recipe fingerprints`);
+    console.log(`Backfilled ${updated} ${rows.length} recipe fingerprints`);
 }
 
 await main();

@@ -1,5 +1,5 @@
 {
-  "id": "7dac7c95-6970-4f3f-992e-44eb4bb9f425",
+  "id": "eb39fca8-1e0e-42b5-a833-e5b9c1aec2ff",
   "prevId": "a7ae7c24-4254-41fb-86b5-7ae7353c3ec7",
   "version": "7",
   "dialect": "postgresql",
@@ -860,12 +860,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "source": {
-          "name": "source",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
         "source_url": {
           "name": "source_url",
           "type": "text",
@@ -1018,6 +1012,24 @@
           "primaryKey": false,
           "notNull": false
         },
+        "color_fingerprint": {
+          "name": "color_fingerprint",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "color_tone_fingerprint": {
+          "name": "color_tone_fingerprint",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "no_wb_fingerprint": {
+          "name": "no_wb_fingerprint",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp with time zone",
@@ -1069,6 +1081,51 @@
           "columns": [
             {
               "expression": "recipe_fingerprint",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "recipes_color_fingerprint_idx": {
+          "name": "recipes_color_fingerprint_idx",
+          "columns": [
+            {
+              "expression": "color_fingerprint",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "recipes_color_tone_fingerprint_idx": {
+          "name": "recipes_color_tone_fingerprint_idx",
+          "columns": [
+            {
+              "expression": "color_tone_fingerprint",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "recipes_no_wb_fingerprint_idx": {
+          "name": "recipes_no_wb_fingerprint_idx",
+          "columns": [
+            {
+              "expression": "no_wb_fingerprint",
               "isExpression": false,
               "asc": true,
               "nulls": "last"

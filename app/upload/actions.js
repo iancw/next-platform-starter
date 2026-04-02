@@ -11,7 +11,12 @@ import {
 import { invokeImageResizeFunction } from '../../lib/oci/functionsInvoke.js';
 import { ResizeTimeoutError } from './errors.js';
 
-import { computeRecipeFingerprint } from '../../lib/recipeFingerprint.js';
+import {
+    computeRecipeFingerprint,
+    computeColorFingerprint,
+    computeColorToneFingerprint,
+    computeNoWbFingerprint
+} from '../../lib/recipeFingerprint.js';
 import { findOrCreateAuthorForUser, requireUser } from '../../lib/auth.js';
 
 const ORIGINAL_BUCKET = process.env.OCI_IMAGES_ORIGINAL_BUCKET;
@@ -317,6 +322,9 @@ export async function prepareRecipeUploadAction({ parameters }) {
         const authorUuid = authorRow.uuid;
 
         const recipeFingerprint = computeRecipeFingerprint(recipeSettings);
+        const colorFingerprint = computeColorFingerprint(recipeSettings);
+        const colorToneFingerprint = computeColorToneFingerprint(recipeSettings);
+        const noWbFingerprint = computeNoWbFingerprint(recipeSettings);
 
         // Dedupe: match existing recipe by fingerprint (settings-only).
         const existingRecipe = await db
@@ -358,6 +366,9 @@ export async function prepareRecipeUploadAction({ parameters }) {
                     sourceUrl: normalizedSourceUrl,
 
                     recipeFingerprint,
+                    colorFingerprint,
+                    colorToneFingerprint,
+                    noWbFingerprint,
 
                     yellow: recipeSettings.yellow,
                     orange: recipeSettings.orange,
@@ -651,24 +662,28 @@ export async function findRecipeMatchAction({ parameters }) {
             return { ok: false, error: 'Recipe settings are required' };
         }
 
-        const recipeFingerprint = computeRecipeFingerprint(recipeSettings);
-        const existing = await db
-            .select({
-                id: recipes.id,
-                uuid: recipes.uuid,
-                slug: recipes.slug,
-                recipeName: recipes.recipeName,
-                authorName: recipes.authorName
-            })
-            .from(recipes)
-            .where(eq(recipes.recipeFingerprint, recipeFingerprint))
-            .limit(1);
+        const fields = {
+            id: recipes.id,
+            uuid: recipes.uuid,
+            slug: recipes.slug,
+            recipeName: recipes.recipeName,
+            authorName: recipes.authorName
+        };
 
-        if (existing.length === 0) {
-            return { ok: true, match: null };
-        }
+        const [fullRows, noWbRows, colorToneRows, colorRows] = await Promise.all([
+            db.select(fields).from(recipes).where(eq(recipes.recipeFingerprint, computeRecipeFingerprint(recipeSettings))).limit(1),
+            db.select(fields).from(recipes).where(eq(recipes.noWbFingerprint, computeNoWbFingerprint(recipeSettings))).limit(1),
+            db.select(fields).from(recipes).where(eq(recipes.colorToneFingerprint, computeColorToneFingerprint(recipeSettings))).limit(1),
+            db.select(fields).from(recipes).where(eq(recipes.colorFingerprint, computeColorFingerprint(recipeSettings))).limit(1),
+        ]);
 
-        return { ok: true, match: existing[0] };
+        return {
+            ok: true,
+            full: fullRows[0] ?? null,
+            noWb: noWbRows[0] ?? null,
+            colorTone: colorToneRows[0] ?? null,
+            color: colorRows[0] ?? null,
+        };
     } catch (e) {
         console.error(e);
         return { ok: false, error: e?.message || String(e) };

@@ -7,7 +7,12 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { requireUser } from '../../../lib/auth.js';
 
-import { computeRecipeFingerprint } from '../../../lib/recipeFingerprint.js';
+import {
+    computeRecipeFingerprint,
+    computeColorFingerprint,
+    computeColorToneFingerprint,
+    computeNoWbFingerprint
+} from '../../../lib/recipeFingerprint.js';
 import { deleteOrphanedImagesByIds } from '../../../lib/oci/deleteOrphanedImages.js';
 
 function isBlank(v) {
@@ -90,6 +95,9 @@ export async function updateRecipeAction(formData) {
     if (existing.length === 0) throw new Error('Not authorized');
 
     const recipeFingerprint = computeRecipeFingerprint(existing[0]);
+    const colorFingerprint = computeColorFingerprint(existing[0]);
+    const colorToneFingerprint = computeColorToneFingerprint(existing[0]);
+    const noWbFingerprint = computeNoWbFingerprint(existing[0]);
 
     const updated = await db
         .update(recipes)
@@ -98,6 +106,9 @@ export async function updateRecipeAction(formData) {
             description: isBlank(description) ? null : description,
             sourceUrl,
             recipeFingerprint,
+            colorFingerprint,
+            colorToneFingerprint,
+            noWbFingerprint,
             updatedAt: new Date()
         })
         .where(and(eq(recipes.id, recipeId), inArray(recipes.authorId, authorIds)))

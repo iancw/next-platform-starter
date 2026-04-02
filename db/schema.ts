@@ -195,6 +195,11 @@ export const recipes = pgTable(
         // Intentionally excludes shadingEffect and exposureCompensation.
         recipeFingerprint: text('recipe_fingerprint'),
 
+        // Partial fingerprints for similarity matching at different granularities.
+        colorFingerprint: text('color_fingerprint'),
+        colorToneFingerprint: text('color_tone_fingerprint'),
+        noWbFingerprint: text('no_wb_fingerprint'),
+
         createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
         updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull()
     },
@@ -202,6 +207,9 @@ export const recipes = pgTable(
         uniqueIndex('recipes_uuid_unique').on(t.uuid),
         uniqueIndex('recipes_slug_unique').on(t.slug),
         index('recipes_recipe_fingerprint_idx').on(t.recipeFingerprint),
+        index('recipes_color_fingerprint_idx').on(t.colorFingerprint),
+        index('recipes_color_tone_fingerprint_idx').on(t.colorToneFingerprint),
+        index('recipes_no_wb_fingerprint_idx').on(t.noWbFingerprint),
         index('recipes_recipe_name_idx').on(t.recipeName),
         index('recipes_author_id_idx').on(t.authorId)
     ]
