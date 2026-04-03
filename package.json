@@ -14,7 +14,8 @@
     "db:studio": "netlify dev:exec drizzle-kit studio",
     "db:import:om-recipes": "node scripts/import-om-recipes-to-db.mjs",
     "db:link:public-sample-image": "node scripts/link-public-sample-image.mjs",
-    "db:upload:comparison-images": "node scripts/upload-comparison-images.mjs"
+    "db:upload:comparison-images": "node scripts/upload-comparison-images.mjs",
+    "db:backfill:recipe-fingerprints": "node --env-file=.env.local --import tsx/esm scripts/backfill-recipe-fingerprints.mjs"
   },
   "dependencies": {
     "@netlify/blobs": "^10.6.0",

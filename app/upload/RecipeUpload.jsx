@@ -102,13 +102,13 @@ export default function RecipeUpload({ initialAuthor = "" }) {
           return;
         }
 
-        // Full and no-wb matches both block the upload form.
-        const blockingMatch = res.full ?? res.noWb ?? null;
+        // Full, no-wb, and color-tone matches all block the upload form.
+        const blockingMatch = res.full ?? res.noWb ?? res.colorTone ?? null;
         setMatchingRecipe(blockingMatch);
-        setMatchType(blockingMatch ? (res.full ? 'full' : 'no-wb') : null);
+        setMatchType(blockingMatch ? (res.full ? 'full' : (res.noWb ? 'no-wb' : 'color-tone')) : null);
 
         // Build deduplicated list of informational partial matches.
-        // no-wb is excluded here since it's treated as a blocking match above.
+        // no-wb and color-tone are excluded here since they're treated as blocking matches above.
         const seenIds = new Set(blockingMatch ? [blockingMatch.id] : []);
         const partials = [];
         const addIfNew = (type, recipe, label) => {
@@ -116,7 +116,6 @@ export default function RecipeUpload({ initialAuthor = "" }) {
           seenIds.add(recipe.id);
           partials.push({ type, recipe, label });
         };
-        addIfNew('color-tone', res.colorTone, 'Same color wheel and tone adjustments');
         addIfNew('color', res.color, 'Same color wheel');
         setSimilarRecipes(partials);
       })
@@ -576,7 +575,9 @@ export default function RecipeUpload({ initialAuthor = "" }) {
                       const linkLabel = matchingRecipe.recipeName || matchId || 'View recipe';
                       const intro = matchType === 'no-wb'
                         ? 'A recipe with these settings already exists (white balance differs):'
-                        : 'Exact match — this recipe already exists:';
+                        : matchType === 'color-tone'
+                          ? 'A recipe with the same color wheel and tone adjustments already exists (sliders or white balance differ):'
+                          : 'Exact match — this recipe already exists:';
                       return (
                         <>
                           {intro}&nbsp;
@@ -627,7 +628,7 @@ export default function RecipeUpload({ initialAuthor = "" }) {
                       </div>
                     </>
                   )}
-                  {matchType === 'no-wb' && (
+                  {(matchType === 'no-wb' || matchType === 'color-tone') && (
                     <button
                       type="button"
                       className={buttonVariants({ variant: 'outline', className: 'self-start' })}
@@ -681,6 +682,16 @@ export default function RecipeUpload({ initialAuthor = "" }) {
                     const matchId = recipe.uuid ?? recipe.slug ?? '';
                     const linkHref = matchId ? `/recipes/${encodeURIComponent(matchId)}` : '/recipes';
                     const linkLabel = recipe.recipeName || matchId || 'View recipe';
+                    if (type === 'color') {
+                      return (
+                        <Alert key={type}>
+                          Another recipe has exactly the same color settings but different tone curve. Are you sure you want to create a new recipe?
+
+                          <Link href={linkHref}>{linkLabel}</Link>
+                          {recipe.authorName ? ` by ${recipe.authorName}` : ''}
+                        </Alert>
+                      );
+                    }
                     return (
                       <Alert key={type}>
                         {label}:{' '}
