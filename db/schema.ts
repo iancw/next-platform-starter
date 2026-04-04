@@ -273,11 +273,33 @@ export const savedRecipes = pgTable(
     ]
 );
 
+// Tracks which recipes a user has loaded into each camera mode dial position and color profile slot.
+// modePosition: one of c1, c2, c3, c4, c5, mapb (M/A/P/B shared position)
+// colorSlot: 1–4 (Color 1 through Color 4)
+export const modeSlotAssignments = pgTable(
+    'mode_slot_assignments',
+    {
+        userId: integer('user_id')
+            .notNull()
+            .references(() => users.id, { onDelete: 'cascade' }),
+        modePosition: varchar('mode_position', { length: 10 }).notNull(),
+        colorSlot: smallint('color_slot').notNull(),
+        // Nullable: if the recipe is deleted, the slot is preserved but shows as unavailable.
+        recipeId: integer('recipe_id').references(() => recipes.id, { onDelete: 'set null' })
+    },
+    (t) => [
+        primaryKey({ columns: [t.userId, t.modePosition, t.colorSlot], name: 'mode_slot_assignments_pk' }),
+        index('mode_slot_assignments_user_id_idx').on(t.userId),
+        index('mode_slot_assignments_recipe_id_idx').on(t.recipeId)
+    ]
+);
+
 export const usersRelations = relations(users, ({ many }) => ({
     authors: many(authors),
     magicLinks: many(authMagicLinks),
     sessions: many(authSessions),
-    savedRecipes: many(savedRecipes)
+    savedRecipes: many(savedRecipes),
+    modeSlotAssignments: many(modeSlotAssignments)
 }));
 
 export const authorsRelations = relations(authors, ({ one, many }) => ({
@@ -357,5 +379,16 @@ export const authSessionsRelations = relations(authSessions, ({ one }) => ({
     user: one(users, {
         fields: [authSessions.userId],
         references: [users.id]
+    })
+}));
+
+export const modeSlotAssignmentsRelations = relations(modeSlotAssignments, ({ one }) => ({
+    user: one(users, {
+        fields: [modeSlotAssignments.userId],
+        references: [users.id]
+    }),
+    recipe: one(recipes, {
+        fields: [modeSlotAssignments.recipeId],
+        references: [recipes.id]
     })
 }));

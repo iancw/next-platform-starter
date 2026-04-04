@@ -24,7 +24,8 @@ export const metadata = {
 async function getRecipeByIdOrSlug(idOrSlug, userId = null) {
     const v = String(idOrSlug ?? '').trim();
     if (!v) return null;
-    // We treat the route param as either a uuid or a slug.
+    // Detect UUID format to avoid a Postgres type error when the param is a slug.
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v);
     const rows = await db
         .select({
             id: recipes.id,
@@ -74,7 +75,7 @@ async function getRecipeByIdOrSlug(idOrSlug, userId = null) {
         .leftJoin(authors, eq(authors.id, recipes.authorId))
         // Avoid generating a query with empty parameters which can surface as
         // "params: ,,1" in neon/drizzle errors when the route param is missing.
-        .where(or(eq(recipes.slug, v), eq(recipes.uuid, v)))
+        .where(isUuid ? or(eq(recipes.slug, v), eq(recipes.uuid, v)) : eq(recipes.slug, v))
         .limit(1);
 
     if (rows.length === 0) return null;
