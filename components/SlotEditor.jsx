@@ -80,7 +80,7 @@ function RecipeRow({ recipe, modePosition, onAssign, isPending }) {
                             href={`/recipes/${recipe.slug}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="truncate block text-sm font-medium hover:underline"
+                            className="truncate inline text-sm font-medium hover:underline"
                             onClick={(e) => e.stopPropagation()}
                         >
                             {recipe.recipeName}

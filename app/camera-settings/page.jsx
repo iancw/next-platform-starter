@@ -15,7 +15,7 @@ const MODE_POSITIONS = [
     { position: 'c3', label: 'C3' },
     { position: 'c4', label: 'C4' },
     { position: 'c5', label: 'C5' },
-    { position: 'mapb', label: 'P/A/S/M/B' }
+    { position: 'pasmb', label: 'P/A/S/M/B' }
 ];
 
 export default async function Page() {

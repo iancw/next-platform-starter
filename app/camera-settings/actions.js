@@ -6,7 +6,7 @@ import { db } from '../../db/index.ts';
 import { modeSlotAssignments } from '../../db/schema.ts';
 import { requireUser } from '../../lib/auth.js';
 
-const VALID_MODE_POSITIONS = new Set(['c1', 'c2', 'c3', 'c4', 'c5', 'mapb']);
+const VALID_MODE_POSITIONS = new Set(['c1', 'c2', 'c3', 'c4', 'c5', 'pasmb']);
 const VALID_COLOR_SLOTS = new Set([1, 2, 3, 4]);
 
 function validateArgs(modePosition, colorSlot) {

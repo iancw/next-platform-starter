@@ -274,7 +274,7 @@ export const savedRecipes = pgTable(
 );
 
 // Tracks which recipes a user has loaded into each camera mode dial position and color profile slot.
-// modePosition: one of c1, c2, c3, c4, c5, mapb (M/A/P/B shared position)
+// modePosition: one of c1, c2, c3, c4, c5, pasmb (P/A/S/M/B shared position)
 // colorSlot: 1–4 (Color 1 through Color 4)
 export const modeSlotAssignments = pgTable(
     'mode_slot_assignments',
