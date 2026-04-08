@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useMemo, useState, useTransition } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import DeleteConfirmationModal from './DeleteConfirmationModal.jsx';
@@ -70,12 +71,15 @@ export default function MySamplesGrid({ samples, deleteSampleAction }) {
                     ×
                   </Button>
                   <Link href={recipeHref} className="block no-underline">
-                    <img
-                      src={previewUrl}
-                      alt={sample.recipeName ? `${sample.recipeName} sample` : 'Sample image'}
-                      className="mb-4 w-full rounded-xl border border-border/60 object-cover"
-                      style={{ aspectRatio: '4 / 3' }}
-                    />
+                    <div className="relative mb-4 w-full overflow-hidden rounded-xl border border-border/60" style={{ aspectRatio: '4 / 3' }}>
+                      <Image
+                        src={previewUrl}
+                        alt={sample.recipeName ? `${sample.recipeName} sample` : 'Sample image'}
+                        fill
+                        sizes="(min-width: 1536px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                        className="object-cover"
+                      />
+                    </div>
                     <div className="space-y-2 text-sm">
                       <div className="flex flex-wrap gap-2">
                         <Badge variant="secondary">Sample</Badge>

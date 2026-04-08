@@ -2,6 +2,10 @@
 const nextConfig = {
   reactCompiler: true,
 
+  images: {
+    formats: ['image/avif', 'image/webp'],
+  },
+
   experimental: {
     proxyClientMaxBodySize: '20mb',
     serverActions: {

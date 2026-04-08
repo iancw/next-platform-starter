@@ -663,7 +663,7 @@ export default function Page() {
                   if (!id) {
                     return (
                       <div className="block cursor-not-allowed opacity-60" title="Recipe is missing uuid/slug">
-                        <RecipeSimpleCard recipe={r} selectedImageOption={selectedImageOption} />
+                        <RecipeSimpleCard recipe={r} selectedImageOption={selectedImageOption} priority={i === 0} />
                       </div>
                     );
                   }
@@ -681,7 +681,7 @@ export default function Page() {
                         }
                       }}
                     >
-                      <RecipeSimpleCard recipe={r} selectedImageOption={selectedImageOption} />
+                      <RecipeSimpleCard recipe={r} selectedImageOption={selectedImageOption} priority={i === 0} />
                     </div>
                   );
                 })()}

@@ -5,7 +5,7 @@ import { Badge } from "./ui/badge.jsx";
 import { Card, CardContent } from "./ui/card.jsx";
 import { cn } from "../lib/cn.js";
 
-export default function RecipeSimpleCard({ recipe, onClick, selectedImageOption = SAMPLE_IMAGE_SELECTION }) {
+export default function RecipeSimpleCard({ recipe, onClick, selectedImageOption = SAMPLE_IMAGE_SELECTION, priority = false }) {
   const previewImage = getRecipePreviewImage(recipe, selectedImageOption);
   const previewUrl = previewImage?.smallUrl || previewImage?.fullSizeUrl;
 
@@ -27,7 +27,7 @@ export default function RecipeSimpleCard({ recipe, onClick, selectedImageOption 
             src={previewUrl}
             alt={`${recipe.recipeName} sample`}
             fill
-            unoptimized
+            priority={priority}
             className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
             sizes="(min-width: 1536px) 24rem, (min-width: 1024px) 30vw, (min-width: 768px) 45vw, 100vw"
           />

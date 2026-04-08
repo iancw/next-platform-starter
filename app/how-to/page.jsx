@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from 'components/ui/card';
 import { Badge } from 'components/ui/badge';
 
@@ -19,10 +20,14 @@ function Step({ number, children }) {
 function StepImage({ src, alt, caption }) {
     return (
         <figure>
-            <img
+            <Image
                 src={src}
                 alt={alt}
+                width={1280}
+                height={800}
+                sizes="(min-width: 1024px) 800px, 100vw"
                 className="w-full max-w-2xl rounded-lg border border-border"
+                style={{ height: 'auto' }}
             />
             {caption && (
                 <figcaption className="mt-2 text-xs text-muted-foreground">{caption}</figcaption>

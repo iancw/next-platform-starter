@@ -381,7 +381,7 @@ export default function RecipeCard({
                   alt="Lighthouse"
                   width={400}
                   height={300}
-                  unoptimized
+                  sizes="(min-width: 1280px) 400px, (min-width: 768px) 45vw, 100vw"
                   className="max-h-[300px] w-auto max-w-full rounded-xl border border-border/60 object-cover"
                 />
               </div>

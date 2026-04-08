@@ -1,5 +1,6 @@
 'use client';
 import React, { useCallback, useEffect, useMemo, useState, useTransition } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import AuthorSocialLinks from './AuthorSocialLinks';
 import DeleteConfirmationModal from './DeleteConfirmationModal.jsx';
@@ -223,13 +224,16 @@ export default function SampleGallery({
               type="button"
               onClick={() => openModal(idx)}
               className="focus:outline-none"
-              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'block', position: 'relative', height: 180, width: 240, borderRadius: 8, overflow: 'hidden' }}
               title={img.label ? formatComparisonImageLabelForDisplay(img.label) : ''}
             >
-              <img
+              <Image
                 src={img.displaySrc}
                 alt={img.label ? `Sample (${formatComparisonImageLabelForDisplay(img.label)})` : 'Sample image'}
-                style={{ height: 180, width: 'auto', borderRadius: 8 }}
+                fill
+                sizes="(min-width: 1024px) 200px, (min-width: 768px) 150px, 120px"
+                priority={idx === 0}
+                className="object-cover"
               />
             </button>
             {canSetPrimary && (
@@ -296,11 +300,14 @@ export default function SampleGallery({
               </button>
             )}
 
-            <img
+            <Image
               src={activeImage.modalSrc}
-              alt={activeImage.label ? `Sample (${activeImage.label})` : 'Sample image'}
+              alt={activeImage.label ? `Sample (${formatComparisonImageLabelForDisplay(activeImage.label)})` : 'Sample image'}
+              width={1200}
+              height={900}
+              sizes="(min-width: 1024px) 1200px, 100vw"
               className="rounded-lg shadow-lg object-contain"
-              style={{ maxHeight: '80vh', width: '100%' }}
+              style={{ maxHeight: '80vh', width: '100%', height: 'auto' }}
             />
 
             <div className="mt-4 text-center text-white text-sm space-y-1 px-4">
