@@ -38,7 +38,10 @@ vi.mock('../lib/oci/objectStorage.js', () => ({
 }));
 
 vi.mock('../lib/recipeFingerprint.js', () => ({
-    computeRecipeFingerprint: (...args) => computeFingerprintMock(...args)
+    computeRecipeFingerprint: (...args) => computeFingerprintMock(...args),
+    computeColorFingerprint: () => 'color-fp-123',
+    computeColorToneFingerprint: () => 'color-tone-fp-123',
+    computeNoWbFingerprint: () => 'no-wb-fp-123'
 }));
 
 vi.mock('../lib/auth.js', () => ({
@@ -329,10 +332,90 @@ describe('prepareRecipeUploadAction duplicate handling', () => {
         expect(result.shouldCreateRecipe).toBe(true);
         expect(createParMock).toHaveBeenCalledTimes(1);
         expect(capturedImageValues).toBeDefined();
+        expect(capturedImageValues.uuid).toBe(result.imageUuid);
         expect(capturedImageValues.sha256Hash).toBe(digest);
         expect(capturedImageValues.validExif).toBe(true);
+        expect(capturedImageValues.preparedRecipeId).toBe(777);
+        expect(capturedImageValues.preparedObjectKey).toBe(result.objectKey);
         expect(selectResults.length).toBe(0);
         expect(insertHandlers.length).toBe(0);
+    });
+
+    it('binds matched-recipe uploads to the existing recipe on the image row', async () => {
+        selectResults = [
+            [],
+            [
+                {
+                    id: 321,
+                    uuid: 'matched-recipe-uuid',
+                    slug: 'existing-recipe',
+                    recipeName: 'Existing Recipe',
+                    authorName: 'Existing Author'
+                }
+            ]
+        ];
+
+        insertHandlers = [
+            () => ({
+                values: vi.fn((values) => {
+                    capturedImageValues = values;
+                    return {
+                        returning: vi.fn(() => Promise.resolve([{ id: 888 }]))
+                    };
+                })
+            })
+        ];
+
+        const { prepareRecipeUploadAction } = await loadActionsModule();
+
+        const result = await prepareRecipeUploadAction({
+            parameters: {
+                author: 'Author',
+                name: 'Recipe Name',
+                notes: '',
+                imageMeta: {
+                    name: 'photo.jpg',
+                    type: 'image/jpeg',
+                    size: 4096,
+                    sha256: 'e'.repeat(64)
+                },
+                recipeSettings: {
+                    hasColorProfileSettings: true,
+                    hasToneLevel: true,
+                    yellow: 0,
+                    orange: 0,
+                    orangeRed: 0,
+                    red: 0,
+                    magenta: 0,
+                    violet: 0,
+                    blue: 0,
+                    blueCyan: 0,
+                    cyan: 0,
+                    greenCyan: 0,
+                    green: 0,
+                    yellowGreen: 0,
+                    contrast: 0,
+                    sharpness: 0,
+                    highlights: 0,
+                    shadows: 0,
+                    midtones: 0,
+                    whiteBalance2: 'Custom WB 1',
+                    whiteBalanceTemperature: 5200,
+                    whiteBalanceAmberOffset: 0,
+                    whiteBalanceGreenOffset: 0
+                }
+            }
+        });
+
+        expect(result.ok).toBe(true);
+        expect(result.shouldCreateRecipe).toBe(false);
+        expect(result.recipeId).toBe(321);
+        expect(capturedImageValues.preparedRecipeId).toBe(321);
+        expect(capturedImageValues.preparedObjectKey).toBe(result.objectKey);
+        expect(capturedImageValues.uuid).toBe(result.imageUuid);
+        expect(insertMock).toHaveBeenCalledTimes(1);
+        expect(insertHandlers.length).toBe(0);
+        expect(selectResults.length).toBe(0);
     });
 
     it('stores a normalized source URL when creating a new recipe', async () => {

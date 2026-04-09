@@ -1,6 +1,7 @@
 'use server';
+import { randomUUID } from 'node:crypto';
 import { db } from '../../db/index.ts';
-import { images, recipeComparisonImages, recipeSampleImages, recipes } from '../../db/schema.ts';
+import { authors, images, recipeComparisonImages, recipeSampleImages, recipes } from '../../db/schema.ts';
 import { eq, sql } from 'drizzle-orm';
 import {
     getObjectStorageClientFromEnv,
@@ -164,6 +165,12 @@ function normalizeSha256(value) {
     const normalized = value.trim().toLowerCase();
     if (!normalized) return null;
     return /^[0-9a-f]{64}$/.test(normalized) ? normalized : null;
+}
+
+function normalizePositiveInteger(value) {
+    const normalized = Number(value);
+    if (!Number.isInteger(normalized) || normalized <= 0) return null;
+    return normalized;
 }
 
 async function findExistingImageAssociationBySha(sha256) {
@@ -408,27 +415,29 @@ export async function prepareRecipeUploadAction({ parameters }) {
             throw new Error('Internal error: missing recipe id/slug');
         }
 
+        const imageUuid = randomUUID();
+        const ext = inferImageExtension(imageMeta);
+        const normalizedExt = ext === 'jpeg' ? 'jpg' : ext;
+        const objectKey = `authors/${authorUuid}/recipes/${createdSlug}/${imageUuid}.${normalizedExt}`;
+
         const imageRow = await db
             .insert(images)
             .values({
                 authorId,
+                uuid: imageUuid,
                 // set after upload so we can include UUID in the object key
                 fullSizeUrl: null,
                 // async resize means this may not exist immediately, but URL is deterministic
                 smallUrl: null,
                 originalFileSize: imageMeta?.size || null,
                 validExif: true,
-                sha256Hash: imageSha
+                sha256Hash: imageSha,
+                preparedRecipeId: createdRecipeId,
+                preparedObjectKey: objectKey
             })
-            .returning({ id: images.id, uuid: images.uuid });
+            .returning({ id: images.id });
 
         const imageId = imageRow[0].id;
-        const imageUuid = imageRow[0].uuid;
-
-        // --- uploads
-        const ext = inferImageExtension(imageMeta);
-        const normalizedExt = ext === 'jpeg' ? 'jpg' : ext;
-        const objectKey = `authors/${authorUuid}/recipes/${createdSlug}/${imageUuid}.${normalizedExt}`;
 
         const namespaceName = getObjectStorageNamespaceFromEnv();
         const client = getObjectStorageClientFromEnv();
@@ -499,32 +508,61 @@ export async function finalizeRecipeUploadAction({ parameters }) {
             return { ok: false, error: UPLOAD_DISABLED_ERROR };
         }
 
-        await requireUser();
+        const session = await requireUser();
 
         const {
-            recipeId,
             imageId,
-            authorId,
-            shouldCreateRecipe,
-            objectKey,
             originalFileSize
         } = parameters ?? {};
 
-        if (!recipeId || !imageId || !authorId || !objectKey) {
+        const requestedImageId = normalizePositiveInteger(imageId);
+        if (!requestedImageId) {
             return { ok: false, error: 'Missing required finalize parameters' };
         }
 
-        // Ensure the image row belongs to the authorId (basic safety check).
         const img = await db
-            .select({ id: images.id, authorId: images.authorId, smallUrl: images.smallUrl })
+            .select({
+                id: images.id,
+                authorId: images.authorId,
+                authorUserId: authors.userId,
+                smallUrl: images.smallUrl,
+                fullSizeUrl: images.fullSizeUrl,
+                originalFileSize: images.originalFileSize,
+                preparedRecipeId: images.preparedRecipeId,
+                preparedObjectKey: images.preparedObjectKey,
+                finalizedAt: images.finalizedAt
+            })
             .from(images)
-            .where(eq(images.id, imageId))
+            .innerJoin(authors, eq(images.authorId, authors.id))
+            .where(eq(images.id, requestedImageId))
             .limit(1);
         if (img.length === 0) return { ok: false, error: 'Image record not found' };
-        if (img[0].authorId !== authorId) return { ok: false, error: 'Not authorized' };
+        if (img[0].authorUserId !== session.user.id) return { ok: false, error: 'Not authorized' };
+
+        const preparedRecipeId = normalizePositiveInteger(img[0].preparedRecipeId);
+        const preparedObjectKey = String(img[0].preparedObjectKey ?? '').trim();
+        if (!preparedRecipeId || !preparedObjectKey) {
+            return { ok: false, error: 'Upload is missing prepared finalize state. Please upload the image again.' };
+        }
+
+        const fullSizeUrl = img[0].fullSizeUrl || originalUrlForKey(preparedObjectKey);
+        const resizeStatus = {
+            resizeAttempted: false,
+            resizeSucceeded: false,
+            resizeSkipped: false
+        };
+
+        if (img[0].finalizedAt) {
+            if (img[0].smallUrl) {
+                resizeStatus.resizeSucceeded = true;
+                resizeStatus.resizeSkipped = true;
+            }
+            return { ok: true, fullSizeUrl, ...resizeStatus };
+        }
 
         const namespaceName = getObjectStorageNamespaceFromEnv();
         const client = getObjectStorageClientFromEnv();
+        const expectedOriginalFileSize = normalizePositiveInteger(img[0].originalFileSize) ?? normalizePositiveInteger(originalFileSize);
 
         // Verify the object exists (helps surface CORS/PAR issues and avoids dangling DB URLs).
         try {
@@ -532,15 +570,15 @@ export async function finalizeRecipeUploadAction({ parameters }) {
                 client,
                 namespaceName,
                 bucketName: ORIGINAL_BUCKET,
-                objectName: objectKey
+                objectName: preparedObjectKey
             });
 
             // Best-effort validation.
             const len = Number(headRes?.contentLength);
-            if (Number.isFinite(len) && originalFileSize != null && Number(originalFileSize) > 0 && len !== Number(originalFileSize)) {
+            if (Number.isFinite(len) && expectedOriginalFileSize != null && len !== expectedOriginalFileSize) {
                 return {
                     ok: false,
-                    error: `Uploaded object size mismatch (expected ${originalFileSize}, got ${len})`
+                    error: `Uploaded object size mismatch (expected ${expectedOriginalFileSize}, got ${len})`
                 };
             }
         } catch (e) {
@@ -550,37 +588,33 @@ export async function finalizeRecipeUploadAction({ parameters }) {
             };
         }
 
-        const fullSizeUrl = originalUrlForKey(objectKey);
-        await db
-            .update(images)
-            .set({
-                fullSizeUrl,
-                originalFileSize: originalFileSize ?? null
-            })
-            .where(eq(images.id, imageId));
+        await db.transaction(async (tx) => {
+            await tx
+                .update(images)
+                .set({
+                    fullSizeUrl,
+                    originalFileSize: expectedOriginalFileSize ?? null,
+                    finalizedAt: new Date()
+                })
+                .where(eq(images.id, requestedImageId));
 
-        await db
-            .insert(recipeSampleImages)
-            .values({
-                recipeId,
-                imageId,
-                authorId,
-                isPrimary: sql`not exists (
-                    select 1
-                    from recipe_sample_images existing_samples
-                    where existing_samples.recipe_id = ${recipeId}
-                )`
-            })
-            .onConflictDoNothing();
+            await tx
+                .insert(recipeSampleImages)
+                .values({
+                    recipeId: preparedRecipeId,
+                    imageId: requestedImageId,
+                    authorId: img[0].authorId,
+                    isPrimary: sql`not exists (
+                        select 1
+                        from recipe_sample_images existing_samples
+                        where existing_samples.recipe_id = ${preparedRecipeId}
+                    )`
+                })
+                .onConflictDoNothing();
+        });
 
-        const resizedUrl = `/assets/images/600/${objectKey}`;
-        const resizedObjectName600 = `600/${objectKey}`;
-
-        const resizeStatus = {
-            resizeAttempted: false,
-            resizeSucceeded: false,
-            resizeSkipped: false
-        };
+        const resizedUrl = `/assets/images/600/${preparedObjectKey}`;
+        const resizedObjectName600 = `600/${preparedObjectKey}`;
 
         if (img[0].smallUrl) {
             resizeStatus.resizeSkipped = true;
@@ -592,7 +626,7 @@ export async function finalizeRecipeUploadAction({ parameters }) {
             resizeStatus.resizeAttempted = true;
             await invokeResizeWithRetry({
                 sourceBucket: ORIGINAL_BUCKET,
-                objectName: objectKey,
+                objectName: preparedObjectKey,
                 destinationBucket: RESIZED_BUCKET,
                 timeoutMs: RESIZE_TIMEOUT_MS
             });
@@ -617,7 +651,7 @@ export async function finalizeRecipeUploadAction({ parameters }) {
                 .set({
                     smallUrl: resizedUrl
                 })
-                .where(eq(images.id, imageId));
+                .where(eq(images.id, requestedImageId));
 
             resizeStatus.resizeSucceeded = true;
         } catch (err) {
@@ -638,11 +672,11 @@ export async function finalizeRecipeUploadAction({ parameters }) {
                 details: warnDetails,
                 preview: warnPreview,
                 cause: warnCause,
-                imageId,
-                objectKey,
+                imageId: requestedImageId,
+                objectKey: preparedObjectKey,
                 bucket: RESIZED_BUCKET,
-                authorId,
-                recipeId
+                authorId: img[0].authorId,
+                recipeId: preparedRecipeId
             });
         }
 

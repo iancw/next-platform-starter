@@ -381,11 +381,7 @@ export default function RecipeUpload({ initialAuthor = "" }) {
       setUploadPhase('finalizing');
       const fin = await finalizeRecipeUploadAction({
         parameters: {
-          recipeId: prep.recipeId,
           imageId: prep.imageId,
-          authorId: prep.authorId,
-          shouldCreateRecipe: prep.shouldCreateRecipe,
-          objectKey: prep.objectKey,
           originalFileSize: file.size
         }
       });

@@ -124,6 +124,9 @@ export const images = pgTable(
         originalFileSize: integer('original_file_size'),
         exif: text('exif_string'),
         validExif: boolean('valid_exif').default(false).notNull(),
+        preparedRecipeId: integer('prepared_recipe_id').references(() => recipes.id, { onDelete: 'set null' }),
+        preparedObjectKey: text('prepared_object_key'),
+        finalizedAt: timestamp('finalized_at', { withTimezone: true }),
         fullSizeUrl: text('full_size_url'),
         smallUrl: text('small_url'),
         sha256Hash: text('sha256_hash'),
@@ -133,6 +136,8 @@ export const images = pgTable(
     (t) => [
         uniqueIndex('images_uuid_unique').on(t.uuid),
         index('images_author_id_idx').on(t.authorId),
+        index('images_prepared_recipe_id_idx').on(t.preparedRecipeId),
+        uniqueIndex('images_prepared_object_key_unique').on(t.preparedObjectKey).where(sql`${t.preparedObjectKey} is not null`),
         uniqueIndex('images_sha256_hash_unique').on(t.sha256Hash).where(sql`${t.sha256Hash} is not null`)
     ]
 );

@@ -120,6 +120,13 @@
       "when": 1775271319300,
       "tag": "0016_rename_mapb_to_pasmb",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1775661023411,
+      "tag": "0017_keen_stellaris",
+      "breakpoints": true
     }
   ]
 }
