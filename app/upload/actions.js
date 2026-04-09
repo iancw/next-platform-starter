@@ -2,7 +2,7 @@
 import { randomUUID } from 'node:crypto';
 import { db } from '../../db/index.ts';
 import { authors, images, recipeComparisonImages, recipeSampleImages, recipes } from '../../db/schema.ts';
-import { eq, sql } from 'drizzle-orm';
+import { and, eq, isNull, sql } from 'drizzle-orm';
 import {
     getObjectStorageClientFromEnv,
     getObjectStorageNamespaceFromEnv,
@@ -552,7 +552,23 @@ export async function finalizeRecipeUploadAction({ parameters }) {
             resizeSkipped: false
         };
 
+        const ensureRecipeSampleImageLink = async () =>
+            db
+                .insert(recipeSampleImages)
+                .values({
+                    recipeId: preparedRecipeId,
+                    imageId: requestedImageId,
+                    authorId: img[0].authorId,
+                    isPrimary: sql`not exists (
+                        select 1
+                        from recipe_sample_images existing_samples
+                        where existing_samples.recipe_id = ${preparedRecipeId}
+                    )`
+                })
+                .onConflictDoNothing();
+
         if (img[0].finalizedAt) {
+            await ensureRecipeSampleImageLink();
             if (img[0].smallUrl) {
                 resizeStatus.resizeSucceeded = true;
                 resizeStatus.resizeSkipped = true;
@@ -588,30 +604,16 @@ export async function finalizeRecipeUploadAction({ parameters }) {
             };
         }
 
-        await db.transaction(async (tx) => {
-            await tx
-                .update(images)
-                .set({
-                    fullSizeUrl,
-                    originalFileSize: expectedOriginalFileSize ?? null,
-                    finalizedAt: new Date()
-                })
-                .where(eq(images.id, requestedImageId));
+        await db
+            .update(images)
+            .set({
+                fullSizeUrl,
+                originalFileSize: expectedOriginalFileSize ?? null,
+                finalizedAt: new Date()
+            })
+            .where(and(eq(images.id, requestedImageId), isNull(images.finalizedAt)));
 
-            await tx
-                .insert(recipeSampleImages)
-                .values({
-                    recipeId: preparedRecipeId,
-                    imageId: requestedImageId,
-                    authorId: img[0].authorId,
-                    isPrimary: sql`not exists (
-                        select 1
-                        from recipe_sample_images existing_samples
-                        where existing_samples.recipe_id = ${preparedRecipeId}
-                    )`
-                })
-                .onConflictDoNothing();
-        });
+        await ensureRecipeSampleImageLink();
 
         const resizedUrl = `/assets/images/600/${preparedObjectKey}`;
         const resizedObjectName600 = `600/${preparedObjectKey}`;
