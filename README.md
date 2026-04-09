@@ -6,8 +6,6 @@ The project is built with Next.js on Netlify and uses Netlify's platform runtime
 
 ![OM Recipes site screenshot](docs/readme/site-screenshot.png)
 
-Add or replace the screenshot file at [`docs/readme/site-screenshot.png`](docs/readme/site-screenshot.png).
-
 ## Contributing
 
 Contributions are welcome! But this is a vibe-coded app without robust testing or independent development support. Let me know if you're interested in contributing or seeing particular features added. I'm happy to consider the code, but it might take time to review and test.
