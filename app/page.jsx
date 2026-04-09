@@ -475,7 +475,7 @@ export default function Page() {
             <div className="space-y-3">
               <h1 className="max-w-3xl">OM System Color Recipes</h1>
               <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-                Search the library, compare author sample images, and open any recipe into a focused detail view with export downloads.
+                Discover and share color recipes for Olympus and OM System cameras.
               </p>
             </div>
           </div>

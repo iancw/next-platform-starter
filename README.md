@@ -1,60 +1,82 @@
-# Next.js on Netlify Platform Starter
+# OM Recipes
 
-[Live Demo](https://nextjs-platform-starter.netlify.app/)
+OM Recipes is an independent community site for discovering, sharing, and managing color recipes for OM System and Olympus cameras. The app lets photographers browse recipes, compare sample images, upload recipes extracted from camera JPGs, and manage their own submissions over time.
 
-A modern starter based on Next.js 16 (App Router), Tailwind, and [Netlify Core Primitives](https://docs.netlify.com/core/overview/#develop) (Edge Functions, Image CDN, Blob Store).
+The project is built with Next.js on Netlify and uses Netlify's platform runtime for local development and deployment. It also includes a PostgreSQL-backed data model via Drizzle, passwordless email login, and OCI-backed image and backup workflows.
 
-In this site, Netlify Core Primitives are used both implictly for running Next.js features (e.g. Route Handlers, image optimization via `next/image`, and more) and also explicitly by the user code.
+![OM Recipes site screenshot](docs/readme/site-screenshot.png)
 
-Implicit usage means you're using any Next.js functionality and everything "just works" when deployed - all the plumbing is done for you. Explicit usage is framework-agnostic and typically provides more features than what Next.js exposes.
+Add or replace the screenshot file at [`docs/readme/site-screenshot.png`](docs/readme/site-screenshot.png).
 
-## Deploying to Netlify
+## Contributing
 
-Click the button below to deploy this template to your Netlify account.
+Contributions are welcome! But this is a vibe-coded app without robust testing or independent development support. Let me know if you're interested in contributing or seeing particular features added. I'm happy to consider the code, but it might take time to review and test.
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/netlify-templates/next-platform-starter)
+## Local Development
 
-## Developing Locally
+For full local functionality, run the app through Netlify CLI rather than plain `next dev`.
 
-1. Clone this repository, then run `npm install` in its root directory.
+1. Install dependencies:
 
-2. For the starter to have full functionality locally (e.g. edge functions, blob store), please ensure you have an up-to-date version of Netlify CLI. Run:
-
-```
-npm install netlify-cli@latest -g
+```bash
+npm install
 ```
 
-3. Link your local repository to the deployed Netlify site. This will ensure you're using the same runtime version for both local development and your deployed site.
+2. Install the Netlify CLI if you do not already have it:
 
+```bash
+npm install -g netlify-cli
 ```
+
+3. Link the repo to the Netlify site that provides the runtime and database configuration:
+
+```bash
 netlify link
 ```
 
-4. Then, run the Next.js development server via Netlify CLI:
+4. Create or update `.env.local` with the environment variables you need locally.
 
+Minimum useful values:
+
+```bash
+APP_BASE_URL=http://localhost:8888
+NETLIFY_DATABASE_URL=...
 ```
+
+If you want login, uploads, OCI image processing, or backups to work locally, you will also need the related OCI and auth variables configured for your environment.
+
+5. Start the local dev server:
+
+```bash
 netlify dev
 ```
 
-If your browser doesn't navigate to the site automatically, visit [localhost:8888](http://localhost:8888).
+Then open `http://localhost:8888`.
 
-## Google Analytics 4 (GA4)
+If you only need to work on isolated UI code, `npm run dev` may be sufficient, but Netlify-specific features and database-backed flows are expected to work best through `netlify dev`.
 
-This site sends GA4 page view events using the GA4 `gtag.js` snippet.
-
-Set the measurement id via:
+## Common Commands
 
 ```bash
-NEXT_PUBLIC_GA4_MEASUREMENT_ID=G-XXXXXXXXXX
+npm run lint
+npm test
+npm run build
 ```
 
-## Passwordless auth
+Database-related scripts:
 
-This app now uses first-party passwordless magic links backed by the app database.
+```bash
+npm run db:migrate
+```
 
-Required auth-related env vars:
+## Environment Notes
+
+Frequently used environment variables in this project include:
 
 - `APP_BASE_URL`
+- `NETLIFY_DATABASE_URL`
+- `NEXT_PUBLIC_GA4_MEASUREMENT_ID`
+- `AUTH_COOKIE_DOMAIN`
 - `OCI_EMAIL_DELIVERY_ENDPOINT`
 - `OCI_EMAIL_DELIVERY_COMPARTMENT_OCID`
 - `OCI_EMAIL_SENDER`
@@ -63,54 +85,11 @@ Required auth-related env vars:
 - `OCI_FINGERPRINT`
 - `OCI_PRIVATE_KEY_B64`
 - `OCI_REGION`
-
-Magic links are one-time use and expire after 20 minutes. Sessions are stored server-side and use a 14 day rolling cookie.
-
-Set `APP_BASE_URL` to the canonical public origin for the deployed site, for example `https://www.omrecipes.dev`. This prevents magic links from being generated against preview or secondary hostnames.
-
-If production serves more than one hostname that should share auth, set `AUTH_COOKIE_DOMAIN` to the shared parent domain, for example `omrecipes.dev`. If you only want one canonical hostname, it is usually better to configure Netlify to redirect all other domains to that primary host.
-
-`OCI_EMAIL_DELIVERY_ENDPOINT` must be a full HTTPS endpoint. If you paste only the host, the app now normalizes it to `https://...`, but the safest value is the exact HTTPS endpoint from OCI Email Delivery configuration.
-
-## Database backups
-
-The repo includes an operator-run backup command that uses `pg_dump` to create a custom-format PostgreSQL dump and uploads it to OCI Object Storage.
-
-Run:
-
-```bash
-npm run db:backup:object-storage
-```
-
-Required backup env vars:
-
-- `NETLIFY_DATABASE_URL`
-- `OCI_DB_BACKUP_BUCKET`
-- `OCI_TENANCY_OCID`
-- `OCI_USER_OCID`
-- `OCI_FINGERPRINT`
-- `OCI_PRIVATE_KEY_B64`
-- `OCI_REGION`
 - `OCI_OBJECT_STORAGE_NAMESPACE`
+- `OCI_FUNCTIONS_INVOKE_ENDPOINT`
+- `OCI_IMAGE_RESIZE_FUNCTION_ID`
+- `OCI_IMAGES_ORIGINAL_BUCKET`
+- `OCI_IMAGES_PROCESSED_BUCKET`
+- `OCI_DB_BACKUP_BUCKET`
 
-Optional backup env vars:
-
-- `OCI_DB_BACKUP_PREFIX` defaults to `db-backups`
-
-The command loads `.env.local` automatically, requires `pg_dump` to be installed in the shell environment, and uploads objects using a timestamped key shaped like `db-backups/YYYY/MM/DD/<timestamp>-<database>.dump`.
-
-## Uploaded image + OES asset URLs
-
-Uploaded assets are stored in Netlify Blob Store and served via a Netlify **Edge Function**.
-
-- OES files: `GET /oes/${slug}.oes`
-- Original images: `GET /images/${authorId}/${slug}.${ext}`
-
-Notes:
-
-- `authorId` is currently part of the public URL for organization, but the underlying blob key is `${slug}.${ext}`.
-- These URLs are written to the DB by `app/upload/actions.js` during upload.
-
-## Resources
-
-- Check out the [Next.js on Netlify docs](https://docs.netlify.com/frameworks/next-js/overview/)
+The exact set you need depends on which parts of the app you are working on. Recipe browsing and most database-backed development primarily depend on the Netlify runtime and database connection; auth, uploads, image processing, and backups each require additional configuration.
