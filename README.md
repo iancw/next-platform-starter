@@ -72,6 +72,33 @@ If production serves more than one hostname that should share auth, set `AUTH_CO
 
 `OCI_EMAIL_DELIVERY_ENDPOINT` must be a full HTTPS endpoint. If you paste only the host, the app now normalizes it to `https://...`, but the safest value is the exact HTTPS endpoint from OCI Email Delivery configuration.
 
+## Database backups
+
+The repo includes an operator-run backup command that uses `pg_dump` to create a custom-format PostgreSQL dump and uploads it to OCI Object Storage.
+
+Run:
+
+```bash
+npm run db:backup:object-storage
+```
+
+Required backup env vars:
+
+- `NETLIFY_DATABASE_URL`
+- `OCI_DB_BACKUP_BUCKET`
+- `OCI_TENANCY_OCID`
+- `OCI_USER_OCID`
+- `OCI_FINGERPRINT`
+- `OCI_PRIVATE_KEY_B64`
+- `OCI_REGION`
+- `OCI_OBJECT_STORAGE_NAMESPACE`
+
+Optional backup env vars:
+
+- `OCI_DB_BACKUP_PREFIX` defaults to `db-backups`
+
+The command loads `.env.local` automatically, requires `pg_dump` to be installed in the shell environment, and uploads objects using a timestamped key shaped like `db-backups/YYYY/MM/DD/<timestamp>-<database>.dump`.
+
 ## Uploaded image + OES asset URLs
 
 Uploaded assets are stored in Netlify Blob Store and served via a Netlify **Edge Function**.
