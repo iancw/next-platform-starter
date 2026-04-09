@@ -3,7 +3,8 @@ import { Badge } from 'components/ui/badge';
 import { ContactForm } from './ContactForm';
 
 export const metadata = {
-    title: 'About'
+    title: 'About',
+    description: 'Learn about OM Recipes — a community site for discovering and sharing color recipes for OM System and Olympus cameras.'
 };
 
 export default function AboutPage() {

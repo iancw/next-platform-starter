@@ -6,7 +6,8 @@ import { Input } from 'components/ui/input';
 import { getSession, normalizeRedirectPath } from '../../lib/auth.js';
 
 export const metadata = {
-    title: 'Log In'
+    title: 'Log In',
+    description: 'Sign in to OM Recipes to upload and manage your color recipes for OM System and Olympus cameras.'
 };
 
 function getErrorMessage(code) {

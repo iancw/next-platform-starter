@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getSession } from '../../../lib/auth.js';
@@ -17,11 +18,7 @@ import {
 import { getSavedRecipeIdsForUser } from '../../../lib/recipe-saves.js';
 import { getEquivalentWhiteBalance } from '../../../lib/whiteBalanceEquivalence.js';
 
-export const metadata = {
-    title: 'Recipe'
-};
-
-async function getRecipeByIdOrSlug(idOrSlug, userId = null) {
+const getRecipeByIdOrSlug = cache(async function getRecipeByIdOrSlug(idOrSlug, userId = null) {
     const v = String(idOrSlug ?? '').trim();
     if (!v) return null;
     // Detect UUID format to avoid a Postgres type error when the param is a slug.
@@ -146,6 +143,32 @@ async function getRecipeByIdOrSlug(idOrSlug, userId = null) {
         isSaved: savedRecipeIds.has(recipeId),
         comparisonImages,
         sampleImages
+    };
+});
+
+export async function generateMetadata({ params }) {
+    const resolvedParams = await params;
+    const id = decodeURIComponent(resolvedParams?.id ?? '');
+    const recipe = await getRecipeByIdOrSlug(id, null);
+    if (!recipe) return {};
+
+    const title = recipe.recipeName;
+    const description = recipe.description?.trim()
+        || `Color recipe for OM System / Olympus cameras by ${recipe.authorName}.`;
+
+    const primaryImage = recipe.sampleImages?.find((img) => img.isPrimary) ?? recipe.sampleImages?.[0] ?? null;
+    const ogImageUrl = primaryImage?.smallUrl
+        ? `${process.env.APP_BASE_URL ?? ''}${primaryImage.smallUrl}`
+        : null;
+
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            ...(ogImageUrl ? { images: [{ url: ogImageUrl }] } : {})
+        }
     };
 }
 

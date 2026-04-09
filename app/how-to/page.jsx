@@ -3,7 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from 'compo
 import { Badge } from 'components/ui/badge';
 
 export const metadata = {
-    title: 'How-to'
+    title: 'How to Load Color Recipes',
+    description: 'Step-by-step guides for loading OM System color recipes into OM Workspace (.OES files) and directly into your camera via JPG.'
 };
 
 function Step({ number, children }) {
