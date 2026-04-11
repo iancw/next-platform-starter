@@ -151,6 +151,13 @@ def handler(ctx, data: Optional[io.BytesIO] = None):
         raw = data.getvalue().decode("utf-8") if data else "{}"
         payload = json.loads(raw)
 
+        if payload == {}:
+            return response.Response(
+                ctx,
+                response_data=json.dumps({"ok": True, "warm": True}),
+                headers={"Content-Type": "application/json"},
+            )
+
         _log_payload(payload, raw)
 
         src_bucket, object_name, dst_bucket_override = parse_invocation_payload(payload)

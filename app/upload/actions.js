@@ -51,6 +51,7 @@ function shouldRetryResizeInvoke(err) {
     const detailsStatus = err?.details?.status;
     const metadataCode = err?.details?.metadata?.statusCode;
     const explicitStatus = err?.statusCode;
+    const causeStatus = err?.cause?.statusCode;
     const status =
         typeof explicitStatus === 'number'
             ? explicitStatus
@@ -58,7 +59,9 @@ function shouldRetryResizeInvoke(err) {
               ? detailsStatus
               : typeof metadataCode === 'number'
                 ? metadataCode
-                : null;
+                : typeof causeStatus === 'number'
+                  ? causeStatus
+                  : null;
 
     return status === 502 || status === 503 || message.includes('server too busy') || message.includes('502') || message.includes('503');
 }

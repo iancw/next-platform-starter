@@ -145,3 +145,23 @@ def test_handler_manual_payload_uses_override_bucket_and_does_resize_workflow(mo
             assert content == b"resized-600"
         else:
             raise AssertionError(f"Unexpected uploaded object name: {obj}")
+
+
+def test_handler_empty_payload_returns_warm_response_without_oci_calls(monkeypatch):
+    oci_called = {"value": False}
+
+    def fake_client():
+        oci_called["value"] = True
+        raise AssertionError("OCI client should not be created for warm-up")
+
+    monkeypatch.setattr(func, "_object_storage_client", fake_client)
+
+    import io
+    data = io.BytesIO(b"{}")
+    resp = func.handler(_mk_ctx(), data)
+
+    body = json.loads(resp.body)
+    assert body["ok"] is True
+    assert body["warm"] is True
+    assert resp.status_code == 200
+    assert not oci_called["value"]
