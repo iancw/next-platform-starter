@@ -56,7 +56,6 @@ export default function RecipeUpload({ initialAuthor = "" }) {
 
   const hasDroppedImage = imageFiles?.length > 0;
   const hasRedirectedRef = useRef(false);
-  const warmSentRef = useRef(false);
 
   useEffect(() => {
     if (!imageFiles?.length) {
@@ -204,22 +203,6 @@ export default function RecipeUpload({ initialAuthor = "" }) {
     };
   }, [uploadPhase, uploadStatus]);
 
-  useEffect(() => {
-    const uploadButtonEnabled =
-      imageFiles?.length > 0 &&
-      !!recipe &&
-      !isParsingExif &&
-      !isCheckingDuplicate &&
-      !isCheckingMatch &&
-      !duplicateMatch &&
-      !matchingRecipe &&
-      uploadStatus !== 'uploading';
-
-    if (!uploadButtonEnabled || warmSentRef.current) return;
-    warmSentRef.current = true;
-    fetch('/upload/warm-fn', { method: 'POST' }).catch(() => {});
-  }, [imageFiles, recipe, isParsingExif, isCheckingDuplicate, isCheckingMatch, duplicateMatch, matchingRecipe, uploadStatus]);
-
   const parseExif = async (file) => {
     const result = await parseMetadata(file)
     return parseRecipeSettingsFromExif(result.data)
@@ -293,7 +276,6 @@ export default function RecipeUpload({ initialAuthor = "" }) {
   };
 
   const handleRemoveImage = () => {
-    warmSentRef.current = false;
     setImageFiles([]);
     setRecipeDetails(null);
     setExifError("");

@@ -148,11 +148,11 @@ def _resize_jpeg(src_path: str, dst_path: str, max_dim: int = 1200, quality: int
 
 def handler(ctx, data: Optional[io.BytesIO] = None):
     try:
-        raw = data.getvalue().decode("utf-8") if data else "{}"
-        logger.info("Called with raw payload %s" % raw)
+        raw = (data.getvalue().decode("utf-8") if data else "").strip() or "{}"
         payload = json.loads(raw)
 
         if payload == {}:
+            logger.info("Invoked in warmup mode, returning with warm: true")
             return response.Response(
                 ctx,
                 response_data=json.dumps({"ok": True, "warm": True}),

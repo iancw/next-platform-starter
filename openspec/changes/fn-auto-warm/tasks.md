@@ -8,9 +8,9 @@
 
 ## 3. Server-side Trigger
 
-- [ ] 3.1 In `app/upload/page.jsx`, import `after` from `next/server` and `warmImageResizeFunction` from `lib/oci/functionsInvoke.js`; inside the `user` branch (where `RecipeUpload` is rendered), add `after(() => warmImageResizeFunction().catch(() => {}))` before the return
+- [x] 3.1 In `app/upload/page.jsx`, import `after` from `next/server` and `warmImageResizeFunction` from `lib/oci/functionsInvoke.js`; inside the `user` branch (where `RecipeUpload` is rendered), add `after(() => warmImageResizeFunction().catch(() => {}))` before the return
 
 ## 4. Remove Client-side Trigger
 
-- [ ] 4.1 Delete `app/upload/warm-fn/route.js`
-- [ ] 4.2 In `app/upload/RecipeUpload.jsx`, remove the `warmSentRef` declaration (`useRef(false)`), the warming `useEffect` (the one that calls `fetch('/upload/warm-fn', ...)`), and the `warmSentRef.current = false` reset in `handleRemoveImage`
+- [x] 4.1 Delete `app/upload/warm-fn/route.js`
+- [x] 4.2 In `app/upload/RecipeUpload.jsx`, remove the `warmSentRef` declaration (`useRef(false)`), the warming `useEffect` (the one that calls `fetch('/upload/warm-fn', ...)`), and the `warmSentRef.current = false` reset in `handleRemoveImage`
