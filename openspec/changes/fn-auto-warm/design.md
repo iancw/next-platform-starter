@@ -1,55 +1,38 @@
 ## Context
 
-The OCI image resize function is invoked server-side during `finalizeRecipeUploadAction`. On a cold start the function container must boot before it can process the image, which adds noticeable latency. Users tend to spend a few seconds reviewing the detected recipe settings after dropping an image, which is idle time we can use to warm the function before they click Upload.
-
-The upload page already performs two async checks after a file is dropped (duplicate image hash check, recipe settings match check). These checks define when the Upload button becomes enabled. If both checks pass — meaning the image is valid, unique, and represents a new recipe — the user is almost certainly about to click Upload. That is the ideal moment to send a warm-up invocation.
+The OCI image resize function is invoked server-side during `finalizeRecipeUploadAction`. On a cold start the function container must boot before it can process the image, which adds noticeable latency. Users navigate to the upload page before they interact with any form elements, which gives us a predictable server-side moment to fire a warm invocation — before the user has even dropped an image.
 
 ## Goals / Non-Goals
 
 **Goals:**
-- Reduce cold-start latency perceived by users by pre-warming the resize function before Upload is clicked.
+- Reduce cold-start latency perceived by users by pre-warming the resize function when the upload page loads.
 - Keep the warm-up entirely transparent: no UI feedback, no effect on upload success/failure.
-- Trigger at most once per dropped image to avoid hammering the function.
+- Require authentication: only fire for users who are already signed in.
 
 **Non-Goals:**
 - Guaranteeing the function will be warm by the time Upload is clicked (this is best-effort).
-- Warming on attach-as-community-sample flows or for invalid/duplicate images.
+- Warming for unauthenticated visitors.
 - Changing any aspect of the actual resize invocation during finalization.
 
 ## Decisions
 
-### Warm payload via a new `warmImageResizeFunction` export
+### Warm payload via a dedicated `warmImageResizeFunction` export
 
-The existing `invokeImageResizeFunction` validates that `sourceBucket` and `objectName` are present and throws without them. Rather than relaxing that contract, a new `warmImageResizeFunction` function sends an empty JSON object (`{}`) as the payload. The OCI function is expected to detect the missing fields and return early without error, warming its container in the process. Keeping the two call sites separate avoids adding conditional logic to the production resize path.
+The existing `invokeImageResizeFunction` validates that `sourceBucket` and `objectName` are present and throws without them. Rather than relaxing that contract, a separate `warmImageResizeFunction` sends an empty JSON object (`{}`) as the payload. The OCI function detects the empty payload and returns early with `{"ok": true, "warm": true}` without doing any real work, warming its container in the process. Keeping the two call sites separate avoids adding conditional logic to the production resize path.
 
-### API route handler rather than server action
+### Server component `after()` rather than a client trigger
 
-The warm-up is fire-and-forget from the client. A Next.js Route Handler (`POST /upload/warm-fn`) is a better fit than a server action here because:
-- It can be called with `fetch` and the response ignored without waiting.
-- It does not need to return a structured result or participate in form state.
-- It is easy to call from a `useEffect` without React's server-action constraints.
+The original design fired the warm-up from a client `useEffect` when upload conditions were met (valid image, no duplicate, no recipe match). This was replaced with a server-side call using Next.js `after()` in the upload `page.jsx`:
 
-Authentication is still required (via `requireUser`) so the endpoint cannot be hit anonymously.
+- The page server component already runs `getSession()` and has the user object — no additional auth round-trip needed.
+- `after()` runs the callback after the response has been sent, making it true fire-and-forget with zero impact on page load time.
+- Page load fires earlier and more reliably than waiting for EXIF parsing and async checks to complete, giving the container more lead time to warm.
+- Removes the need for a dedicated API route, a client `useRef`, and a `useEffect` dependency array.
 
-### `useEffect` with a sent-flag ref
-
-The client triggers the warm-up from a `useEffect` that watches the state variables that determine whether the Upload button is enabled and visible:
-- `recipe` (valid EXIF parsed)
-- `duplicateMatch` (no duplicate)
-- `matchingRecipe` (no existing recipe match)
-- `isCheckingDuplicate` / `isCheckingMatch` (async checks complete)
-- `imageFiles` (image present)
-
-A `useRef` (`warmSentRef`) is set to `true` after the warm-up fetch is dispatched and reset to `false` in `handleRemoveImage`. This ensures exactly one warm-up per image session regardless of re-renders.
-
-The fetch is intentionally not awaited and errors are caught and discarded:
-```js
-fetch('/upload/warm-fn', { method: 'POST' }).catch(() => {});
-```
+Errors are swallowed inside `warmImageResizeFunction`; no unhandled rejections, no user-visible impact.
 
 ## Risks / Trade-offs
 
 - [The function may still be cold at upload time] → Acceptable: the warm-up shortens the expected cold-start window, not eliminates it. Existing retry logic in `invokeResizeWithRetry` still handles transient failures.
-- [Unnecessary warm invocations if user removes image] → Mitigated: `warmSentRef` prevents re-firing, and `handleRemoveImage` resets it so a fresh image can trigger again.
-- [OCI function returns a non-2xx for empty payload] → `warmImageResizeFunction` swallows all errors; the route handler returns 204 regardless. No user-visible impact.
-- [Extra authenticated request visible in network tools] → Low concern; it is a small POST with no body. Users inspecting devtools will see it but it has no harmful side-effects.
+- [Warm invocations fired on every authenticated page load, not just when the user is about to upload] → Acceptable: the warm call is cheap (empty payload, early return in the function), and the upload page is low-traffic enough that this is not a concern.
+- [OCI function returns a non-2xx for empty payload] → `warmImageResizeFunction` swallows all errors. No user-visible impact.
